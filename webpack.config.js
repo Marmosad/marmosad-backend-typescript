@@ -4,7 +4,7 @@ var webpack = require('webpack');
 
 module.exports = {
     entry: {
-        index: "./index.ts"
+        index: "./src/app.ts"
     },
     target: 'node',
     module: {
