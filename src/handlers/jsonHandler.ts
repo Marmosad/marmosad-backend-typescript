@@ -12,9 +12,8 @@ function getRandomInt(min, max) {
     }
     return retval;
 }
-
-export class jsonHandler{
-    createPlayer (callback, playerId) {
+module.exports = {
+    createPlayer: function (callback, playerId) {
         var hand = [];
 
         function recursion(card) {
@@ -32,13 +31,13 @@ export class jsonHandler{
             }
         }
         dbService.getWhiteCard(getRandomInt(1, dbService.getWhiteCardSize()), recursion);
-    }
-    getNewBlackCard () {
+    },
+    getNewBlackCard: function () {
         dbService.getBlackCard(getRandomInt(1, dbService.getBlackCardSize()), function (blackCard) {
             blackCardSubject.next(blackCard);
         })
-    }
-    getNewWhiteCard (owner) {
+    },
+    getNewWhiteCard: function (owner) {
         dbService.getWhiteCard(getRandomInt(1, dbService.getBlackCardSize()), function (card) {
             var whiteCard = {
                 cardId: card.id,
@@ -48,4 +47,4 @@ export class jsonHandler{
             whiteCardSubject.next(whiteCard);
         })
     }
-}
+};
