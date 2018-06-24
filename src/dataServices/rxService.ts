@@ -4,14 +4,17 @@ var playerSubject = new Rx.Subject();
 var blackCardSubject = new Rx.Subject();
 var whiteCardSubject = new Rx.Subject();
 
-var self = module.exports = {
-    getPlayerSubject: function () {
-      return playerSubject
-    },
-    getBlackCardSubject: function () {
+export class rxService {
+
+    getPlayerSubject () {
+        return playerSubject
+    }
+    
+    getBlackCardSubject () {
         return blackCardSubject;
-    },
-    getWhiteCardSubject: function () {
+    }
+    
+    getWhiteCardSubject () {
         return whiteCardSubject;
     }
-};
+}

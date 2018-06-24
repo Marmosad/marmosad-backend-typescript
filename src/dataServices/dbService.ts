@@ -4,8 +4,9 @@ var whiteCardsSize = -1;
 var blackCardsSize = -1;
 var status = -1;
 var board = require('../board.js');
-var self = module.exports = {
-    start: function () {
+
+export class dbService {
+    start () {
         connection = mysql.createConnection({
             host: "35.203.14.127",
             user: "root",
@@ -28,25 +29,25 @@ var self = module.exports = {
                 });
             });
         });
-    },
-    getWhiteCard: function (id, callback) {
+    }
+    getWhiteCard(id, callback) {
         connection.query('SELECT * FROM whitecards WHERE id = ' + id, function (err, results, fields) {
             if (err) throw err;
             console.log("white card id is" + id);
             callback(results[0]);
         });
-    },
-    getBlackCard: function (id, callback) { //gets rand black card
+    }
+    getBlackCard (id, callback) { //gets rand black card
         connection.query('SELECT * FROM `blackcards` WHERE `﻿id`='+id, function (err, results, fields) {
             if (err) throw err;
             console.log("blackcard id is" + id);
             callback(results[0]);
         });
-    },
-    getWhiteCardSize: function () {
+    }
+    getWhiteCardSize () {
         return whiteCardsSize;
-    },
-    getBlackCardSize: function () {
+    }
+    getBlackCardSize () {
         return blackCardsSize;
     }
-};
+}

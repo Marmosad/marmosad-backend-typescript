@@ -2,8 +2,9 @@ import jsonHandler = require('./jsonHandler');
 import rxService = require('../dataServices/rxService');
 var playerSubject = rxService.getPlayerSubject();
 //rewrite as module in typescript
-var self = module.exports = {
-    createPlayer: function (playerName, socket, socketid) {
+
+export class playerHandler {
+    createPlayer (playerName, socket, socketid) {
         jsonHandler.createPlayer(function (hand) {
             playerSubject.next({
                 data: {
@@ -17,4 +18,4 @@ var self = module.exports = {
             });
         }, socketid);
     }
-};
+}

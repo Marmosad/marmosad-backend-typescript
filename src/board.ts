@@ -32,7 +32,7 @@ var boardData = {
         "players": []
     },
     INSTANCE_ID: -1,
-    generateInstanceId: function () {
+    generateInstanceId () {
         if(this.INSTANCE_ID === -1){
             this.INSTANCE_ID = Date.now();
             return this.INSTANCE_ID;
@@ -58,35 +58,35 @@ var whiteCardSubscription = rxService.getWhiteCardSubject().subscribe(function (
     self.updateCurrentDisplay();
 });
 
-var self = module.exports = {
-    initInstance: function (http) {
+export class board {
+    initInstance (http) {
         socketService.start(http);
         return boardData.generateInstanceId();
-    },
-    getPlayers: function () {
+    }
+    getPlayers () {
         return boardData.players;
-    },
-    getDisplay: function () {
+    }
+    getDisplay () {
         return boardData.display;
-    },
-    getInstanceId: function () {
+    }
+    getInstanceId () {
         return boardData.INSTANCE_ID;
-    },
-    setPlayers: function (players) {
+    }
+    setPlayers (players) {
         boardData.players = players;
-    },
-    setDisplay: function (display) {
+    }
+    setDisplay (display) {
         boardData.display = display;
-    },
-    getPlayerName: function (socketId) {
+    }
+    getPlayerName (socketId) {
         return boardData.players[socketId].data.playerName;
-    },
-    joinedPlayer: function (playerName, socket, socketid) {
+    }
+    joinedPlayer (playerName, socket, socketid) {
         console.log(playerName);
         playerHandler.createPlayer(playerName, socket, socketid);
         this.updatePlayersInDisplay();
-    },
-    removePlayer: function (playerId) {
+    }
+    removePlayer (playerId) {
         isLimitReached = false;
         if(boardData.players[playerId]){
             boardData.players[playerId].socket.disconnect(true);
@@ -94,8 +94,8 @@ var self = module.exports = {
         delete boardData.players[playerId];
         this.updatePlayersInDisplay();
         this.updateCurrentDisplay();
-    },
-    startGame: function () {
+    }
+    startGame () {
         if(boardData.phase !== boardData.Phases.startGame){
             return false;
         }
@@ -105,8 +105,8 @@ var self = module.exports = {
         this.updatePlayersInDisplay();
         boardData.phase = boardData.Phases.submission;
         this.updateCurrentDisplay();
-    },
-    submission: function (whiteCard) {
+    }
+    submission (whiteCard) {
         if (boardData.phase !== boardData.Phases.submission) {
             console.log('submission failed because incorrect phase');
             return false;
@@ -132,16 +132,16 @@ var self = module.exports = {
             // console.log('this.display.submissions.length >= Object.keys(this.players).length - 1');
         }
         return true; //error handling maybe? Can't hurt
-    },
-    judgement: function (whiteCard) {
+    }
+    judgement (whiteCard) {
         if (boardData.phase !== boardData.Phases.judgement) {
             return false;
         }
         boardData.phase = boardData.Phases.updateScore;
         this.updateScore(whiteCard.owner);
         return true;
-    },
-    updateScore: function (playerId) {
+    }
+    updateScore (playerId) {
         if (boardData.phase !== boardData.Phases.updateScore) {
             return false;
         }
@@ -156,8 +156,8 @@ var self = module.exports = {
             this.phase4();
         }
         return true;
-    },
-    phase4: function () {
+    }
+    phase4 () {
         if (boardData.phase !== boardData.Phases.four) {
             return false;
         }
@@ -193,14 +193,14 @@ var self = module.exports = {
         boardData.phase = boardData.Phases.submission;
         console.log('here I am ' + boardData.phase);
         return true;
-    },
-    endGame: function (playerId) {
+    }
+    endGame (playerId) {
       socketService.emit('result', playerId);
       setTimeout(function () {
         socketService.emit('reset', null)
       }, 3000)
-    },
-    reset: function () {
+    }
+    reset () {
         boardData.phase = 0;
         boardData.players = {};
         boardData.display = {
@@ -210,11 +210,11 @@ var self = module.exports = {
             "players": []
         };
         this.updateCurrentDisplay();
-    },
-    updateCurrentDisplay: function () {
+    }
+    updateCurrentDisplay () {
         socketService.emit('updateDisplay', this.getDisplay());
-    },
-    updatePlayersInDisplay: function () {
+    }
+    updatePlayersInDisplay () {
         boardData.display.players = [];
         for (var i = 0; i < Object.keys(boardData.players).length; i++) {
             if (Object.keys(boardData.players).length == 3) {
@@ -222,11 +222,11 @@ var self = module.exports = {
             }
             boardData.display.players.push(boardData.players[Object.keys(boardData.players)[i]].data);
         }
-    },//Decided to implement this as a function in the end cuz prior approach would only update display at user join time.
+    }//Decided to implement this as a function in the end cuz prior approach would only update display at user join time.
     isLimitReached() {
         return isLimitReached;
     }
-};
+}
 
 
 // var instance;
@@ -256,11 +256,11 @@ var self = module.exports = {
 //                 "players": []
 //             },
 //
-//             getDisplay: function () {
+//             getDisplay () {
 //                 return this.display;
 //             },
 //
-//             joinPlayer: function (player, playerId) {
+//             joinPlayer (player, playerId) {
 //                 this.players[playerId] = player;
 //                 this.display.players.push(player.data);
 //                 this.updateCurrentDisplay();
@@ -268,11 +268,11 @@ var self = module.exports = {
 //
 //             instanceNumber: Math.random(),
 //
-//             getPlayerName: function (socketId) {
+//             getPlayerName (socketId) {
 //                 return this.players[socketId].data.playerName;
 //             },
 //
-//             removePlayer: function (playerId) {
+//             removePlayer (playerId) {
 //                 this.players[playerId].socket.disconnect(true);
 //                 delete this.players[playerId];
 //                 console.log(Object.keys(this.players).length + ' is left in the game');
@@ -280,7 +280,7 @@ var self = module.exports = {
 //                 this.updateCurrentDisplay();
 //             },
 //
-//             startGame: function () {
+//             startGame () {
 //                 var display = this.display;
 //                 var self = this;
 //                 jsonHandler.createBlackCard(function (card) {
@@ -296,7 +296,7 @@ var self = module.exports = {
 //                 //console.log(this.display);
 //             },
 //
-//             submission: function (whiteCard) {
+//             submission (whiteCard) {
 //                 if (this.phase !== this.Phases.submission) {
 //                     console.log(this.phase);
 //                     return false;
@@ -319,7 +319,7 @@ var self = module.exports = {
 //                 return true; //error handling maybe? Can't hurt
 //             },
 //
-//             judgement: function (whiteCard) {
+//             judgement (whiteCard) {
 //                 if (this.phase !== this.Phases.judgement) {
 //                     return false;
 //                 }
@@ -328,7 +328,7 @@ var self = module.exports = {
 //                 return true;
 //             },
 //
-//             updateScore: function (playerId) {
+//             updateScore (playerId) {
 //                 if (this.phase !== this.Phases.updateScore) {
 //                     return false;
 //                 }
@@ -345,7 +345,7 @@ var self = module.exports = {
 //                 return true;
 //             },
 //
-//             phase4: function () {
+//             phase4 () {
 //                 if (this.phase !== this.Phases.four) {
 //                     return false;
 //                 }
@@ -392,7 +392,7 @@ var self = module.exports = {
 //                 return true;
 //             },
 //
-//             updatePlayersInDisplay: function () {
+//             updatePlayersInDisplay () {
 //                 this.display.players = [];
 //                 for (var i = 0; i < Object.keys(this.players).length; i++) {
 //                     this.display.players.push(this.players[Object.keys(this.players)[i]].data);
@@ -400,23 +400,23 @@ var self = module.exports = {
 //                 }
 //             },
 //
-//             updateCurrentDisplay: function () {
+//             updateCurrentDisplay () {
 //                 io.emit('updateDisplay', this.getDisplay());
 //             }, //Decided to implement this as a function in the end cuz prior approach would only update display at user join time.
 //
-//             findPlayerInDisplay: function (playerId) {
+//             findPlayerInDisplay (playerId) {
 //                 return this.display.players.findIndex(function (value) {
 //                         return (value.playerId === playerId);
 //                     }
 //                 )
 //             },
 //
-//             endGame: function (winnerID) {
+//             endGame (winnerID) {
 //                 console.log(this.players[winnerID].name + ' won!')
 //                 this.reset();
 //             },
 //
-//             reset: function () {
+//             reset () {
 //                 this.phase = 0;
 //                 this.players = {};
 //                 this.display = {
