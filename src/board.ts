@@ -1,7 +1,7 @@
-import playerHandler = require('./handlers/playerHandler');
-import socketService = require('./dataServices/socketService');
-import rxService = require('./dataServices/rxService');
-import jsonHandler = require('./handlers/jsonHandler');
+import * as playerHandler from './handlers/playerHandler'
+import * as socketService from './dataServices/socketService'
+import * as rxService from './dataServices/rxService'
+import * as jsonHandler from './handlers/jsonHandler'
 import stringify = require('json-stringify-safe');
 var MAX_SCORE = 4;
 import events = require('events');
@@ -32,7 +32,7 @@ var boardData = {
         "players": []
     },
     INSTANCE_ID: -1,
-    generateInstanceId () {
+    generateInstanceId: function () {
         if(this.INSTANCE_ID === -1){
             this.INSTANCE_ID = Date.now();
             return this.INSTANCE_ID;
@@ -58,35 +58,35 @@ var whiteCardSubscription = rxService.getWhiteCardSubject().subscribe(function (
     self.updateCurrentDisplay();
 });
 
-export class board {
-    initInstance (http) {
+module.exports = {
+    initInstance: function (http) {
         socketService.start(http);
         return boardData.generateInstanceId();
-    }
-    getPlayers () {
+    },
+    getPlayers: function () {
         return boardData.players;
-    }
-    getDisplay () {
+    },
+    getDisplay: function () {
         return boardData.display;
-    }
-    getInstanceId () {
+    },
+    getInstanceId: function () {
         return boardData.INSTANCE_ID;
-    }
-    setPlayers (players) {
+    },
+    setPlayers: function (players) {
         boardData.players = players;
-    }
-    setDisplay (display) {
+    },
+    setDisplay: function (display) {
         boardData.display = display;
-    }
-    getPlayerName (socketId) {
+    },
+    getPlayerName: function (socketId) {
         return boardData.players[socketId].data.playerName;
-    }
-    joinedPlayer (playerName, socket, socketid) {
+    },
+    joinedPlayer: function (playerName, socket, socketid) {
         console.log(playerName);
         playerHandler.createPlayer(playerName, socket, socketid);
         this.updatePlayersInDisplay();
-    }
-    removePlayer (playerId) {
+    },
+    removePlayer: function (playerId) {
         isLimitReached = false;
         if(boardData.players[playerId]){
             boardData.players[playerId].socket.disconnect(true);
@@ -94,8 +94,8 @@ export class board {
         delete boardData.players[playerId];
         this.updatePlayersInDisplay();
         this.updateCurrentDisplay();
-    }
-    startGame () {
+    },
+    startGame: function () {
         if(boardData.phase !== boardData.Phases.startGame){
             return false;
         }
@@ -105,8 +105,8 @@ export class board {
         this.updatePlayersInDisplay();
         boardData.phase = boardData.Phases.submission;
         this.updateCurrentDisplay();
-    }
-    submission (whiteCard) {
+    },
+    submission: function (whiteCard) {
         if (boardData.phase !== boardData.Phases.submission) {
             console.log('submission failed because incorrect phase');
             return false;
@@ -132,16 +132,16 @@ export class board {
             // console.log('this.display.submissions.length >= Object.keys(this.players).length - 1');
         }
         return true; //error handling maybe? Can't hurt
-    }
-    judgement (whiteCard) {
+    },
+    judgement: function (whiteCard) {
         if (boardData.phase !== boardData.Phases.judgement) {
             return false;
         }
         boardData.phase = boardData.Phases.updateScore;
         this.updateScore(whiteCard.owner);
         return true;
-    }
-    updateScore (playerId) {
+    },
+    updateScore: function (playerId) {
         if (boardData.phase !== boardData.Phases.updateScore) {
             return false;
         }
@@ -156,8 +156,8 @@ export class board {
             this.phase4();
         }
         return true;
-    }
-    phase4 () {
+    },
+    phase4: function () {
         if (boardData.phase !== boardData.Phases.four) {
             return false;
         }
@@ -193,14 +193,14 @@ export class board {
         boardData.phase = boardData.Phases.submission;
         console.log('here I am ' + boardData.phase);
         return true;
-    }
-    endGame (playerId) {
+    },
+    endGame: function (playerId) {
       socketService.emit('result', playerId);
       setTimeout(function () {
         socketService.emit('reset', null)
       }, 3000)
-    }
-    reset () {
+    },
+    reset: function () {
         boardData.phase = 0;
         boardData.players = {};
         boardData.display = {
@@ -210,11 +210,11 @@ export class board {
             "players": []
         };
         this.updateCurrentDisplay();
-    }
-    updateCurrentDisplay () {
+    },
+    updateCurrentDisplay: function () {
         socketService.emit('updateDisplay', this.getDisplay());
-    }
-    updatePlayersInDisplay () {
+    },
+    updatePlayersInDisplay: function () {
         boardData.display.players = [];
         for (var i = 0; i < Object.keys(boardData.players).length; i++) {
             if (Object.keys(boardData.players).length == 3) {
@@ -222,11 +222,11 @@ export class board {
             }
             boardData.display.players.push(boardData.players[Object.keys(boardData.players)[i]].data);
         }
-    }//Decided to implement this as a function in the end cuz prior approach would only update display at user join time.
+    },//Decided to implement this as a function in the end cuz prior approach would only update display at user join time.
     isLimitReached() {
         return isLimitReached;
     }
-}
+};
 
 
 // var instance;
@@ -256,11 +256,11 @@ export class board {
 //                 "players": []
 //             },
 //
-//             getDisplay () {
+//             getDisplay: function () {
 //                 return this.display;
 //             },
 //
-//             joinPlayer (player, playerId) {
+//             joinPlayer: function (player, playerId) {
 //                 this.players[playerId] = player;
 //                 this.display.players.push(player.data);
 //                 this.updateCurrentDisplay();
@@ -268,11 +268,11 @@ export class board {
 //
 //             instanceNumber: Math.random(),
 //
-//             getPlayerName (socketId) {
+//             getPlayerName: function (socketId) {
 //                 return this.players[socketId].data.playerName;
 //             },
 //
-//             removePlayer (playerId) {
+//             removePlayer: function (playerId) {
 //                 this.players[playerId].socket.disconnect(true);
 //                 delete this.players[playerId];
 //                 console.log(Object.keys(this.players).length + ' is left in the game');
@@ -280,7 +280,7 @@ export class board {
 //                 this.updateCurrentDisplay();
 //             },
 //
-//             startGame () {
+//             startGame: function () {
 //                 var display = this.display;
 //                 var self = this;
 //                 jsonHandler.createBlackCard(function (card) {
@@ -296,7 +296,7 @@ export class board {
 //                 //console.log(this.display);
 //             },
 //
-//             submission (whiteCard) {
+//             submission: function (whiteCard) {
 //                 if (this.phase !== this.Phases.submission) {
 //                     console.log(this.phase);
 //                     return false;
@@ -319,7 +319,7 @@ export class board {
 //                 return true; //error handling maybe? Can't hurt
 //             },
 //
-//             judgement (whiteCard) {
+//             judgement: function (whiteCard) {
 //                 if (this.phase !== this.Phases.judgement) {
 //                     return false;
 //                 }
@@ -328,7 +328,7 @@ export class board {
 //                 return true;
 //             },
 //
-//             updateScore (playerId) {
+//             updateScore: function (playerId) {
 //                 if (this.phase !== this.Phases.updateScore) {
 //                     return false;
 //                 }
@@ -345,7 +345,7 @@ export class board {
 //                 return true;
 //             },
 //
-//             phase4 () {
+//             phase4: function () {
 //                 if (this.phase !== this.Phases.four) {
 //                     return false;
 //                 }
@@ -392,7 +392,7 @@ export class board {
 //                 return true;
 //             },
 //
-//             updatePlayersInDisplay () {
+//             updatePlayersInDisplay: function () {
 //                 this.display.players = [];
 //                 for (var i = 0; i < Object.keys(this.players).length; i++) {
 //                     this.display.players.push(this.players[Object.keys(this.players)[i]].data);
@@ -400,23 +400,23 @@ export class board {
 //                 }
 //             },
 //
-//             updateCurrentDisplay () {
+//             updateCurrentDisplay: function () {
 //                 io.emit('updateDisplay', this.getDisplay());
 //             }, //Decided to implement this as a function in the end cuz prior approach would only update display at user join time.
 //
-//             findPlayerInDisplay (playerId) {
+//             findPlayerInDisplay: function (playerId) {
 //                 return this.display.players.findIndex(function (value) {
 //                         return (value.playerId === playerId);
 //                     }
 //                 )
 //             },
 //
-//             endGame (winnerID) {
+//             endGame: function (winnerID) {
 //                 console.log(this.players[winnerID].name + ' won!')
 //                 this.reset();
 //             },
 //
-//             reset () {
+//             reset: function () {
 //                 this.phase = 0;
 //                 this.players = {};
 //                 this.display = {
