@@ -21,5 +21,5 @@ http.listen(8081, function () {
     console.log('listening on *: 8081');
 });
 
-import board from './built/board';
+import board from './src/board';
 console.log(board.initInstance(http));
