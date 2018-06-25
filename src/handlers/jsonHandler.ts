@@ -1,9 +1,9 @@
-dbService = require('../dataServices/dbService');
+import dbService from '../dataServices/dbService';
 dbService.start();
-var rxService = require('../dataServices/rxService');
+import rxService from '../dataServices/rxService';
 var playerSubject = rxService.getPlayerSubject();
-var blackCardSubject = rxService.getBlackCardSubject();
 var whiteCardSubject = rxService.getWhiteCardSubject();
+var blackCardSubject = rxService.getBlackCardSubject();
 
 function getRandomInt(min, max) {
     var retval = Math.floor(Math.random() * (max - min + 1)) + min;

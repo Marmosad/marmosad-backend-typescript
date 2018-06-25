@@ -1,7 +1,8 @@
 import express = require('express');
 var app = express();
-import http = require('http');
-var http = new http().Server(app);
+import * as httpClass from 'http';
+//@ts-ignore
+var http = httpClass.Server(app);
 
 import path = require('path'); //was const var
 app.use(express.static(path.join(__dirname, 'dist')));
@@ -20,5 +21,5 @@ http.listen(8081, function () {
     console.log('listening on *: 8081');
 });
 
-var board = require('./src/board');
+import board from './built/board';
 console.log(board.initInstance(http));

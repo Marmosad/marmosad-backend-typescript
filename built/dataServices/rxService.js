@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Rx = require('rxjs');
-var board = require('../board.js');
 var playerSubject = new Rx.Subject();
 var blackCardSubject = new Rx.Subject();
 var whiteCardSubject = new Rx.Subject();
