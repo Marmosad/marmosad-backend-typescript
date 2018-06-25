@@ -12,7 +12,7 @@ function getRandomInt(min, max) {
     }
     return retval;
 }
-export class jsonHandler{
+class jsonHandler{
     createPlayer (callback, playerId) {
         var hand = [];
 
@@ -48,3 +48,5 @@ export class jsonHandler{
         })
     }
 }
+
+export default new jsonHandler();

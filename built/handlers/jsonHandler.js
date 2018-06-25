@@ -1,3 +1,5 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 dbService = require('../dataServices/dbService');
 dbService.start();
 var rxService = require('../dataServices/rxService');
@@ -11,8 +13,10 @@ function getRandomInt(min, max) {
     }
     return retval;
 }
-var self = module.exports = {
-    createPlayer: function (callback, playerId) {
+var jsonHandler = /** @class */ (function () {
+    function jsonHandler() {
+    }
+    jsonHandler.prototype.createPlayer = function (callback, playerId) {
         var hand = [];
         function recursion(card) {
             var whiteCard = {
@@ -30,13 +34,13 @@ var self = module.exports = {
             }
         }
         dbService.getWhiteCard(getRandomInt(1, dbService.getWhiteCardSize()), recursion);
-    },
-    getNewBlackCard: function () {
+    };
+    jsonHandler.prototype.getNewBlackCard = function () {
         dbService.getBlackCard(getRandomInt(1, dbService.getBlackCardSize()), function (blackCard) {
             blackCardSubject.next(blackCard);
         });
-    },
-    getNewWhiteCard: function (owner) {
+    };
+    jsonHandler.prototype.getNewWhiteCard = function (owner) {
         dbService.getWhiteCard(getRandomInt(1, dbService.getBlackCardSize()), function (card) {
             var whiteCard = {
                 cardId: card.id,
@@ -45,5 +49,7 @@ var self = module.exports = {
             };
             whiteCardSubject.next(whiteCard);
         });
-    }
-};
+    };
+    return jsonHandler;
+}());
+exports.default = new jsonHandler();

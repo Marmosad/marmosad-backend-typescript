@@ -41,48 +41,50 @@ var boardData = {
 };
 var playerSubscription = rxService.getPlayerSubject().subscribe(function (player) {
     boardData.players[player.data.playerId] = player;
-    self.updatePlayersInDisplay();
-    self.updateCurrentDisplay();
+    this.updatePlayersInDisplay();
+    this.updateCurrentDisplay();
 });
 var blackCardSubscription = rxService.getBlackCardSubject().subscribe(function (blackCard) {
     boardData.display.blackCard = blackCard;
-    self.updatePlayersInDisplay();
-    self.updateCurrentDisplay();
+    this.updatePlayersInDisplay();
+    this.updateCurrentDisplay();
 });
 var whiteCardSubscription = rxService.getWhiteCardSubject().subscribe(function (whiteCard) {
     boardData.players[whiteCard.owner].data.hand.push(whiteCard);
-    self.updatePlayersInDisplay();
-    self.updateCurrentDisplay();
+    this.updatePlayersInDisplay();
+    this.updateCurrentDisplay();
 });
-var self = module.exports = {
-    initInstance: function (http) {
+var board = /** @class */ (function () {
+    function board() {
+    }
+    board.prototype.initInstance = function (http) {
         socketService.start(http);
         return boardData.generateInstanceId();
-    },
-    getPlayers: function () {
+    };
+    board.prototype.getPlayers = function () {
         return boardData.players;
-    },
-    getDisplay: function () {
+    };
+    board.prototype.getDisplay = function () {
         return boardData.display;
-    },
-    getInstanceId: function () {
+    };
+    board.prototype.getInstanceId = function () {
         return boardData.INSTANCE_ID;
-    },
-    setPlayers: function (players) {
+    };
+    board.prototype.setPlayers = function (players) {
         boardData.players = players;
-    },
-    setDisplay: function (display) {
+    };
+    board.prototype.setDisplay = function (display) {
         boardData.display = display;
-    },
-    getPlayerName: function (socketId) {
+    };
+    board.prototype.getPlayerName = function (socketId) {
         return boardData.players[socketId].data.playerName;
-    },
-    joinedPlayer: function (playerName, socket, socketid) {
+    };
+    board.prototype.joinedPlayer = function (playerName, socket, socketid) {
         console.log(playerName);
         playerHandler.createPlayer(playerName, socket, socketid);
         this.updatePlayersInDisplay();
-    },
-    removePlayer: function (playerId) {
+    };
+    board.prototype.removePlayer = function (playerId) {
         isLimitReached = false;
         if (boardData.players[playerId]) {
             boardData.players[playerId].socket.disconnect(true);
@@ -90,8 +92,8 @@ var self = module.exports = {
         delete boardData.players[playerId];
         this.updatePlayersInDisplay();
         this.updateCurrentDisplay();
-    },
-    startGame: function () {
+    };
+    board.prototype.startGame = function () {
         if (boardData.phase !== boardData.Phases.startGame) {
             return false;
         }
@@ -101,8 +103,8 @@ var self = module.exports = {
         this.updatePlayersInDisplay();
         boardData.phase = boardData.Phases.submission;
         this.updateCurrentDisplay();
-    },
-    submission: function (whiteCard) {
+    };
+    board.prototype.submission = function (whiteCard) {
         if (boardData.phase !== boardData.Phases.submission) {
             console.log('submission failed because incorrect phase');
             return false;
@@ -128,16 +130,16 @@ var self = module.exports = {
             // console.log('this.display.submissions.length >= Object.keys(this.players).length - 1');
         }
         return true; //error handling maybe? Can't hurt
-    },
-    judgement: function (whiteCard) {
+    };
+    board.prototype.judgement = function (whiteCard) {
         if (boardData.phase !== boardData.Phases.judgement) {
             return false;
         }
         boardData.phase = boardData.Phases.updateScore;
         this.updateScore(whiteCard.owner);
         return true;
-    },
-    updateScore: function (playerId) {
+    };
+    board.prototype.updateScore = function (playerId) {
         if (boardData.phase !== boardData.Phases.updateScore) {
             return false;
         }
@@ -152,8 +154,8 @@ var self = module.exports = {
             this.phase4();
         }
         return true;
-    },
-    phase4: function () {
+    };
+    board.prototype.phase4 = function () {
         if (boardData.phase !== boardData.Phases.four) {
             return false;
         }
@@ -184,14 +186,14 @@ var self = module.exports = {
         boardData.phase = boardData.Phases.submission;
         console.log('here I am ' + boardData.phase);
         return true;
-    },
-    endGame: function (playerId) {
+    };
+    board.prototype.endGame = function (playerId) {
         socketService.emit('result', playerId);
         setTimeout(function () {
             socketService.emit('reset', null);
         }, 3000);
-    },
-    reset: function () {
+    };
+    board.prototype.reset = function () {
         boardData.phase = 0;
         boardData.players = {};
         boardData.display = {
@@ -201,11 +203,11 @@ var self = module.exports = {
             "players": []
         };
         this.updateCurrentDisplay();
-    },
-    updateCurrentDisplay: function () {
+    };
+    board.prototype.updateCurrentDisplay = function () {
         socketService.emit('updateDisplay', this.getDisplay());
-    },
-    updatePlayersInDisplay: function () {
+    };
+    board.prototype.updatePlayersInDisplay = function () {
         boardData.display.players = [];
         for (var i = 0; i < Object.keys(boardData.players).length; i++) {
             if (Object.keys(boardData.players).length == 3) {
@@ -213,11 +215,13 @@ var self = module.exports = {
             }
             boardData.display.players.push(boardData.players[Object.keys(boardData.players)[i]].data);
         }
-    },
-    isLimitReached: function () {
+    }; //Decided to implement this as a function in the end cuz prior approach would only update display at user join time.
+    board.prototype.isLimitReached = function () {
         return isLimitReached;
-    }
-};
+    };
+    return board;
+}());
+exports.board = board;
 // var instance;
 // var jsonHandler = require('../api/jsonHandler.ts');
 // var io = require('../services/socketService.ts')().io;
@@ -271,11 +275,11 @@ var self = module.exports = {
 //
 //             startGame: function () {
 //                 var display = this.display;
-//                 var self = this;
+//                 var this = this;
 //                 jsonHandler.createBlackCard(function (card) {
 //                     display.blackCard = card;
-//                     self.updatePlayersInDisplay();
-//                     self.updateCurrentDisplay();
+//                     this.updatePlayersInDisplay();
+//                     this.updateCurrentDisplay();
 //                 });
 //                 this.players[Object.keys(this.players)[0]].data.isJudge = true;
 //                 this.display.currentJudge = this.players[Object.keys(this.players)[0]].data.playerId;
@@ -341,11 +345,11 @@ var self = module.exports = {
 //
 //                 // Adds a new black card to current display
 //                 var display = this.display;
-//                 var self = this;
+//                 var this = this;
 //                 jsonHandler.createBlackCard(function (card) {
 //                     display.blackCard = card;
-//                     self.updatePlayersInDisplay();
-//                     self.updateCurrentDisplay();
+//                     this.updatePlayersInDisplay();
+//                     this.updateCurrentDisplay();
 //                 });
 //
 //                 // Adds a new white card to each hand
@@ -358,7 +362,7 @@ var self = module.exports = {
 //                     if (key !== this.display.currentJudge) {
 //                         console.log(key);
 //                         jsonHandler.createWhiteCard(key, function (card) {
-//                             self.players[keys].data.hand.push();
+//                             this.players[keys].data.hand.push();
 //                         });
 //                     }
 //                 }

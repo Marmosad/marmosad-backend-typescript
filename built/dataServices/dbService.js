@@ -1,11 +1,15 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var mysql = require('mysql');
 var connection;
 var whiteCardsSize = -1;
 var blackCardsSize = -1;
 var status = -1;
 var board = require('../board.js');
-var self = module.exports = {
-    start: function () {
+var dbService = /** @class */ (function () {
+    function dbService() {
+    }
+    dbService.prototype.start = function () {
         connection = mysql.createConnection({
             host: "35.203.14.127",
             user: "root",
@@ -30,27 +34,29 @@ var self = module.exports = {
                 });
             });
         });
-    },
-    getWhiteCard: function (id, callback) {
+    };
+    dbService.prototype.getWhiteCard = function (id, callback) {
         connection.query('SELECT * FROM whitecards WHERE id = ' + id, function (err, results, fields) {
             if (err)
                 throw err;
             console.log("white card id is" + id);
             callback(results[0]);
         });
-    },
-    getBlackCard: function (id, callback) {
+    };
+    dbService.prototype.getBlackCard = function (id, callback) {
         connection.query('SELECT * FROM `blackcards` WHERE `﻿id`=' + id, function (err, results, fields) {
             if (err)
                 throw err;
             console.log("blackcard id is" + id);
             callback(results[0]);
         });
-    },
-    getWhiteCardSize: function () {
+    };
+    dbService.prototype.getWhiteCardSize = function () {
         return whiteCardsSize;
-    },
-    getBlackCardSize: function () {
+    };
+    dbService.prototype.getBlackCardSize = function () {
         return blackCardsSize;
-    }
-};
+    };
+    return dbService;
+}());
+exports.default = new dbService();

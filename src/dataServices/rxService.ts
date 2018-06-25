@@ -4,7 +4,7 @@ var playerSubject = new Rx.Subject();
 var blackCardSubject = new Rx.Subject();
 var whiteCardSubject = new Rx.Subject();
 
-export class rxService {
+class rxService {
 
     getPlayerSubject () {
         return playerSubject
@@ -18,3 +18,5 @@ export class rxService {
         return whiteCardSubject;
     }
 }
+
+export default new rxService();

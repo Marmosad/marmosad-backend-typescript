@@ -1,4 +1,20 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var io = null;
+var socketService = /** @class */ (function () {
+    function socketService() {
+    }
+    socketService.prototype.start = function (http) {
+        io = require('socket.io')(http);
+        io.on('connection', function (socket) {
+            setupSocket(socket);
+        });
+    };
+    socketService.prototype.emit = function (a, b) {
+        io.emit(a, b);
+    };
+    return socketService;
+}());
 function setupSocket(socket) {
     var chatHandler = require('../handlers/chatHandler');
     var board = require('../board');
@@ -30,14 +46,4 @@ function setupSocket(socket) {
         board.judgement(card); // TODO why does this count as a submission
     });
 }
-var self = module.exports = {
-    start: function (http) {
-        io = require('socket.io')(http);
-        io.on('connection', function (socket) {
-            setupSocket(socket);
-        });
-    },
-    emit: function (a, b) {
-        io.emit(a, b);
-    }
-};
+exports.default = new socketService();

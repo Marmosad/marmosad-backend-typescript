@@ -42,20 +42,20 @@ var boardData = {
 };
 var playerSubscription = rxService.getPlayerSubject().subscribe(function (player) {
     boardData.players[player.data.playerId] = player;
-    self.updatePlayersInDisplay();
-    self.updateCurrentDisplay();
+    this.updatePlayersInDisplay();
+    this.updateCurrentDisplay();
 });
 
 var blackCardSubscription = rxService.getBlackCardSubject().subscribe(function (blackCard) {
    boardData.display.blackCard = blackCard;
-    self.updatePlayersInDisplay();
-    self.updateCurrentDisplay();
+    this.updatePlayersInDisplay();
+    this.updateCurrentDisplay();
 });
 
 var whiteCardSubscription = rxService.getWhiteCardSubject().subscribe(function (whiteCard) {
     boardData.players[whiteCard.owner].data.hand.push(whiteCard);
-    self.updatePlayersInDisplay();
-    self.updateCurrentDisplay();
+    this.updatePlayersInDisplay();
+    this.updateCurrentDisplay();
 });
 
 export class board {
@@ -282,11 +282,11 @@ export class board {
 //
 //             startGame: function () {
 //                 var display = this.display;
-//                 var self = this;
+//                 var this = this;
 //                 jsonHandler.createBlackCard(function (card) {
 //                     display.blackCard = card;
-//                     self.updatePlayersInDisplay();
-//                     self.updateCurrentDisplay();
+//                     this.updatePlayersInDisplay();
+//                     this.updateCurrentDisplay();
 //                 });
 //                 this.players[Object.keys(this.players)[0]].data.isJudge = true;
 //                 this.display.currentJudge = this.players[Object.keys(this.players)[0]].data.playerId;
@@ -352,11 +352,11 @@ export class board {
 //
 //                 // Adds a new black card to current display
 //                 var display = this.display;
-//                 var self = this;
+//                 var this = this;
 //                 jsonHandler.createBlackCard(function (card) {
 //                     display.blackCard = card;
-//                     self.updatePlayersInDisplay();
-//                     self.updateCurrentDisplay();
+//                     this.updatePlayersInDisplay();
+//                     this.updateCurrentDisplay();
 //                 });
 //
 //                 // Adds a new white card to each hand
@@ -369,7 +369,7 @@ export class board {
 //                     if (key !== this.display.currentJudge) {
 //                         console.log(key);
 //                         jsonHandler.createWhiteCard(key, function (card) {
-//                             self.players[keys].data.hand.push();
+//                             this.players[keys].data.hand.push();
 //                         });
 //                     }
 //                 }

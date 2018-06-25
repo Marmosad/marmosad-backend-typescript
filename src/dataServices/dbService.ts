@@ -5,7 +5,7 @@ var blackCardsSize = -1;
 var status = -1;
 var board = require('../board.js');
 
-export class dbService {
+class dbService {
     start () {
         connection = mysql.createConnection({
             host: "35.203.14.127",
@@ -51,3 +51,5 @@ export class dbService {
         return blackCardsSize;
     }
 }
+
+export default new dbService();

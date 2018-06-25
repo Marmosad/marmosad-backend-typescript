@@ -1,6 +1,6 @@
 var io = null;
 
-export class socketService{
+class socketService{
     start(http) {
         io = require('socket.io')(http);
         io.on('connection', function (socket) {
@@ -43,3 +43,5 @@ function setupSocket(socket){
         board.judgement(card); // TODO why does this count as a submission
     });
 }
+
+export default new socketService();
