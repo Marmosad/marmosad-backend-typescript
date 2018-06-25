@@ -42,23 +42,23 @@ var boardData = {
 };
 var playerSubscription = rxService.getPlayerSubject().subscribe(function (player) {
     boardData.players[player.data.playerId] = player;
-    self.updatePlayersInDisplay();
-    self.updateCurrentDisplay();
+    boardInstance.updatePlayersInDisplay();
+    boardInstance.updateCurrentDisplay();
 });
 
 var blackCardSubscription = rxService.getBlackCardSubject().subscribe(function (blackCard) {
-   boardData.display.blackCard = blackCard;
-    self.updatePlayersInDisplay();
-    self.updateCurrentDisplay();
+    boardData.display.blackCard = blackCard;
+    boardInstance.updatePlayersInDisplay();
+    boardInstance.updateCurrentDisplay();
 });
 
 var whiteCardSubscription = rxService.getWhiteCardSubject().subscribe(function (whiteCard) {
     boardData.players[whiteCard.owner].data.hand.push(whiteCard);
-    self.updatePlayersInDisplay();
-    self.updateCurrentDisplay();
+    boardInstance.updatePlayersInDisplay();
+    boardInstance.updateCurrentDisplay();
 });
 
-export class board {
+class board {
     initInstance (http) {
         socketService.start(http);
         return boardData.generateInstanceId();
@@ -228,6 +228,8 @@ export class board {
     }
 }
 
+let boardInstance = new board();
+export default boardInstance;
 
 // var instance;
 // var jsonHandler = require('../api/jsonHandler.ts');
