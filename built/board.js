@@ -41,18 +41,18 @@ var boardData = {
 };
 var playerSubscription = rxService.getPlayerSubject().subscribe(function (player) {
     boardData.players[player.data.playerId] = player;
-    this.updatePlayersInDisplay();
-    this.updateCurrentDisplay();
+    boardInstance.updatePlayersInDisplay();
+    boardInstance.updateCurrentDisplay();
 });
 var blackCardSubscription = rxService.getBlackCardSubject().subscribe(function (blackCard) {
     boardData.display.blackCard = blackCard;
-    this.updatePlayersInDisplay();
-    this.updateCurrentDisplay();
+    boardInstance.updatePlayersInDisplay();
+    boardInstance.updateCurrentDisplay();
 });
 var whiteCardSubscription = rxService.getWhiteCardSubject().subscribe(function (whiteCard) {
     boardData.players[whiteCard.owner].data.hand.push(whiteCard);
-    this.updatePlayersInDisplay();
-    this.updateCurrentDisplay();
+    boardInstance.updatePlayersInDisplay();
+    boardInstance.updateCurrentDisplay();
 });
 var board = /** @class */ (function () {
     function board() {
@@ -221,7 +221,8 @@ var board = /** @class */ (function () {
     };
     return board;
 }());
-exports.board = board;
+var boardInstance = new board();
+exports.default = boardInstance;
 // var instance;
 // var jsonHandler = require('../api/jsonHandler.ts');
 // var io = require('../services/socketService.ts')().io;
