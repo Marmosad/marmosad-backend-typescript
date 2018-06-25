@@ -1,6 +1,7 @@
 import express = require('express');
 var app = express();
-import http = require('http').Server(app);
+import http = require('http');
+var http = new http().Server(app);
 
 import path = require('path'); //was const var
 app.use(express.static(path.join(__dirname, 'dist')));

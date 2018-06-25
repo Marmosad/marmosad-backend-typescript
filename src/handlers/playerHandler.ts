@@ -1,5 +1,5 @@
-import * as jsonHandler from './jsonHandler'
-import * as rxService from '../dataServices/rxService'
+import jsonHandler from './jsonHandler'
+import rxService from '../dataServices/rxService'
 var playerSubject = rxService.getPlayerSubject()
 //rewrite as module in typescript
 class playerHandler {

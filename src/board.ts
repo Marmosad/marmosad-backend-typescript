@@ -1,7 +1,7 @@
-import * as playerHandler from './handlers/playerHandler'
-import * as socketService from './dataServices/socketService'
-import * as rxService from './dataServices/rxService'
-import * as jsonHandler from './handlers/jsonHandler'
+import playerHandler from './handlers/playerHandler'
+import socketService from './dataServices/socketService'
+import rxService from './dataServices/rxService'
+import jsonHandler from './handlers/jsonHandler'
 import stringify = require('json-stringify-safe');
 var MAX_SCORE = 4;
 import events = require('events');

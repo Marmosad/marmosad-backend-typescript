@@ -1,14 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var jsonHandler = require("./jsonHandler");
-var rxService = require("../dataServices/rxService");
-var playerSubject = rxService.getPlayerSubject();
+var jsonHandler_1 = require("./jsonHandler");
+var rxService_1 = require("../dataServices/rxService");
+var playerSubject = rxService_1.default.getPlayerSubject();
 //rewrite as module in typescript
 var playerHandler = /** @class */ (function () {
     function playerHandler() {
     }
     playerHandler.prototype.createPlayer = function (playerName, socket, socketid) {
-        jsonHandler.createPlayer(function (hand) {
+        jsonHandler_1.default.createPlayer(function (hand) {
             playerSubject.next({
                 data: {
                     "playerName": playerName,
