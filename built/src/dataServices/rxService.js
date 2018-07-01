@@ -1,20 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Rx = require('rxjs');
-var playerSubject = new Rx.Subject();
-var blackCardSubject = new Rx.Subject();
-var whiteCardSubject = new Rx.Subject();
 var rxService = /** @class */ (function () {
     function rxService() {
+        this.playerSubject = new Rx.Subject();
+        this.blackCardSubject = new Rx.Subject();
+        this.whiteCardSubject = new Rx.Subject();
     }
     rxService.prototype.getPlayerSubject = function () {
-        return playerSubject;
+        return this.playerSubject;
     };
     rxService.prototype.getBlackCardSubject = function () {
-        return blackCardSubject;
+        return this.blackCardSubject;
     };
     rxService.prototype.getWhiteCardSubject = function () {
-        return whiteCardSubject;
+        return this.whiteCardSubject;
     };
     return rxService;
 }());

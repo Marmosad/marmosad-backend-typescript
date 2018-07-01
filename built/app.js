@@ -12,11 +12,11 @@ app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname, 'dist/index.html'));
 });
 app.get('/playerLimit', function (req, res) {
-    console.log(board_1.default.isLimitReached());
-    res.send(JSON.stringify({ isLimitReached: board_1.default.isLimitReached() }));
+    res.send(JSON.stringify({ isLimitReached: boardInstance.isLimitReached() }));
 });
 http.listen(8081, function () {
     console.log('listening on *: 8081');
 });
 var board_1 = require("./src/board");
-console.log(board_1.default.initInstance(http));
+var boardInstance = new board_1.default();
+console.log(boardInstance.initInstance(http));

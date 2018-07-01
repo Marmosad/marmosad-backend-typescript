@@ -1,11 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var dbService_1 = require("../dataServices/dbService");
-dbService_1.default.start();
 var rxService_1 = require("../dataServices/rxService");
-var playerSubject = rxService_1.default.getPlayerSubject();
-var whiteCardSubject = rxService_1.default.getWhiteCardSubject();
-var blackCardSubject = rxService_1.default.getBlackCardSubject();
 function getRandomInt(min, max) {
     var retval = Math.floor(Math.random() * (max - min + 1)) + min;
     if (retval < 1) {
@@ -15,6 +11,10 @@ function getRandomInt(min, max) {
 }
 var jsonHandler = /** @class */ (function () {
     function jsonHandler() {
+        dbService_1.default.start();
+        this.playerSubject = rxService_1.default.getPlayerSubject();
+        this.whiteCardSubject = rxService_1.default.getWhiteCardSubject();
+        this.blackCardSubject = rxService_1.default.getBlackCardSubject();
     }
     jsonHandler.prototype.createPlayer = function (callback, playerId) {
         var hand = [];
@@ -37,7 +37,7 @@ var jsonHandler = /** @class */ (function () {
     };
     jsonHandler.prototype.getNewBlackCard = function () {
         dbService_1.default.getBlackCard(getRandomInt(1, dbService_1.default.getBlackCardSize()), function (blackCard) {
-            blackCardSubject.next(blackCard);
+            this.blackCardSubject.next(blackCard);
         });
     };
     jsonHandler.prototype.getNewWhiteCard = function (owner) {
@@ -47,7 +47,7 @@ var jsonHandler = /** @class */ (function () {
                 body: card.body,
                 owner: owner
             };
-            whiteCardSubject.next(whiteCard);
+            this.whiteCardSubject.next(whiteCard);
         });
     };
     return jsonHandler;

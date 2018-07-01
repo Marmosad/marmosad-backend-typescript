@@ -1,13 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var board_js_1 = require("../board.js");
-var socketService_1 = require("../dataServices/socketService");
 var chatHandler = /** @class */ (function () {
-    function chatHandler() {
+    function chatHandler(board, socketService) {
+        this.socketService = socketService;
+        this.board = board;
     }
     chatHandler.prototype.onMessage = function (data, socketId) {
-        socketService_1.default.emit('message', { from: board_js_1.default.getPlayerName(socketId), msg: data });
+        this.socketService.emit('message', { from: this.board.getPlayerName(socketId), msg: data });
     };
     return chatHandler;
 }());
-exports.default = new chatHandler();
+exports.default = chatHandler;

@@ -9,28 +9,27 @@ var eventEmitter = new events.EventEmitter();
 var isLimitReached = false;
 eventEmitter.on('Limit Reached', limitReached);
 
-var playerSubscription = rxService.getPlayerSubject().subscribe(function (player) {
-    boardData.players[player.data.playerId] = player;
-    boardInstance.updatePlayersInDisplay();
-    boardInstance.updateCurrentDisplay();
-});
-
-var blackCardSubscription = rxService.getBlackCardSubject().subscribe(function (blackCard) {
-    boardData.display.blackCard = blackCard;
-    boardInstance.updatePlayersInDisplay();
-    boardInstance.updateCurrentDisplay();
-});
-
-var whiteCardSubscription = rxService.getWhiteCardSubject().subscribe(function (whiteCard) {
-    boardData.players[whiteCard.owner].data.hand.push(whiteCard);
-    boardInstance.updatePlayersInDisplay();
-    boardInstance.updateCurrentDisplay();
-});
 
 class board {
-    constructor(socket: socket, chatHandler: chatHandler)
+    constructor(socket: socket, chatHandler: chatHandler) {
+        var playerSubscription = rxService.getPlayerSubject().subscribe(function (player) {
+            this.boardData.players[player.data.playerId] = player;
+            boardInstance.updatePlayersInDisplay();
+            boardInstance.updateCurrentDisplay();
+        });
+        var blackCardSubscription = rxService.getBlackCardSubject().subscribe(function (blackCard) {
+            this.boardData.display.blackCard = blackCard;
+            boardInstance.updatePlayersInDisplay();
+            boardInstance.updateCurrentDisplay();
+        });
 
-    var boardData = {
+        var whiteCardSubscription = rxService.getWhiteCardSubject().subscribe(function (whiteCard) {
+            this.boardData.players[whiteCard.owner].data.hand.push(whiteCard);
+            boardInstance.updatePlayersInDisplay();
+            boardInstance.updateCurrentDisplay();
+        });
+    }
+    boardData = {
         phase: 0,
         Phases: Object.freeze(
             {
@@ -60,25 +59,25 @@ class board {
     };
     initInstance (http) {
         socketService.start(http);
-        return boardData.generateInstanceId();
+        return this.boardData.generateInstanceId();
     }
     getPlayers () {
-        return boardData.players;
+        return this.boardData.players;
     }
     getDisplay () {
-        return boardData.display;
+        return this.boardData.display;
     }
     getInstanceId () {
-        return boardData.INSTANCE_ID;
+        return this.boardData.INSTANCE_ID;
     }
     setPlayers (players) {
-        boardData.players = players;
+       this.boardData.players = players;
     }
     setDisplay (display) {
-        boardData.display = display;
+        this.boardData.display = display;
     }
     getPlayerName (socketId) {
-        return boardData.players[socketId].data.playerName;
+        return this.boardData.players[socketId].data.playerName;
     }
     joinedPlayer (playerName, socket, socketid) {
         console.log(playerName);
@@ -87,77 +86,77 @@ class board {
     }
     removePlayer (playerId) {
         isLimitReached = false;
-        if(boardData.players[playerId]){
-            boardData.players[playerId].socket.disconnect(true);
+        if(this.boardData.players[playerId]){
+            this.boardData.players[playerId].socket.disconnect(true);
         }
-        delete boardData.players[playerId];
+        delete this.boardData.players[playerId];
         this.updatePlayersInDisplay();
         this.updateCurrentDisplay();
     }
     startGame () {
-        if(boardData.phase !== boardData.Phases.startGame){
+        if(this.boardData.phase !== this.boardData.Phases.startGame){
             return false;
         }
         jsonHandler.getNewBlackCard();
-        boardData.players[Object.keys(boardData.players)[0]].data.isJudge = true;
-        boardData.display.currentJudge = boardData.players[Object.keys(boardData.players)[0]].data.playerId;
+        this.boardData.players[Object.keys(this.boardData.players)[0]].data.isJudge = true;
+        this.boardData.display.currentJudge = this.boardData.players[Object.keys(this.boardData.players)[0]].data.playerId;
         this.updatePlayersInDisplay();
-        boardData.phase = boardData.Phases.submission;
+        this.boardData.phase = this.boardData.Phases.submission;
         this.updateCurrentDisplay();
     }
     submission (whiteCard) {
-        if (boardData.phase !== boardData.Phases.submission) {
+        if (this.boardData.phase !== this.boardData.Phases.submission) {
             console.log('submission failed because incorrect phase');
             return false;
         }
-        console.log(Object.keys(boardData.players) + ' ,' + boardData.display.currentJudge);
+        console.log(Object.keys(this.boardData.players) + ' ,' + this.boardData.display.currentJudge);
         console.log(whiteCard);
-        if(boardData.display.currentJudge === whiteCard.owner){
+        if(this.boardData.display.currentJudge === whiteCard.owner){
             return false;
         }
         //console.log('attempting to find id ' + whiteCard.owner + ' of \n' + this.players[whiteCard.owner]);
-        var playerLocation = boardData.players[whiteCard.owner].data.hand.findIndex(function (element) {
+        var playerLocation = this.boardData.players[whiteCard.owner].data.hand.findIndex(function (element) {
             return (whiteCard.cardId === element.cardId);
         });
         //console.log(playerLocation);
         // NOTE!!!! Splice splices out an array, even if its size 0
-        boardData.display.submissions.push(boardData.players[whiteCard.owner].data.hand.splice(playerLocation, 1)[0]);
+        this.boardData.display.submissions.push(this.boardData.players[whiteCard.owner].data.hand.splice(playerLocation, 1)[0]);
         this.updatePlayersInDisplay();
         this.updateCurrentDisplay();
         //console.log(this.display.submissions.length);
         //console.log(Object.keys(this.players).length - 1);
-        if (boardData.display.submissions.length >= Object.keys(boardData.players).length - 1) {
-            boardData.phase = boardData.Phases.judgement;
+        if (this.boardData.display.submissions.length >= Object.keys(this.boardData.players).length - 1) {
+            this.boardData.phase = this.boardData.Phases.judgement;
             // console.log('this.display.submissions.length >= Object.keys(this.players).length - 1');
         }
         return true; //error handling maybe? Can't hurt
     }
     judgement (whiteCard) {
-        if (boardData.phase !== boardData.Phases.judgement) {
+        if (this.boardData.phase !== this.boardData.Phases.judgement) {
             return false;
         }
-        boardData.phase = boardData.Phases.updateScore;
+        boardData.phase = this.boardData.Phases.updateScore;
         this.updateScore(whiteCard.owner);
         return true;
     }
     updateScore (playerId) {
-        if (boardData.phase !== boardData.Phases.updateScore) {
+        if (this.boardData.phase !== this.boardData.Phases.updateScore) {
             return false;
         }
-        boardData.players[playerId].data.score += 1;
+        this.boardData.players[playerId].data.score += 1;
         this.updatePlayersInDisplay();
         this.updateCurrentDisplay();
 
-        if (boardData.players[playerId].score > MAX_SCORE) { // This variable dictates how long the games go oops.
+        if (this.boardData.players[playerId].score > MAX_SCORE) { // This variable dictates how long the games go oops.
             this.endGame(playerId);
         } else {
-            boardData.phase = boardData.Phases.four;
+            this.boardData.phase = this.boardData.Phases.four;
             this.phase4();
         }
         return true;
     }
     phase4 () {
-        if (boardData.phase !== boardData.Phases.four) {
+        if (this.boardData.phase !== this.boardData.Phases.four) {
             return false;
         }
 
@@ -165,32 +164,32 @@ class board {
         jsonHandler.getNewBlackCard();
 
         // Adds a new white card to each hand
-        boardData.display.submissions = [];
+        this.boardData.display.submissions = [];
         var key;
-        var keys = Object.keys(boardData.players);
+        var keys = Object.keys(this.boardData.players);
         console.log(keys);
         for (key in keys) {
             console.log(key);
-            if (keys[key] !== boardData.display.currentJudge) {
+            if (keys[key] !== this.boardData.display.currentJudge) {
                 jsonHandler.getNewWhiteCard(keys[key]);
             }
         }
         key = null;
 
         // Sets current judge to not judge. Might not need in the future.
-        boardData.players[boardData.display.currentJudge].data.isJudge = false;
+        this.boardData.players[this.boardData.display.currentJudge].data.isJudge = false;
         //console.log(Object.keys(this.players));
 
         // Selects next judge
-        boardData.display.currentJudge = Object.keys(boardData.players)[Math.round((Object.keys(boardData.players).length - 1) * Math.random())];
+        this.boardData.display.currentJudge = Object.keys(this.boardData.players)[Math.round((Object.keys(this.boardData.players).length - 1) * Math.random())];
         //console.log(this.display.currentJudge + ' is judge');
-        boardData.players[boardData.display.currentJudge].data.isJudge = true;
+        this.boardData.players[this.boardData.display.currentJudge].data.isJudge = true;
 
         // Start next round. This will be rearranged
         this.updatePlayersInDisplay();
         this.updateCurrentDisplay();
-        boardData.phase = boardData.Phases.submission;
-        console.log('here I am ' + boardData.phase);
+        this.boardData.phase = this.boardData.Phases.submission;
+        console.log('here I am ' + this.boardData.phase);
         return true;
     }
     endGame (playerId) {
@@ -200,9 +199,9 @@ class board {
       }, 3000)
     }
     reset () {
-        boardData.phase = 0;
-        boardData.players = {};
-        boardData.display = {
+        this.boardData.phase = 0;
+        this.boardData.players = {};
+        this.boardData.display = {
             "blackCard": null, //This should be a black card object
             "submissions": [],
             "currentJudge": '', // The player ID of the person who is the judge
@@ -214,12 +213,12 @@ class board {
         socketService.emit('updateDisplay', this.getDisplay());
     }
     updatePlayersInDisplay () {
-        boardData.display.players = [];
-        for (var i = 0; i < Object.keys(boardData.players).length; i++) {
-            if (Object.keys(boardData.players).length == 3) {
+        this.boardData.display.players = [];
+        for (var i = 0; i < Object.keys(this.boardData.players).length; i++) {
+            if (Object.keys(this.boardData.players).length == 3) {
                 eventEmitter.emit('Limit Reached');
             }
-            boardData.display.players.push(boardData.players[Object.keys(boardData.players)[i]].data);
+            this.boardData.display.players.push(this.boardData.players[Object.keys(this.boardData.players)[i]].data);
         }
     }//Decided to implement this as a function in the end cuz prior approach would only update display at user join time.
     isLimitReached() {
