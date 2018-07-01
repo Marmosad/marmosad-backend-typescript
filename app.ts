@@ -4,7 +4,7 @@ import * as httpClass from 'http';
 //@ts-ignore
 var http = httpClass.Server(app);
 
-import path = require('path'); //was const var
+const path = require('path'); //was const
 app.use(express.static(path.join(__dirname, 'dist')));
 
 app.get('/', function (req, res) {

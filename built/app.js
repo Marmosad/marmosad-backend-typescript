@@ -5,7 +5,7 @@ var app = express();
 var httpClass = require("http");
 //@ts-ignore
 var http = httpClass.Server(app);
-var path = require("path"); //was const var
+var path = require('path'); //was const
 app.use(express.static(path.join(__dirname, 'dist')));
 app.get('/', function (req, res) {
     console.log('serving files');

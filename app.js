@@ -18,5 +18,5 @@ app.get('/playerLimit', function (req, res) {
 http.listen(8081, function () {
     console.log('listening on *: 8081');
 });
-var board_1 = require("./built/board");
+var board_1 = require("./src/board");
 console.log(board_1["default"].initInstance(http));

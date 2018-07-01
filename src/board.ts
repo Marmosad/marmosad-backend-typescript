@@ -7,39 +7,8 @@ var MAX_SCORE = 4;
 import events = require('events');
 var eventEmitter = new events.EventEmitter();
 var isLimitReached = false;
-var limitReached = function() {
-    console.log('Player Limit Reached');
-    isLimitReached = true;
-}
 eventEmitter.on('Limit Reached', limitReached);
-var boardData = {
-    phase: 0,
-    Phases: Object.freeze(
-        {
-            "startGame": 0,
-            "submission": 1,
-            "judgement": 2,
-            "updateScore": 3,
-            "four": 4,
-            "endGame": 5
-        }
-    ),
-    players: {},
-    display: {
-        "blackCard": null, //This should be a black card object
-        "submissions": [],
-        "currentJudge": '', // The player ID of the person who is the judge
-        "players": []
-    },
-    INSTANCE_ID: -1,
-    generateInstanceId: function () {
-        if(this.INSTANCE_ID === -1){
-            this.INSTANCE_ID = Date.now();
-            return this.INSTANCE_ID;
-        }
-        return this.INSTANCE_ID;
-    }
-};
+
 var playerSubscription = rxService.getPlayerSubject().subscribe(function (player) {
     boardData.players[player.data.playerId] = player;
     boardInstance.updatePlayersInDisplay();
@@ -59,6 +28,36 @@ var whiteCardSubscription = rxService.getWhiteCardSubject().subscribe(function (
 });
 
 class board {
+    constructor(socket: socket, chatHandler: chatHandler)
+
+    var boardData = {
+        phase: 0,
+        Phases: Object.freeze(
+            {
+                "startGame": 0,
+                "submission": 1,
+                "judgement": 2,
+                "updateScore": 3,
+                "four": 4,
+                "endGame": 5
+            }
+        ),
+        players: {},
+        display: {
+            "blackCard": null, //This should be a black card object
+            "submissions": [],
+            "currentJudge": '', // The player ID of the person who is the judge
+            "players": []
+        },
+        INSTANCE_ID: -1,
+        generateInstanceId: function () {
+            if(this.INSTANCE_ID === -1){
+                this.INSTANCE_ID = Date.now();
+                return this.INSTANCE_ID;
+            }
+            return this.INSTANCE_ID;
+        }
+    };
     initInstance (http) {
         socketService.start(http);
         return boardData.generateInstanceId();
