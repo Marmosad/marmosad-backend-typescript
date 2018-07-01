@@ -1,21 +1,28 @@
 var Rx = require('rxjs');
 import board from '../board';
-var playerSubject = new Rx.Subject();
-var blackCardSubject = new Rx.Subject();
-var whiteCardSubject = new Rx.Subject();
 
 class rxService {
 
+    playerSubject;
+    blackCardSubject;
+    whiteCardSubject;
+
+    constructor() {
+        this.playerSubject = new Rx.Subject();
+        this.blackCardSubject = new Rx.Subject();
+        this.whiteCardSubject = new Rx.Subject();
+    }
+
     getPlayerSubject () {
-        return playerSubject
+        return this.playerSubject
     }
     
     getBlackCardSubject () {
-        return blackCardSubject;
+        return this.blackCardSubject;
     }
     
     getWhiteCardSubject () {
-        return whiteCardSubject;
+        return this.whiteCardSubject;
     }
 }
 

@@ -1,9 +1,16 @@
 import board from '../board.js'
 import socketService from '../dataServices/socketService'
 class chatHandler {
+    private socketService;
+    private board;
+    constructor(board: board, socketService: socketService) {
+        this.socketService = socketService;
+        this.board = board;
+    }
+
     onMessage (data, socketId) {
-        socketService.emit('message', {from: board.getPlayerName(socketId), msg: data});
+        this.socketService.emit('message', {from: this.board.getPlayerName(socketId), msg: data});
     }
 }
 
-export default new chatHandler();
+export default chatHandler;
