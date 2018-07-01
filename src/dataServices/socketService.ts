@@ -1,8 +1,11 @@
 import board from "../board";
+import chatHandler from "../handlers/chatHandler"
 
 class socketService{
+    private chatHandler;
     private board;
     constructor(board: board){
+        this.chatHandler = new chatHandler(board, this);
         this.board = board;
     }
 
@@ -17,7 +20,6 @@ class socketService{
         this.io.emit(a, b);
     }
     setupSocket(socket){
-        var chatHandler = require('../handlers/chatHandler');
         this.board.joinedPlayer(socket.handshake.query.name, socket, socket.id);
         socket.on('sendMsg', function (data) {
             chatHandler.onMessage(data.msg, data.from);
