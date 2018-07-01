@@ -13,8 +13,7 @@ app.get('/', function (req, res) {
 });
 
 app.get('/playerLimit', function (req, res) {
-    console.log(board.isLimitReached());
-    res.send(JSON.stringify({isLimitReached: board.isLimitReached()}));
+    res.send(JSON.stringify({isLimitReached: boardInstance.isLimitReached()}));
 })
 
 http.listen(8081, function () {
@@ -22,4 +21,5 @@ http.listen(8081, function () {
 });
 
 import board from './src/board';
-console.log(board.initInstance(http));
+var boardInstance = new board();
+console.log(boardInstance.initInstance(http));

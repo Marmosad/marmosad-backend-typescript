@@ -1,9 +1,5 @@
 import dbService from '../dataServices/dbService';
-dbService.start();
 import rxService from '../dataServices/rxService';
-var playerSubject = rxService.getPlayerSubject();
-var whiteCardSubject = rxService.getWhiteCardSubject();
-var blackCardSubject = rxService.getBlackCardSubject();
 
 function getRandomInt(min, max) {
     var retval = Math.floor(Math.random() * (max - min + 1)) + min;
@@ -13,6 +9,17 @@ function getRandomInt(min, max) {
     return retval;
 }
 class jsonHandler{
+    playerSubject;
+    whiteCardSubject;
+    blackCardSubject;
+
+    constructor() {
+        dbService.start();
+        this.playerSubject = rxService.getPlayerSubject();
+        this.whiteCardSubject = rxService.getWhiteCardSubject();
+        this.blackCardSubject = rxService.getBlackCardSubject();
+    }
+
     createPlayer (callback, playerId) {
         var hand = [];
 
@@ -34,7 +41,7 @@ class jsonHandler{
     }
     getNewBlackCard () {
         dbService.getBlackCard(getRandomInt(1, dbService.getBlackCardSize()), function (blackCard) {
-            blackCardSubject.next(blackCard);
+            this.blackCardSubject.next(blackCard);
         })
     }
     getNewWhiteCard (owner) {
@@ -44,7 +51,7 @@ class jsonHandler{
                 body: card.body,
                 owner: owner
             };
-            whiteCardSubject.next(whiteCard);
+            this.whiteCardSubject.next(whiteCard);
         })
     }
 }
