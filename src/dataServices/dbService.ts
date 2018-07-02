@@ -5,8 +5,8 @@ class dbService {
     connection;
     whiteCardsSize = -1;
     blackCardsSize = -1;
-
     start () {
+        let self = this;
         this.connection = mysql.createConnection({
             host: "35.203.14.127",
             user: "root",
@@ -18,13 +18,13 @@ class dbService {
                 console.error('error connecting: ' + err.stack);
                 return;
             }
-            console.log('connected as id ' + this.connection.threadId);
-            this.connection.query('SELECT COUNT(*) FROM whitecards', function (err, results, fields) {
+            console.log('connected as id ' + self.connection.threadId);
+            self.connection.query('SELECT COUNT(*) FROM whitecards', function (err, results, fields) {
                 if (err) throw err;
-                this.whiteCardsSize = results[0]["COUNT(*)"];
-                this.connection.query('SELECT COUNT(*) FROM blackcards', function (err, results, fields) {
+                self.whiteCardsSize = results[0]["COUNT(*)"];
+                self.connection.query('SELECT COUNT(*) FROM blackcards', function (err, results, fields) {
                     if (err) throw err;
-                    this.blackCardsSize = results[0]["COUNT(*)"];
+                    self.blackCardsSize = results[0]["COUNT(*)"];
                     this.status = 0;
                 });
             });
