@@ -7,26 +7,28 @@ var MAX_SCORE = 4;
 import events = require('events');
 var eventEmitter = new events.EventEmitter();
 var isLimitReached = false;
-eventEmitter.on('Limit Reached', limitReached);
+//eventEmitter.on('Limit Reached', limitReached);
 
 
 class board {
-    constructor(socket: socket, chatHandler: chatHandler) {
+    private socketService;
+    constructor() {
+        this.socketService = new socketService(this);
+        let self = this;
         var playerSubscription = rxService.getPlayerSubject().subscribe(function (player) {
-            this.boardData.players[player.data.playerId] = player;
-            boardInstance.updatePlayersInDisplay();
-            boardInstance.updateCurrentDisplay();
+            self.boardData.players[player.data.playerId] = player;
+            self.updatePlayersInDisplay();
+            self.updateCurrentDisplay();
         });
         var blackCardSubscription = rxService.getBlackCardSubject().subscribe(function (blackCard) {
-            this.boardData.display.blackCard = blackCard;
-            boardInstance.updatePlayersInDisplay();
-            boardInstance.updateCurrentDisplay();
+            self.boardData.display.blackCard = blackCard;
+            self.updatePlayersInDisplay();
+            self.updateCurrentDisplay();
         });
-
         var whiteCardSubscription = rxService.getWhiteCardSubject().subscribe(function (whiteCard) {
-            this.boardData.players[whiteCard.owner].data.hand.push(whiteCard);
-            boardInstance.updatePlayersInDisplay();
-            boardInstance.updateCurrentDisplay();
+            self.boardData.players[whiteCard.owner].data.hand.push(whiteCard);
+            self.updatePlayersInDisplay();
+            self.updateCurrentDisplay();
         });
     }
     boardData = {
@@ -58,7 +60,7 @@ class board {
         }
     };
     initInstance (http) {
-        socketService.start(http);
+        this.socketService.start(http);
         return this.boardData.generateInstanceId();
     }
     getPlayers () {
@@ -135,7 +137,7 @@ class board {
         if (this.boardData.phase !== this.boardData.Phases.judgement) {
             return false;
         }
-        boardData.phase = this.boardData.Phases.updateScore;
+        this.boardData.phase = this.boardData.Phases.updateScore;
         this.updateScore(whiteCard.owner);
         return true;
     }
@@ -193,9 +195,9 @@ class board {
         return true;
     }
     endGame (playerId) {
-      socketService.emit('result', playerId);
+      this.socketService.emit('result', playerId);
       setTimeout(function () {
-        socketService.emit('reset', null)
+        this.socketService.emit('reset', null)
       }, 3000)
     }
     reset () {
@@ -210,7 +212,7 @@ class board {
         this.updateCurrentDisplay();
     }
     updateCurrentDisplay () {
-        socketService.emit('updateDisplay', this.getDisplay());
+        this.socketService.emit('updateDisplay', this.getDisplay());
     }
     updatePlayersInDisplay () {
         this.boardData.display.players = [];
@@ -226,8 +228,7 @@ class board {
     }
 }
 
-let boardInstance = new board();
-export default boardInstance;
+export default board;
 
 // var instance;
 // var jsonHandler = require('../api/jsonHandler.ts');

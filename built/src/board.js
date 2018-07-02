@@ -8,9 +8,9 @@ var MAX_SCORE = 4;
 var events = require("events");
 var eventEmitter = new events.EventEmitter();
 var isLimitReached = false;
-eventEmitter.on('Limit Reached', limitReached);
+//eventEmitter.on('Limit Reached', limitReached);
 var board = /** @class */ (function () {
-    function board(socket, chatHandler) {
+    function board() {
         this.boardData = {
             phase: 0,
             Phases: Object.freeze({
@@ -37,24 +37,26 @@ var board = /** @class */ (function () {
                 return this.INSTANCE_ID;
             }
         };
+        this.socketService = new socketService_1.default(this);
+        var self = this;
         var playerSubscription = rxService_1.default.getPlayerSubject().subscribe(function (player) {
-            this.boardData.players[player.data.playerId] = player;
-            boardInstance.updatePlayersInDisplay();
-            boardInstance.updateCurrentDisplay();
+            self.boardData.players[player.data.playerId] = player;
+            self.updatePlayersInDisplay();
+            self.updateCurrentDisplay();
         });
         var blackCardSubscription = rxService_1.default.getBlackCardSubject().subscribe(function (blackCard) {
-            this.boardData.display.blackCard = blackCard;
-            boardInstance.updatePlayersInDisplay();
-            boardInstance.updateCurrentDisplay();
+            self.boardData.display.blackCard = blackCard;
+            self.updatePlayersInDisplay();
+            self.updateCurrentDisplay();
         });
         var whiteCardSubscription = rxService_1.default.getWhiteCardSubject().subscribe(function (whiteCard) {
-            this.boardData.players[whiteCard.owner].data.hand.push(whiteCard);
-            boardInstance.updatePlayersInDisplay();
-            boardInstance.updateCurrentDisplay();
+            self.boardData.players[whiteCard.owner].data.hand.push(whiteCard);
+            self.updatePlayersInDisplay();
+            self.updateCurrentDisplay();
         });
     }
     board.prototype.initInstance = function (http) {
-        socketService_1.default.start(http);
+        this.socketService.start(http);
         return this.boardData.generateInstanceId();
     };
     board.prototype.getPlayers = function () {
@@ -131,7 +133,7 @@ var board = /** @class */ (function () {
         if (this.boardData.phase !== this.boardData.Phases.judgement) {
             return false;
         }
-        boardData.phase = this.boardData.Phases.updateScore;
+        this.boardData.phase = this.boardData.Phases.updateScore;
         this.updateScore(whiteCard.owner);
         return true;
     };
@@ -184,9 +186,9 @@ var board = /** @class */ (function () {
         return true;
     };
     board.prototype.endGame = function (playerId) {
-        socketService_1.default.emit('result', playerId);
+        this.socketService.emit('result', playerId);
         setTimeout(function () {
-            socketService_1.default.emit('reset', null);
+            this.socketService.emit('reset', null);
         }, 3000);
     };
     board.prototype.reset = function () {
@@ -201,7 +203,7 @@ var board = /** @class */ (function () {
         this.updateCurrentDisplay();
     };
     board.prototype.updateCurrentDisplay = function () {
-        socketService_1.default.emit('updateDisplay', this.getDisplay());
+        this.socketService.emit('updateDisplay', this.getDisplay());
     };
     board.prototype.updatePlayersInDisplay = function () {
         this.boardData.display.players = [];
@@ -217,8 +219,7 @@ var board = /** @class */ (function () {
     };
     return board;
 }());
-var boardInstance = new board();
-exports.default = boardInstance;
+exports.default = board;
 // var instance;
 // var jsonHandler = require('../api/jsonHandler.ts');
 // var io = require('../services/socketService.ts')().io;

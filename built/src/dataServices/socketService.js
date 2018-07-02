@@ -1,8 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var chatHandler_1 = require("../handlers/chatHandler");
 var socketService = /** @class */ (function () {
     function socketService(board) {
         this.io = null;
+        this.chatHandler = new chatHandler_1.default(board, this);
         this.board = board;
     }
     socketService.prototype.start = function (http) {
@@ -15,10 +17,9 @@ var socketService = /** @class */ (function () {
         this.io.emit(a, b);
     };
     socketService.prototype.setupSocket = function (socket) {
-        var chatHandler = require('../handlers/chatHandler');
         this.board.joinedPlayer(socket.handshake.query.name, socket, socket.id);
         socket.on('sendMsg', function (data) {
-            chatHandler.onMessage(data.msg, data.from);
+            this.chatHandler.onMessage(data.msg, data.from);
         });
         socket.on('disconnect', function (reason) {
             console.log(socket.id + ' ' + reason);

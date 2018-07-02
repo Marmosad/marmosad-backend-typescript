@@ -22,7 +22,7 @@ class socketService{
     setupSocket(socket){
         this.board.joinedPlayer(socket.handshake.query.name, socket, socket.id);
         socket.on('sendMsg', function (data) {
-            chatHandler.onMessage(data.msg, data.from);
+            this.chatHandler.onMessage(data.msg, data.from);
         });
         socket.on('disconnect', function (reason) {
             console.log(socket.id + ' ' + reason);
