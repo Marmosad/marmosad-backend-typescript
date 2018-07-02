@@ -4,7 +4,9 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "node built/app.js"
+    "tsc": "tsc",
+    "test": "node built/app.js",
+    "start": "tsc && test"
   },
   "author": "",
   "license": "ISC",
