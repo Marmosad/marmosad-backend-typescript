@@ -6,7 +6,7 @@
   "scripts": {
     "tsc": "tsc",
     "test": "node built/app.js",
-    "start": "tsc && test"
+    "start": "npm run tsc | npm run test"
   },
   "author": "",
   "license": "ISC",
@@ -17,6 +17,7 @@
     "mysql": "^2.15.0",
     "nodejs": "0.0.0",
     "rxjs": "^6.1.0",
-    "socket.io": "^2.1.0"
+    "socket.io": "^2.1.0",
+    "typescript": "^2.9.2"
   }
 }
