@@ -12,7 +12,8 @@ class SocketService{
     }
 
     start(http) {
-        this.io = require('socket.io')(http,{ path: '/'+this.board.name});
+        this.url = this.board.name;
+        this.io = require('socket.io')(http,{ path: '/' + this.board.name});
         this.io.on('connection', function (socket) {
             this.setupSocket(socket);
         });

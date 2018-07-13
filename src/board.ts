@@ -2,7 +2,7 @@ import playerHandler from './handlers/playerHandler'
 import SocketService from './dataServices/socketService'
 import rxService from './dataServices/rxService'
 import jsonHandler from './handlers/jsonHandler'
-import app from '../app'
+import { App } from '../app'
 import stringify = require('json-stringify-safe');
 var MAX_SCORE = 4;
 import events = require('events');
@@ -14,11 +14,10 @@ var isLimitReached = false;
 class Board {
     private _name: string;
     private _socketService;
-    constructor(name: string) {
+    constructor(name: string, app: App) {
         this._name = name;
         this._socketService = new SocketService(this);
-//        let http = app.http;
-//        this.initInstance(http);
+       this.initInstance(app.http);
         let self = this;
         var playerSubscription = rxService.getPlayerSubject().subscribe(function (player) {
             self.boardData.players[player.data.playerId] = player;
