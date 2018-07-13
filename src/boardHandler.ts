@@ -1,9 +1,9 @@
-import board from './board';
+import Board from './board';
 import BoardInfo from './models/boardModel';
 
-class boardHandler {
+class BoardHandler {
 
-    boards: Array<board> = new Array<board>();
+    boards: Array<Board> = new Array<Board>();
 
     constructor() {
         this.newBoard('name1');
@@ -12,15 +12,15 @@ class boardHandler {
         this.newBoard('name4');
     }
 
-    newBoard(name: string): board {
-        const boardInstance = new board(name);
+    newBoard(name: string): Board {
+        const boardInstance = new Board(name);
         this.boards.push(boardInstance);
         return boardInstance;
     }
 
     getBoardsInfo(): Array<BoardInfo>{
         let result = new Array<BoardInfo>();
-        this.boards.forEach((board: board) => {
+        this.boards.forEach((board: Board) => {
             const data = new BoardInfo();
             data.name = board.name;
             data.numberOfPlayers = board.getPlayers.length;
@@ -32,4 +32,4 @@ class boardHandler {
     }
 } 
 
-export default new boardHandler()
+export default new BoardHandler()

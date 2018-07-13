@@ -1,5 +1,5 @@
 import playerHandler from './handlers/playerHandler'
-import socketService from './dataServices/socketService'
+import SocketService from './dataServices/socketService'
 import rxService from './dataServices/rxService'
 import jsonHandler from './handlers/jsonHandler'
 import stringify = require('json-stringify-safe');
@@ -10,12 +10,12 @@ var isLimitReached = false;
 //eventEmitter.on('Limit Reached', limitReached);
 
 
-class board {
+class Board {
     private _name: string;
     private _socketService;
     constructor(name: string) {
         this._name = name;
-        this._socketService = new socketService(this);
+        this._socketService = new SocketService(this);
         this._socketService.start();
         let self = this;
         var playerSubscription = rxService.getPlayerSubject().subscribe(function (player) {
@@ -233,12 +233,12 @@ class board {
     get name(): string {
         return this._name;
     }
-    get socketService(): socketService {
+    get socketService(): SocketService {
         return this._socketService;
     }
 }
 
-export default board;
+export default Board;
 
 // var instance;
 // var jsonHandler = require('../api/jsonHandler.ts');

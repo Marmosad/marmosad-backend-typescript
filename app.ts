@@ -19,7 +19,6 @@ app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname, 'dist/index.html'));
 });
 
-import BoardInfo from './src/models/boardModel';
 app.get('/boards', function (req, res) {
     res.send(JSON.stringify(boardHandler.getBoardsInfo()));
 })
