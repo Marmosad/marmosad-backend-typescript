@@ -2,7 +2,8 @@ import Board from "../board";
 import ChatHandler from "../handlers/chatHandler"
 
 class SocketService{
-    private _url = ''; // TODO
+    private io = null;
+    private _url = '';
     private chatHandler;
     private board;
     constructor(board: Board){
@@ -10,9 +11,8 @@ class SocketService{
         this.board = board;
     }
 
-    io = null;
     start(http) {
-        this.io = require('socket.io')(http);
+        this.io = require('socket.io')(http,{ path: '/'+this.board.name});
         this.io.on('connection', function (socket) {
             this.setupSocket(socket);
         });
@@ -50,7 +50,6 @@ class SocketService{
             this.board.judgement(card); // TODO why does this count as a submission
         });
     }
-
     get url() {
         return this._url;
     }
