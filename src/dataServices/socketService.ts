@@ -2,6 +2,7 @@ import board from "../board";
 import chatHandler from "../handlers/chatHandler"
 
 class socketService{
+    private _url = ''; // TODO
     private chatHandler;
     private board;
     constructor(board: board){
@@ -48,6 +49,13 @@ class socketService{
         socket.on('judgment', function (card) {
             this.board.judgement(card); // TODO why does this count as a submission
         });
+    }
+
+    get url() {
+        return this._url;
+    }
+    set url(url: string) {
+        this._url = url;
     }
 }
 

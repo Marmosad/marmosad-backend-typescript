@@ -11,9 +11,12 @@ var isLimitReached = false;
 
 
 class board {
-    private socketService;
-    constructor() {
-        this.socketService = new socketService(this);
+    private _name: string;
+    private _socketService;
+    constructor(name: string) {
+        this._name = name;
+        this._socketService = new socketService(this);
+        this._socketService.start();
         let self = this;
         var playerSubscription = rxService.getPlayerSubject().subscribe(function (player) {
             self.boardData.players[player.data.playerId] = player;
@@ -225,6 +228,13 @@ class board {
     }//Decided to implement this as a function in the end cuz prior approach would only update display at user join time.
     isLimitReached() {
         return isLimitReached;
+    }
+
+    get name(): string {
+        return this._name;
+    }
+    get socketService(): socketService {
+        return this._socketService;
     }
 }
 
