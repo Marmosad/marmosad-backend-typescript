@@ -8,7 +8,7 @@ function getRandomInt(min, max) {
     }
     return retval;
 }
-class jsonHandler{
+class JsonHandler{
     playerSubject;
     whiteCardSubject;
     blackCardSubject;
@@ -56,4 +56,4 @@ class jsonHandler{
     }
 }
 
-export default new jsonHandler();
+export default new JsonHandler();

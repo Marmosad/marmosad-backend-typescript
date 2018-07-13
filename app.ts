@@ -7,19 +7,18 @@ var http = httpClass.Server(app);
 const path = require('path'); //was const
 app.use(express.static(path.join(__dirname, 'dist')));
 
-app.get('/', function (req, res) {
-    console.log('serving files');
-    res.sendFile(path.join(__dirname, 'dist/index.html'));
-});
-
-app.get('/playerLimit', function (req, res) {
-    res.send(JSON.stringify({isLimitReached: boardInstance.isLimitReached()}));
-})
+import boardHandler from './src/boardHandler';
+console.log(boardHandler);
 
 http.listen(8081, function () {
     console.log('listening on *: 8081');
 });
 
-import board from './src/board';
-var boardInstance = new board();
-console.log(boardInstance.initInstance(http));
+app.get('/', function (req, res) {
+    console.log('serving files');
+    res.sendFile(path.join(__dirname, 'dist/index.html'));
+});
+
+app.get('/boards', function (req, res) {
+    res.send(JSON.stringify(boardHandler.getBoardsInfo()));
+})

@@ -1,9 +1,9 @@
-import board from '../board.js'
-import socketService from '../dataServices/socketService'
-class chatHandler {
+import Board from '../board.js'
+import SocketService from '../dataServices/socketService'
+class ChatHandler {
     private socketService;
     private board;
-    constructor(board: board, socketService: socketService) {
+    constructor(board: Board, socketService: SocketService) {
         this.socketService = socketService;
         this.board = board;
     }
@@ -13,4 +13,4 @@ class chatHandler {
     }
 }
 
-export default chatHandler;
+export default ChatHandler;

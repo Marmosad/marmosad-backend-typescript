@@ -1,11 +1,12 @@
-import board from "../board";
-import chatHandler from "../handlers/chatHandler"
+import Board from "../board";
+import ChatHandler from "../handlers/chatHandler"
 
-class socketService{
+class SocketService{
+    private _url = ''; // TODO
     private chatHandler;
     private board;
-    constructor(board: board){
-        this.chatHandler = new chatHandler(board, this);
+    constructor(board: Board){
+        this.chatHandler = new ChatHandler(board, this);
         this.board = board;
     }
 
@@ -49,6 +50,13 @@ class socketService{
             this.board.judgement(card); // TODO why does this count as a submission
         });
     }
+
+    get url() {
+        return this._url;
+    }
+    set url(url: string) {
+        this._url = url;
+    }
 }
 
-export default socketService;
+export default SocketService;

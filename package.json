@@ -6,7 +6,7 @@
   "scripts": {
     "tsc": "tsc",
     "test": "node built/app.js",
-    "start": "npm run tsc | npm run test"
+    "start": "npm run tsc && npm run test"
   },
   "author": "",
   "license": "ISC",
