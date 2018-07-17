@@ -1,7 +1,7 @@
 import Board from "../board";
-import ChatHandler from "../handlers/chatHandler"
+import {ChatHandler} from "../barrels/handlers";
 
-class SocketService{
+export default class SocketHandler{
     private io = null;
     private _url = '';
     private chatHandler;
@@ -58,5 +58,3 @@ class SocketService{
         this._url = url;
     }
 }
-
-export default SocketService;

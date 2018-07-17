@@ -1,6 +1,6 @@
 var mysql = require('mysql');
 
-class DbService {
+export default class DbService {
 
     connection;
     whiteCardsSize = -1;
@@ -51,5 +51,3 @@ class DbService {
         return this.blackCardsSize;
     }
 }
-
-export default new DbService();

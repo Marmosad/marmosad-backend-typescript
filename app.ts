@@ -1,6 +1,6 @@
 import express = require('express');
 import * as httpClass from 'http';
-import BoardHandler from './src/boardHandler';
+import { BoardHandler } from './src/barrels/handlers';
 import * as cors from 'cors';
 
 export class App {

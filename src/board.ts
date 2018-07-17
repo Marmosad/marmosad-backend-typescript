@@ -1,8 +1,7 @@
-import playerHandler from './handlers/playerHandler'
-import SocketService from './dataServices/socketService'
-import rxService from './dataServices/rxService'
-import jsonHandler from './handlers/jsonHandler'
+import { SocketHandler } from './barrels/handlers'
+import { playerService, jsonService, rxService } from './barrels/services'
 import { App } from '../app'
+
 import stringify = require('json-stringify-safe');
 var MAX_SCORE = 4;
 import events = require('events');
@@ -13,10 +12,10 @@ var isLimitReached = false;
 
 class Board {
     private _name: string;
-    private _socketService;
+    private _socketHandler;
     constructor(name: string, app: App) {
         this._name = name;
-        this._socketService = new SocketService(this);
+        this._socketHandler = new SocketHandler(this);
        this.initInstance(app.http);
         let self = this;
         var playerSubscription = rxService.getPlayerSubject().subscribe(function (player) {
@@ -64,7 +63,7 @@ class Board {
         }
     };
     initInstance (http) {
-        this.socketService.start(http);
+        this.socketHandler.start(http);
         return this.boardData.generateInstanceId();
     }
     getPlayers () {
@@ -87,7 +86,7 @@ class Board {
     }
     joinedPlayer (playerName, socket, socketid) {
         console.log(playerName);
-        playerHandler.createPlayer(playerName, socket, socketid);
+        playerService.createPlayer(playerName, socket, socketid);
         this.updatePlayersInDisplay();
     }
     removePlayer (playerId) {
@@ -103,7 +102,7 @@ class Board {
         if(this.boardData.phase !== this.boardData.Phases.startGame){
             return false;
         }
-        jsonHandler.getNewBlackCard();
+        jsonService.getNewBlackCard();
         this.boardData.players[Object.keys(this.boardData.players)[0]].data.isJudge = true;
         this.boardData.display.currentJudge = this.boardData.players[Object.keys(this.boardData.players)[0]].data.playerId;
         this.updatePlayersInDisplay();
@@ -167,7 +166,7 @@ class Board {
         }
 
         // Adds a new black card to current display
-        jsonHandler.getNewBlackCard();
+        jsonService.getNewBlackCard();
 
         // Adds a new white card to each hand
         this.boardData.display.submissions = [];
@@ -177,7 +176,7 @@ class Board {
         for (key in keys) {
             console.log(key);
             if (keys[key] !== this.boardData.display.currentJudge) {
-                jsonHandler.getNewWhiteCard(keys[key]);
+                jsonService.getNewWhiteCard(keys[key]);
             }
         }
         key = null;
@@ -199,9 +198,9 @@ class Board {
         return true;
     }
     endGame (playerId) {
-      this.socketService.emit('result', playerId);
+      this.socketHandler.emit('result', playerId);
       setTimeout(function () {
-        this.socketService.emit('reset', null)
+        this.socketHandler.emit('reset', null)
       }, 3000)
     }
     reset () {
@@ -216,7 +215,7 @@ class Board {
         this.updateCurrentDisplay();
     }
     updateCurrentDisplay () {
-        this.socketService.emit('updateDisplay', this.getDisplay());
+        this.socketHandler.emit('updateDisplay', this.getDisplay());
     }
     updatePlayersInDisplay () {
         this.boardData.display.players = [];
@@ -234,8 +233,8 @@ class Board {
     get name(): string {
         return this._name;
     }
-    get socketService(): SocketService {
-        return this._socketService;
+    get socketHandler(): SocketHandler {
+        return this._socketHandler;
     }
 }
 

@@ -1,6 +1,6 @@
-import Board from './board';
-import BoardInfo from './models/boardModel';
-import { App } from '../app';
+import Board from '../board';
+import BoardInfo from '../models/boardModel';
+import { App } from '../../app';
 
 class BoardHandler {
 
@@ -27,7 +27,7 @@ class BoardHandler {
             const data = new BoardInfo();
             data.name = board.name;
             data.numberOfPlayers = board.getPlayers.length;
-            data.socketUrl = board.socketService.url;
+            data.socketUrl = board.socketHandler.url;
             data.playerLimitReached = board.isLimitReached();
             result.push(data);
         });

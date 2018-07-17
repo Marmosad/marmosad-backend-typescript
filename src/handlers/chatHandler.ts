@@ -1,16 +1,15 @@
-import Board from '../board.js'
-import SocketService from '../dataServices/socketService'
-class ChatHandler {
-    private socketService;
+import Board from '../board.js';
+import {SocketHandler} from '../barrels/handlers';
+
+export default class ChatHandler {
+    private socketHandler;
     private board;
-    constructor(board: Board, socketService: SocketService) {
-        this.socketService = socketService;
+    constructor(board: Board, socketHandler: SocketHandler) {
+        this.socketHandler = socketHandler;
         this.board = board;
     }
 
     onMessage (data, socketId) {
-        this.socketService.emit('message', {from: this.board.getPlayerName(socketId), msg: data});
+        this.socketHandler.emit('message', {from: this.board.getPlayerName(socketId), msg: data});
     }
 }
-
-export default ChatHandler;
