@@ -1,7 +1,7 @@
 import express = require('express');
 import * as httpClass from 'http';
 import BoardHandler from './src/boardHandler';
-//@ts-ignore
+import * as cors from 'cors';
 
 export class App {
 
@@ -27,14 +27,10 @@ appInstance.http.listen(8081, function () {
     console.log('listening on *: 8081');
 });
 
-const path = require('path'); //was const
+const path = require('path'); // was const
 
+appInstance.app.use(cors()); // remove for prod
 appInstance.app.use(express.static(path.join(__dirname, 'dist')));
-
-appInstance.app.use(function(res, req, next) {
-    res.setHeader('Access-Control-Allow-Origin', '*'); // DEV only
-    next();
-});
 
 appInstance.app.get('/', function (req, res) {
     console.log('serving files');
