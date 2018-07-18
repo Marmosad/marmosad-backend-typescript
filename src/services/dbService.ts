@@ -1,6 +1,6 @@
 var mysql = require('mysql');
-
-export default class DbService {
+import envService from './envService';
+class DbService {
 
     connection;
     whiteCardsSize = -1;
@@ -8,10 +8,10 @@ export default class DbService {
     start () {
         let self = this;
         this.connection = mysql.createConnection({
-            host: "35.203.14.127",
-            user: "root",
-            password: "marmoExtraSad3",
-            database: 'cah'
+            host: envService.env.DB_HOST,
+            user: envService.env.DB_USER,
+            password: envService.env.DB_PASSWORD,
+            database: envService.env.DB_NAME
         });
         this.connection.connect(function (err) {
             if (err) {
@@ -51,3 +51,6 @@ export default class DbService {
         return this.blackCardsSize;
     }
 }
+
+const dbService = new DbService();
+export default dbService;

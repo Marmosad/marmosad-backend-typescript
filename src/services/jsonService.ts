@@ -1,4 +1,5 @@
-import { dbService, rxService } from '../barrels/services'
+import dbService from './dbService'
+import rxService from './rxService'
 
 function getRandomInt(min, max) {
     var retval = Math.floor(Math.random() * (max - min + 1)) + min;
@@ -7,7 +8,7 @@ function getRandomInt(min, max) {
     }
     return retval;
 }
-export default class JsonService{
+class JsonService{
     playerSubject;
     whiteCardSubject;
     blackCardSubject;
@@ -54,3 +55,6 @@ export default class JsonService{
         })
     }
 }
+
+const jsonService = new JsonService();
+export default jsonService;

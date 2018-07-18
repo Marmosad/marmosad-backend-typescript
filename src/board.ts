@@ -16,7 +16,7 @@ class Board {
     constructor(name: string, app: App) {
         this._name = name;
         this._socketHandler = new SocketHandler(this);
-       this.initInstance(app.http);
+        this.initInstance(app.http);
         let self = this;
         var playerSubscription = rxService.getPlayerSubject().subscribe(function (player) {
             self.boardData.players[player.data.playerId] = player;

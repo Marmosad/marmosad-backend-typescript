@@ -1,8 +1,9 @@
-import { jsonService, rxService } from '../barrels/services'
+import jsonService from './jsonService';
+import rxService from './rxService';
 
 var playerSubject = rxService.getPlayerSubject()
 //rewrite as module in typescript
-export default class PlayerService {
+class PlayerService {
     createPlayer (playerName, socket, socketid) {
         jsonService.createPlayer(function (hand) {
             playerSubject.next({
@@ -18,3 +19,7 @@ export default class PlayerService {
         }, socketid);
     }
 }
+
+
+const playerService = new PlayerService();
+export default playerService;

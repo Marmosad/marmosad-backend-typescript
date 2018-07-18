@@ -56,6 +56,7 @@ typings/
 
 # dotenv environment variables file
 .env
+.DS_Store
 
 # User-specific stuff:
 .idea/**/workspace.xml
@@ -63,9 +64,6 @@ typings/
 .idea/dictionaries
 .idea/
 
-# vscode
-.vs
-.vscode
 
 
 # Elastic Beanstalk Files

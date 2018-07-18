@@ -1,18 +1,15 @@
-import RxService from '../services/rxService';
-const rxService = new RxService();
-
-import DbService from '../services/dbService';
-const dbService = new DbService();
-
-import PlayerService from '../services/playerService';
-const playerService = new PlayerService();
-
-import JsonService from '../services/jsonService';
-const jsonService = new JsonService();
+import rxService from '../services/rxService';
+import dbService from '../services/dbService';
+import playerService from '../services/playerService';
+import jsonService from '../services/jsonService';
+import envService from '../services/envService';
 
 export {
     rxService,
     dbService,
     playerService,
-    jsonService
+    jsonService,
+    envService
 }
+
+// do not import from barrel if using in service

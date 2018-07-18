@@ -5,8 +5,10 @@
   "main": "app.js",
   "scripts": {
     "tsc": "tsc",
-    "test": "node built/app.js",
-    "start": "npm run tsc && npm run test"
+    "test": "node built/app.js --env=development",
+    "start": "npm run tsc && npm run test",
+    "test-prod": "node built/app.js --env=production",
+    "start-prod": "npm run tsc && npm run test-prod"
   },
   "author": "",
   "license": "ISC",
@@ -14,6 +16,7 @@
     "@types/node": "^10.3.5",
     "@types/request": "^2.47.1",
     "cors": "^2.8.4",
+    "dotenv": "^6.0.0",
     "express": "^4.16.3",
     "json-stringify-safe": "^5.0.1",
     "mysql": "^2.15.0",
