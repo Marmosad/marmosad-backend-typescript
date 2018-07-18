@@ -14,7 +14,6 @@ export class App {
     constructor(){
 
         this.boardHandler = new BoardHandler(this);
-        console.log(this.boardHandler);
 
     }
 
