@@ -63,8 +63,9 @@ typings/
 .idea/dictionaries
 .idea/
 
-
-
+# vscode
+.vs
+.vscode
 
 
 # Elastic Beanstalk Files

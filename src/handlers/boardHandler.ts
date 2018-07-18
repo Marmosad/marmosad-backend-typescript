@@ -1,12 +1,14 @@
-import Board from './board';
-import BoardInfo from './models/boardModel';
-import app from '../app';
+import Board from '../board';
+import BoardInfo from '../models/boardModel';
+import { App } from '../../app';
 
 class BoardHandler {
 
+    private app: App;
     boards: Array<Board> = new Array<Board>();
 
-    constructor() {
+    constructor(app: App) {
+        this.app = app;
         this.newBoard('name1');
         this.newBoard('name2');
         this.newBoard('name3');
@@ -14,7 +16,7 @@ class BoardHandler {
     }
 
     newBoard(name: string): Board {
-        const boardInstance = new Board(name);
+        const boardInstance = new Board(name, this.app);
         this.boards.push(boardInstance);
         return boardInstance;
     }
@@ -25,7 +27,7 @@ class BoardHandler {
             const data = new BoardInfo();
             data.name = board.name;
             data.numberOfPlayers = board.getPlayers.length;
-            data.socketUrl = board.socketService.url;
+            data.socketUrl = board.socketHandler.url;
             data.playerLimitReached = board.isLimitReached();
             result.push(data);
         });
@@ -33,4 +35,4 @@ class BoardHandler {
     }
 } 
 
-export default new BoardHandler()
+export default BoardHandler;

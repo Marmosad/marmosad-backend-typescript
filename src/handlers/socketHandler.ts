@@ -1,7 +1,7 @@
 import Board from "../board";
-import ChatHandler from "../handlers/chatHandler"
+import {ChatHandler} from "../barrels/handlers";
 
-class SocketService{
+export default class SocketHandler{
     private io = null;
     private _url = '';
     private chatHandler;
@@ -12,7 +12,8 @@ class SocketService{
     }
 
     start(http) {
-        this.io = require('socket.io')(http,{ path: '/'+this.board.name});
+        this.url = this.board.name;
+        this.io = require('socket.io')(http,{ path: '/' + this.board.name});
         this.io.on('connection', function (socket) {
             this.setupSocket(socket);
         });
@@ -57,5 +58,3 @@ class SocketService{
         this._url = url;
     }
 }
-
-export default SocketService;

@@ -1,7 +1,7 @@
 var Rx = require('rxjs');
 import Board from '../board';
 
-class RxService {
+export default class RxService {
 
     playerSubject;
     blackCardSubject;
@@ -25,5 +25,3 @@ class RxService {
         return this.whiteCardSubject;
     }
 }
-
-export default new RxService();
