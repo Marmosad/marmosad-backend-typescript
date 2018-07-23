@@ -75,6 +75,3 @@ export class JsonService implements JsonInterface{
         })
     }
 }
-
-const jsonService = new JsonService();
-export default jsonService;

@@ -1,5 +1,7 @@
 var mysql = require('mysql');
 import { interfaces, injectable, inject } from "inversify";
+import { EnvInterface } from './envService';
+import { TYPES } from "./containerService";
 
 export interface DbInterface {
     start();
@@ -12,16 +14,24 @@ export interface DbInterface {
 @injectable()
 export class DbService implements DbInterface{
 
+    private envService: EnvInterface;
     connection;
     whiteCardsSize = -1;
     blackCardsSize = -1;
+    
+    constructor(
+        @inject(TYPES.EnvInterface) _envService: EnvInterface
+    ) {
+        this.envService = _envService;
+    }
+
     start () {
         let self = this;
         this.connection = mysql.createConnection({
-            host: envService.env.DB_HOST,
-            user: envService.env.DB_USER,
-            password: envService.env.DB_PASSWORD,
-            database: envService.env.DB_NAME
+            host: this.envService.env.DB_HOST,
+            user: this.envService.env.DB_USER,
+            password: this.envService.env.DB_PASSWORD,
+            database: this.envService.env.DB_NAME
         });
         this.connection.connect(function (err) {
             if (err) {
@@ -61,6 +71,3 @@ export class DbService implements DbInterface{
         return this.blackCardsSize;
     }
 }
-
-const dbService = new DbService();
-export default dbService;

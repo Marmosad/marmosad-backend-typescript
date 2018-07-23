@@ -2,9 +2,11 @@ import express = require('express');
 import * as httpClass from 'http';
 import { BoardHandler } from './src/barrels/handlers';
 import * as cors from 'cors';
+import { container, TYPES } from './src/services/containerService';
+import { EnvInterface } from "./src/services/envService";
 
-// pre-initialize all services for non service classes to use
-import { dbService, envService, jsonService, playerService, rxService } from './src/barrels/services'
+// pre-initialize all services for non service classes to use TODO: REMOVE
+// import { dbService, envService, jsonService, playerService, rxService } from './src/barrels/services'
 
 export class App {
 
@@ -31,6 +33,7 @@ appInstance.http.listen(8081, function () {
 
 const path = require('path'); // was const
 
+let envService = container.get<EnvInterface>(TYPES.EnvInterface);
 console.log('Running is production mode:', envService.prodMode ? 'true' : 'false');
 
 if(envService.prodMode) {

@@ -1,4 +1,12 @@
-class EnvService {
+import { injectable } from "inversify";
+
+export interface EnvInterface {
+    prodMode: boolean;
+    env: any;
+}
+
+@injectable()
+export class EnvService implements EnvInterface {
     private _env: any;
     private _prodMode = false;
 
@@ -27,11 +35,11 @@ class EnvService {
 
     }
 
-    get prodMode() {
+    get prodMode(): boolean {
         return this._prodMode;
     }
 
-    get env() {
+    get env(): any {
         return this._env;
     }
     
