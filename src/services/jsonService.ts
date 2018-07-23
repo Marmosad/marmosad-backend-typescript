@@ -10,6 +10,7 @@ export interface JsonInterface {
     getNewWhiteCard(owner);    
 }
 
+
 function getRandomInt(min, max) {
     var retval = Math.floor(Math.random() * (max - min + 1)) + min;
     if (retval < 1) {
@@ -17,6 +18,7 @@ function getRandomInt(min, max) {
     }
     return retval;
 }
+
 
 @injectable()
 export class JsonService implements JsonInterface{
@@ -73,3 +75,6 @@ export class JsonService implements JsonInterface{
         })
     }
 }
+
+const jsonService = new JsonService();
+export default jsonService;

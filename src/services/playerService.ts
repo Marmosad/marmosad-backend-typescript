@@ -39,3 +39,7 @@ export class PlayerService implements PlayerInterface {
         }, socketid);
     }
 }
+
+
+const playerService = new PlayerService();
+export default playerService;

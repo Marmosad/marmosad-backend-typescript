@@ -11,6 +11,7 @@ export interface RxInterface {
 @injectable()
 export class RxService implements RxInterface {
 
+
     playerSubject;
     blackCardSubject;
     whiteCardSubject;
@@ -33,3 +34,6 @@ export class RxService implements RxInterface {
         return this.whiteCardSubject;
     }
 }
+
+const rxService = new RxService();
+export default rxService;

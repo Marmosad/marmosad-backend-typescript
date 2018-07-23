@@ -30,7 +30,7 @@ class Board {
         this.rxService = container.get<RxInterface>(TYPES.RxInterface);
         this._name = name;
         this._socketHandler = new SocketHandler(this);
-       this.initInstance(app.http);
+        this.initInstance(app.http);
         let self = this;
         var playerSubscription = this.rxService.getPlayerSubject().subscribe(function (player) {
             self.boardData.players[player.data.playerId] = player;
