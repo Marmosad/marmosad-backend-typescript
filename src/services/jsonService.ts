@@ -1,4 +1,14 @@
-import { dbService, rxService } from '../barrels/services'
+// import { dbService, rxService } from '../barrels/services';
+import { interfaces, injectable, inject } from "inversify";
+import { TYPES } from "./containerService";
+import { DbInterface } from "./dbService";
+import { RxInterface } from "./rxService";
+
+export interface JsonInterface {
+    createPlayer(callback, playerID);
+    getNewBlackCard();
+    getNewWhiteCard(owner);    
+}
 
 function getRandomInt(min, max) {
     var retval = Math.floor(Math.random() * (max - min + 1)) + min;
@@ -7,16 +17,25 @@ function getRandomInt(min, max) {
     }
     return retval;
 }
-export default class JsonService{
+
+@injectable()
+export class JsonService implements JsonInterface{
     playerSubject;
     whiteCardSubject;
     blackCardSubject;
+    dbService: DbInterface;
+    rxService: RxInterface;
 
-    constructor() {
-        dbService.start();
-        this.playerSubject = rxService.getPlayerSubject();
-        this.whiteCardSubject = rxService.getWhiteCardSubject();
-        this.blackCardSubject = rxService.getBlackCardSubject();
+    constructor(
+        @inject(TYPES.DbInterface) _dbService: DbInterface,
+        @inject(TYPES.RxInterface) _rxService: RxInterface
+    ) {
+        this.dbService = _dbService;
+        this.rxService = _rxService;
+        this.dbService.start();
+        this.playerSubject = this.rxService.getPlayerSubject();
+        this.whiteCardSubject = this.rxService.getWhiteCardSubject();
+        this.blackCardSubject = this.rxService.getBlackCardSubject();
     }
 
     createPlayer (callback, playerId) {
@@ -31,20 +50,20 @@ export default class JsonService{
             console.log(whiteCard);
             hand.push(whiteCard);
             if (hand.length !== 7) {
-                dbService.getWhiteCard(getRandomInt(1, dbService.getWhiteCardSize()), recursion);
+                this.dbService.getWhiteCard(getRandomInt(1, this.dbService.getWhiteCardSize()), recursion);
             }
             else {callback(hand);
             }
         }
-        dbService.getWhiteCard(getRandomInt(1, dbService.getWhiteCardSize()), recursion);
+        this.dbService.getWhiteCard(getRandomInt(1, this.dbService.getWhiteCardSize()), recursion);
     }
     getNewBlackCard () {
-        dbService.getBlackCard(getRandomInt(1, dbService.getBlackCardSize()), function (blackCard) {
+        this.dbService.getBlackCard(getRandomInt(1, this.dbService.getBlackCardSize()), function (blackCard) {
             this.blackCardSubject.next(blackCard);
         })
     }
     getNewWhiteCard (owner) {
-        dbService.getWhiteCard(getRandomInt(1, dbService.getBlackCardSize()), function (card) {
+        this.dbService.getWhiteCard(getRandomInt(1, this.dbService.getBlackCardSize()), function (card) {
             var whiteCard = {
                 cardId: card.id,
                 body: card.body,

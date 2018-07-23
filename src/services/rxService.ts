@@ -1,7 +1,15 @@
 var Rx = require('rxjs');
 import Board from '../board';
+import { interfaces, injectable, inject } from "inversify";
 
-export default class RxService {
+export interface RxInterface {
+    getPlayerSubject();
+    getBlackCardSubject();
+    getWhiteCardSubject();                    
+}
+
+@injectable()
+export class RxService implements RxInterface {
 
     playerSubject;
     blackCardSubject;

@@ -1,6 +1,16 @@
 var mysql = require('mysql');
+import { interfaces, injectable, inject } from "inversify";
 
-export default class DbService {
+export interface DbInterface {
+    start();
+    getWhiteCard(id, callback): void;
+    getBlackCard(id, callback): void;
+    getWhiteCardSize(): number;
+    getBlackCardSize(): number; 
+}
+
+@injectable()
+export class DbService implements DbInterface{
 
     connection;
     whiteCardsSize = -1;
@@ -30,24 +40,24 @@ export default class DbService {
             });
         });
     }
-    getWhiteCard(id, callback) {
+    getWhiteCard(id, callback): void {
         this.connection.query('SELECT * FROM whitecards WHERE id = ' + id, function (err, results, fields) {
             if (err) throw err;
             console.log("white card id is" + id);
             callback(results[0]);
         });
     }
-    getBlackCard (id, callback) { //gets rand black card
+    getBlackCard (id, callback): void { //gets rand black card
         this.connection.query('SELECT * FROM `blackcards` WHERE `﻿id`='+id, function (err, results, fields) {
             if (err) throw err;
             console.log("blackcard id is" + id);
             callback(results[0]);
         });
     }
-    getWhiteCardSize () {
+    getWhiteCardSize (): number {
         return this.whiteCardsSize;
     }
-    getBlackCardSize () {
+    getBlackCardSize (): number {
         return this.blackCardsSize;
     }
 }

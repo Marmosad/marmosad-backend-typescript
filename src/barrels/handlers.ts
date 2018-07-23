@@ -6,4 +6,4 @@ export {
     SocketHandler,
     ChatHandler,
     BoardHandler
-}
+};

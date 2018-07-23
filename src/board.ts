@@ -1,6 +1,10 @@
 import { SocketHandler } from './barrels/handlers'
-import { playerService, jsonService, rxService } from './barrels/services'
+// import { playerService, jsonService, rxService } from './barrels/services'
 import { App } from '../app'
+import { TYPES, container } from "./services/containerService";
+import { PlayerInterface } from "./services/playerService";
+import { JsonInterface } from "./services/jsonService";
+import { RxInterface } from "./services/rxService";
 
 import stringify = require('json-stringify-safe');
 var MAX_SCORE = 4;
@@ -13,22 +17,32 @@ var isLimitReached = false;
 class Board {
     private _name: string;
     private _socketHandler;
-    constructor(name: string, app: App) {
+    private playerService: PlayerInterface;
+    private jsonService: JsonInterface;
+    private rxService: RxInterface;
+
+    constructor(
+        name: string, 
+        app: App
+        ) {
+        this.playerService = container.get<PlayerInterface>(TYPES.PlayerInterface);
+        this.jsonService = container.get<JsonInterface>(TYPES.JsonInterface);
+        this.rxService = container.get<RxInterface>(TYPES.RxInterface);
         this._name = name;
         this._socketHandler = new SocketHandler(this);
        this.initInstance(app.http);
         let self = this;
-        var playerSubscription = rxService.getPlayerSubject().subscribe(function (player) {
+        var playerSubscription = this.rxService.getPlayerSubject().subscribe(function (player) {
             self.boardData.players[player.data.playerId] = player;
             self.updatePlayersInDisplay();
             self.updateCurrentDisplay();
         });
-        var blackCardSubscription = rxService.getBlackCardSubject().subscribe(function (blackCard) {
+        var blackCardSubscription = this.rxService.getBlackCardSubject().subscribe(function (blackCard) {
             self.boardData.display.blackCard = blackCard;
             self.updatePlayersInDisplay();
             self.updateCurrentDisplay();
         });
-        var whiteCardSubscription = rxService.getWhiteCardSubject().subscribe(function (whiteCard) {
+        var whiteCardSubscription = this.rxService.getWhiteCardSubject().subscribe(function (whiteCard) {
             self.boardData.players[whiteCard.owner].data.hand.push(whiteCard);
             self.updatePlayersInDisplay();
             self.updateCurrentDisplay();
@@ -86,7 +100,7 @@ class Board {
     }
     joinedPlayer (playerName, socket, socketid) {
         console.log(playerName);
-        playerService.createPlayer(playerName, socket, socketid);
+        this.playerService.createPlayer(playerName, socket, socketid);
         this.updatePlayersInDisplay();
     }
     removePlayer (playerId) {
@@ -102,7 +116,7 @@ class Board {
         if(this.boardData.phase !== this.boardData.Phases.startGame){
             return false;
         }
-        jsonService.getNewBlackCard();
+        this.jsonService.getNewBlackCard();
         this.boardData.players[Object.keys(this.boardData.players)[0]].data.isJudge = true;
         this.boardData.display.currentJudge = this.boardData.players[Object.keys(this.boardData.players)[0]].data.playerId;
         this.updatePlayersInDisplay();
@@ -166,7 +180,7 @@ class Board {
         }
 
         // Adds a new black card to current display
-        jsonService.getNewBlackCard();
+        this.jsonService.getNewBlackCard();
 
         // Adds a new white card to each hand
         this.boardData.display.submissions = [];
@@ -176,7 +190,7 @@ class Board {
         for (key in keys) {
             console.log(key);
             if (keys[key] !== this.boardData.display.currentJudge) {
-                jsonService.getNewWhiteCard(keys[key]);
+                this.jsonService.getNewWhiteCard(keys[key]);
             }
         }
         key = null;

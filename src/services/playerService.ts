@@ -1,11 +1,32 @@
-import { jsonService, rxService } from '../barrels/services'
+// import { jsonService, rxService } from '../barrels/services'
+import { interfaces, injectable, inject } from "inversify";
+import { TYPES } from "./containerService";
+import { JsonInterface } from "./jsonService";
+import { RxInterface } from "./RxService";
 
-var playerSubject = rxService.getPlayerSubject()
+export interface PlayerInterface {
+    createPlayer(playerName, socket, socketid);
+}
+
 //rewrite as module in typescript
-export default class PlayerService {
+@injectable()
+export class PlayerService implements PlayerInterface {
+    private jsonService: JsonInterface;
+    private rxService: RxInterface;
+    private playerSubject: any;
+
+    constructor(
+        @inject(TYPES.JsonInterface) _jsonService: JsonInterface,
+        @inject(TYPES.RxInterface) _rxService: RxInterface
+    ) {
+        this.jsonService = _jsonService;
+        this.rxService = _rxService;
+        this.playerSubject = this.rxService.getPlayerSubject()
+    }
+
     createPlayer (playerName, socket, socketid) {
-        jsonService.createPlayer(function (hand) {
-            playerSubject.next({
+        this.jsonService.createPlayer(function (hand) {
+            this.playerSubject.next({
                 data: {
                     "playerName": playerName,
                     "playerId": socketid,
