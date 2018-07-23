@@ -1,7 +1,7 @@
 var mysql = require('mysql');
 import { interfaces, injectable, inject } from "inversify";
 import { EnvInterface } from './envService';
-import { TYPES } from "./containerService";
+import { TYPES } from "../models/types";
 
 export interface DbInterface {
     start();

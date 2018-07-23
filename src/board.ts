@@ -1,7 +1,8 @@
 import { SocketHandler } from './barrels/handlers'
 // import { playerService, jsonService, rxService } from './barrels/services'
 import { App } from '../app'
-import { TYPES, container } from "./services/containerService";
+import { container } from "./services/containerService";
+import { TYPES } from "./models/types";
 import { PlayerInterface } from "./services/playerService";
 import { JsonInterface } from "./services/jsonService";
 import { RxInterface } from "./services/rxService";

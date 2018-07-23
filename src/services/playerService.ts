@@ -1,8 +1,8 @@
 // import { jsonService, rxService } from '../barrels/services'
 import { interfaces, injectable, inject } from "inversify";
-import { TYPES } from "./containerService";
+import { TYPES } from "../models/types";
 import { JsonInterface } from "./jsonService";
-import { RxInterface } from "./RxService";
+import { RxInterface } from "./rxService";
 
 export interface PlayerInterface {
     createPlayer(playerName, socket, socketid);

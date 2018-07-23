@@ -6,16 +6,7 @@ import { DbInterface, DbService } from './dbService';
 import { PlayerInterface, PlayerService } from './playerService';
 import { RxInterface, RxService } from './rxService';
 import { EnvInterface, EnvService } from './envService';
-import { types } from "util";
-
-let TYPES = {
-    DbInterface: Symbol("DbInterface"),
-    JsonInterface: Symbol("JsonInterface"),   
-    PlayerInterface: Symbol("PlayerInterface"),   
-    RxInterface: Symbol("RxInterface"),
-    EnvInterface: Symbol("EnvInterface")
-}
-
+import { TYPES } from '../models/types';
 
 let container = new Container();
 container.bind<DbInterface>(TYPES.DbInterface).to(DbService);

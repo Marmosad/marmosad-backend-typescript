@@ -1,6 +1,6 @@
 // import { dbService, rxService } from '../barrels/services';
 import { interfaces, injectable, inject } from "inversify";
-import { TYPES } from "./containerService";
+import { TYPES } from "../models/types";
 import { DbInterface } from "./dbService";
 import { RxInterface } from "./rxService";
 
