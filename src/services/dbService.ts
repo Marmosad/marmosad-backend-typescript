@@ -4,20 +4,20 @@ import { EnvInterface } from './envService';
 import { TYPES } from "../models/types";
 
 export interface DbInterface {
-    start();
+    start(): void;
     getWhiteCard(id, callback): void;
     getBlackCard(id, callback): void;
-    getWhiteCardSize(): number;
-    getBlackCardSize(): number; 
+    whiteCardsSize: number;
+    blackCardsSize: number; 
 }
 
 @injectable()
 export class DbService implements DbInterface{
 
     private envService: EnvInterface;
-    connection;
-    whiteCardsSize = -1;
-    blackCardsSize = -1;
+    private connection: any;
+    private _whiteCardsSize = -1;
+    private _blackCardsSize = -1;
     
     constructor(
         @inject(TYPES.EnvInterface) _envService: EnvInterface
@@ -25,7 +25,7 @@ export class DbService implements DbInterface{
         this.envService = _envService;
     }
 
-    start () {
+    start (): void {
         let self = this;
         this.connection = mysql.createConnection({
             host: this.envService.env.DB_HOST,
@@ -41,10 +41,10 @@ export class DbService implements DbInterface{
             console.log('connected as id ' + self.connection.threadId);
             self.connection.query('SELECT COUNT(*) FROM whitecards', function (err, results, fields) {
                 if (err) throw err;
-                self.whiteCardsSize = results[0]["COUNT(*)"];
+                self._whiteCardsSize = results[0]["COUNT(*)"];
                 self.connection.query('SELECT COUNT(*) FROM blackcards', function (err, results, fields) {
                     if (err) throw err;
-                    self.blackCardsSize = results[0]["COUNT(*)"];
+                    self._blackCardsSize = results[0]["COUNT(*)"];
                     this.status = 0;
                 });
             });
@@ -64,10 +64,10 @@ export class DbService implements DbInterface{
             callback(results[0]);
         });
     }
-    getWhiteCardSize (): number {
-        return this.whiteCardsSize;
+    get whiteCardsSize (): number {
+        return this._whiteCardsSize;
     }
-    getBlackCardSize (): number {
-        return this.blackCardsSize;
+    get blackCardsSize (): number {
+        return this._blackCardsSize;
     }
 }

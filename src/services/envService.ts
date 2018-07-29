@@ -12,7 +12,7 @@ export class EnvService implements EnvInterface {
 
     constructor() {
         console.log('loading env variables');
-        console.log(process.argv)
+        console.log(process.argv);
         const args = process.argv;
         const params = args.filter((x) => {
             return x.substr(0, 2) === '--';
@@ -43,16 +43,13 @@ export class EnvService implements EnvInterface {
         return this._env;
     }
     
-    private loadEnvDevelopment() {
+    private loadEnvDevelopment(): void {
         require('dotenv').config({path: '.env.development'});
         this._env = process.env;
     }
 
-    private loadEnvProduction() {
+    private loadEnvProduction(): void {
         require('dotenv').config({path: '.env.production'});
         this._env = process.env;
     }
 }
-
-const envService = new EnvService();
-export default envService;

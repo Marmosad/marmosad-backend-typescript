@@ -2,7 +2,8 @@ import express = require('express');
 import * as httpClass from 'http';
 import { BoardHandler } from './src/barrels/handlers';
 import * as cors from 'cors';
-import { container, TYPES } from './src/services/containerService';
+import { container } from './src/services/containerService';
+import { TYPES } from './src/models/types'
 import { EnvInterface } from "./src/services/envService";
 
 // pre-initialize all services for non service classes to use TODO: REMOVE

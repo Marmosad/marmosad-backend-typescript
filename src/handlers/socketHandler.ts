@@ -4,54 +4,57 @@ import {ChatHandler} from "../barrels/handlers";
 export default class SocketHandler{
     private io = null;
     private _url = '';
-    private chatHandler;
-    private board;
+    private chatHandler: ChatHandler;
+    private board: Board;
     constructor(board: Board){
         this.chatHandler = new ChatHandler(board, this);
         this.board = board;
     }
 
-    start(http) {
+    start(http): void {
+        let self = this;
         this.url = this.board.name;
         this.io = require('socket.io')(http,{ path: '/' + this.board.name});
         this.io.on('connection', function (socket) {
-            this.setupSocket(socket);
+            self.setupSocket(socket);
         });
     }
-    emit(a, b) {
+    emit(a, b): void {
         this.io.emit(a, b);
     }
-    setupSocket(socket){
+    setupSocket(socket): void{
+        let self = this;
+        console.log(socket.handshake.query.name, socket, socket.id);
         this.board.joinedPlayer(socket.handshake.query.name, socket, socket.id);
         socket.on('sendMsg', function (data) {
-            this.chatHandler.onMessage(data.msg, data.from);
+            self.chatHandler.onMessage(data.msg, data.from);
         });
         socket.on('disconnect', function (reason) {
             console.log(socket.id + ' ' + reason);
-            this.board.removePlayer(socket.id);
+            self.board.removePlayer(socket.id);
         });
         socket.on('startGame', function () {
             console.log('startGame Socket event');
-            this.board.startGame();
+            self.board.startGame();
         });
         socket.on('reset', function () {
-            this.io.emit('boardReset', null);
-            var players = Object.keys(this.board.getPlayers());
+            self.io.emit('boardReset', null);
+            var players = Object.keys(self.board.getPlayers());
             for (var i in players) {
-                this.board.removePlayer(players[i]);
+                self.board.removePlayer(players[i]);
             }
-            this.board.reset();
+            self.board.reset();
         });
         socket.on('submission', function (card) {
             console.log(card + "submitted");
-            console.log(this.board.submission(card));
+            console.log(self.board.submission(card));
         });
 
         socket.on('judgment', function (card) {
-            this.board.judgement(card); // TODO why does this count as a submission
+            self.board.judgement(card); // TODO why does this count as a submission
         });
     }
-    get url() {
+    get url(): string {
         return this._url;
     }
     set url(url: string) {

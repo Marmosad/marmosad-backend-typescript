@@ -3,8 +3,8 @@ import { SocketHandler } from './barrels/handlers'
 import { App } from '../app'
 import { container } from "./services/containerService";
 import { TYPES } from "./models/types";
-import { PlayerInterface } from "./services/playerService";
-import { JsonInterface } from "./services/jsonService";
+import { PlayerInterface, PlayerService } from "./services/playerService";
+import { JsonInterface, JsonService } from "./services/jsonService";
 import { RxInterface } from "./services/rxService";
 
 import stringify = require('json-stringify-safe');
@@ -24,11 +24,14 @@ class Board {
 
     constructor(
         name: string, 
-        app: App
+        app: App,
+        _playerService: PlayerInterface,
+        _jsonService: JsonInterface,
+        _rxService: RxInterface
         ) {
-        this.playerService = container.get<PlayerInterface>(TYPES.PlayerInterface);
-        this.jsonService = container.get<JsonInterface>(TYPES.JsonInterface);
-        this.rxService = container.get<RxInterface>(TYPES.RxInterface);
+        this.playerService = _playerService;
+        this.jsonService = _jsonService;
+        this.rxService = _rxService;
         this._name = name;
         this._socketHandler = new SocketHandler(this);
         this.initInstance(app.http);

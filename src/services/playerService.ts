@@ -5,7 +5,7 @@ import { JsonInterface } from "./jsonService";
 import { RxInterface } from "./rxService";
 
 export interface PlayerInterface {
-    createPlayer(playerName, socket, socketid);
+    createPlayer(playerName, socket, socketid): void;
 }
 
 //rewrite as module in typescript
@@ -24,9 +24,10 @@ export class PlayerService implements PlayerInterface {
         this.playerSubject = this.rxService.getPlayerSubject()
     }
 
-    createPlayer (playerName, socket, socketid) {
+    createPlayer (playerName, socket, socketid): void {
+        let self = this;
         this.jsonService.createPlayer(function (hand) {
-            this.playerSubject.next({
+            self.playerSubject.next({
                 data: {
                     "playerName": playerName,
                     "playerId": socketid,

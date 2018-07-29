@@ -3,37 +3,30 @@ import Board from '../board';
 import { interfaces, injectable, inject } from "inversify";
 
 export interface RxInterface {
-    getPlayerSubject();
-    getBlackCardSubject();
-    getWhiteCardSubject();                    
+    getPlayerSubject(): any;
+    getBlackCardSubject(): any;
+    getWhiteCardSubject(): any;                    
 }
 
 @injectable()
 export class RxService implements RxInterface {
 
-
-    playerSubject;
-    blackCardSubject;
-    whiteCardSubject;
+    playerSubject = new Rx.Subject();
+    blackCardSubject = new Rx.Subject();
+    whiteCardSubject = new Rx.Subject();
 
     constructor() {
-        this.playerSubject = new Rx.Subject();
-        this.blackCardSubject = new Rx.Subject();
-        this.whiteCardSubject = new Rx.Subject();
     }
 
-    getPlayerSubject () {
+    getPlayerSubject (): any {
         return this.playerSubject
     }
     
-    getBlackCardSubject () {
+    getBlackCardSubject (): any {
         return this.blackCardSubject;
     }
     
-    getWhiteCardSubject () {
+    getWhiteCardSubject (): any {
         return this.whiteCardSubject;
     }
 }
-
-const rxService = new RxService();
-export default rxService;

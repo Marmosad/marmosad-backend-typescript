@@ -9,13 +9,12 @@ import { EnvInterface, EnvService } from './envService';
 import { TYPES } from '../models/types';
 
 let container = new Container();
-container.bind<DbInterface>(TYPES.DbInterface).to(DbService);
 container.bind<JsonInterface>(TYPES.JsonInterface).to(JsonService);
+container.bind<DbInterface>(TYPES.DbInterface).to(DbService);
 container.bind<PlayerInterface>(TYPES.PlayerInterface).to(PlayerService);
 container.bind<RxInterface>(TYPES.RxInterface).to(RxService);
 container.bind<EnvInterface>(TYPES.EnvInterface).to(EnvService);
 
-export { 
-    TYPES,
+export {
     container
 };

@@ -1,15 +1,15 @@
 import Board from '../board.js';
-import {SocketHandler} from '../barrels/handlers';
+import { SocketHandler } from '../barrels/handlers';
 
 export default class ChatHandler {
-    private socketHandler;
-    private board;
+    private socketHandler: SocketHandler;
+    private board: Board;
     constructor(board: Board, socketHandler: SocketHandler) {
         this.socketHandler = socketHandler;
         this.board = board;
     }
 
-    onMessage (data, socketId) {
+    onMessage (data, socketId): void {
         this.socketHandler.emit('message', {from: this.board.getPlayerName(socketId), msg: data});
     }
 }
