@@ -26,7 +26,6 @@ export class App {
 }
 
 const appInstance = new App();
-export default appInstance;
 
 appInstance.http.listen(8081, function () {
     console.log('listening on *: 8081');
@@ -53,3 +52,7 @@ appInstance.app.get('/boards', function (req, res) {
     console.log(appInstance.boardService.getBoardsInfo());
     res.send(JSON.stringify(appInstance.boardService.getBoardsInfo()));
 });
+
+export {
+    appInstance
+}
