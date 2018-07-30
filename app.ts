@@ -1,6 +1,6 @@
 import express = require('express');
 import * as httpClass from 'http';
-import { BoardHandler } from './src/barrels/handlers';
+import { BoardInterface } from './src/services/boardService';
 import * as cors from 'cors';
 import { container } from './src/services/containerService';
 import { TYPES } from './src/models/types'
@@ -12,14 +12,14 @@ import { EnvInterface } from "./src/services/envService";
 export class App {
 
 
-    public boardHandler: BoardHandler
+    public boardService: BoardInterface
     public app = express();
 
     public http = new httpClass.Server(this.app);
 
     constructor(){
 
-        this.boardHandler = new BoardHandler(this);
+        this.boardService = container.get<BoardInterface>(TYPES.BoardInterface);
 
     }
 
@@ -50,6 +50,6 @@ appInstance.app.use(express.static(path.join(__dirname, 'dist')));
 
 
 appInstance.app.get('/boards', function (req, res) {
-    console.log(appInstance.boardHandler.getBoardsInfo());
-    res.send(JSON.stringify(appInstance.boardHandler.getBoardsInfo()));
+    console.log(appInstance.boardService.getBoardsInfo());
+    res.send(JSON.stringify(appInstance.boardService.getBoardsInfo()));
 });

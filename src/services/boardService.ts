@@ -1,5 +1,6 @@
 import Board from '../board';
 import BoardInfo from '../models/boardModel';
+import { interfaces, injectable, inject } from "inversify";
 import { App } from '../../app';
 import { PlayerInterface } from '../services/playerService';
 import { JsonInterface } from '../services/jsonService';
@@ -7,7 +8,13 @@ import { RxInterface } from '../services/rxService';
 import { container } from '../services/containerService';
 import { TYPES } from '../models/types';
 
-class BoardHandler {
+export interface BoardInterface {
+    newBoard(name): Board;
+    getBoardsInfo(): Array<BoardInfo>;
+}
+
+@injectable()
+export class BoardService implements BoardInterface{
 
     private app: App;
     boards: Array<Board> = new Array<Board>();
@@ -15,11 +22,15 @@ class BoardHandler {
     private jsonService: JsonInterface;
     private rxService: RxInterface;
 
-    constructor(app: App) {
+    constructor(
+        @inject(TYPES.PlayerInterface) _playerService: PlayerInterface,
+        @inject(TYPES.JsonInterface) _jsonService: JsonInterface,
+        @inject(TYPES.RxInterface) _rxService: RxInterface,
+    ) {
         this.app = app;
-        this.playerService = container.get<PlayerInterface>(TYPES.PlayerInterface);
-        this.jsonService = container.get<JsonInterface>(TYPES.JsonInterface);
-        this.rxService = container.get<RxInterface>(TYPES.RxInterface);
+        this.playerService = _playerService;
+        this.jsonService = _jsonService;
+        this.rxService = _rxService;
         this.newBoard('name1');
         this.newBoard('name2');
         this.newBoard('name3');
@@ -46,4 +57,4 @@ class BoardHandler {
     }
 } 
 
-export default BoardHandler;
+export default BoardService;

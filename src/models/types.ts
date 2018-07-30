@@ -3,7 +3,8 @@ let TYPES = {
     JsonInterface: Symbol("JsonInterface"),   
     PlayerInterface: Symbol("PlayerInterface"),   
     RxInterface: Symbol("RxInterface"),
-    EnvInterface: Symbol("EnvInterface")
+    EnvInterface: Symbol("EnvInterface"),
+    BoardInterface: Symbol("BoardInterface"),
 }
 
 export { TYPES };

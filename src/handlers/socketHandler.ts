@@ -13,7 +13,7 @@ export default class SocketHandler{
 
     start(http): void {
         let self = this;
-        this.url = this.board.name;
+        this.url = '/' + this.board.name;
         this.io = require('socket.io')(http,{ path: '/' + this.board.name});
         this.io.on('connection', function (socket) {
             self.setupSocket(socket);
