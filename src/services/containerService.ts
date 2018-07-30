@@ -9,6 +9,7 @@ import { EnvInterface, EnvService } from './envService';
 import { BoardInterface, BoardService } from './boardService';
 import { TYPES } from '../models/types';
 
+
 let container = new Container();
 container.bind<JsonInterface>(TYPES.JsonInterface).to(JsonService);
 container.bind<DbInterface>(TYPES.DbInterface).to(DbService);

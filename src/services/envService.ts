@@ -9,6 +9,7 @@ export interface EnvInterface {
 export class EnvService implements EnvInterface {
     private _env: any;
     private _prodMode = false;
+    private loaded = false;
 
     constructor() {
         console.log('loading env variables');
@@ -32,7 +33,6 @@ export class EnvService implements EnvInterface {
         } else {
             this.loadEnvDevelopment();
         }
-
     }
 
     get prodMode(): boolean {

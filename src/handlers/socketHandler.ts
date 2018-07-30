@@ -7,6 +7,7 @@ export default class SocketHandler{
     private chatHandler: ChatHandler;
     private board: Board;
     constructor(board: Board){
+        this.url = board.boardInfo.socketUrl;
         this.chatHandler = new ChatHandler(board, this);
         this.board = board;
     }

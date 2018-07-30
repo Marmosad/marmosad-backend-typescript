@@ -9,7 +9,7 @@ import { container } from '../services/containerService';
 import { TYPES } from '../models/types';
 
 export interface BoardInterface {
-    newBoard(name): Board;
+    newBoard(name: string, numberOfPlayers: number): Board;
     getBoardsInfo(): Array<BoardInfo>;
 }
 
@@ -23,38 +23,53 @@ export class BoardService implements BoardInterface{
 
     constructor(
         @inject(TYPES.PlayerInterface) _playerService: PlayerInterface,
-        @inject(TYPES.JsonInterface) _jsonService: JsonInterface,
-        @inject(TYPES.RxInterface) _rxService: RxInterface,
     ) {
         this.playerService = _playerService;
-        this.jsonService = _jsonService;
-        this.rxService = _rxService;
+        this.jsonService = _playerService.jsonService;
+        this.rxService = _playerService.rxService;
         setTimeout(() => {
-            this.newBoard('name1');
-            this.newBoard('name2');
-            this.newBoard('name3');
-            this.newBoard('name4');
+            this.newBoard('name1', 5);
+            this.newBoard('name2', 5);
+            this.newBoard('name3', 5);
+            this.newBoard('name4', 5);
         }, 2000);
     }
 
-    newBoard(name: string): Board {
-        const boardInstance = new Board(name, appInstance, this.playerService, this.jsonService, this.rxService);
-        this.boards.push(boardInstance);
-        return boardInstance;
+    newBoard(name: string, playerLimit: number): Board {
+        let boards = this.getBoardsInfo();
+        let repeating = false;
+        boards.forEach((board) => {
+            if (board.name === name) {
+                repeating = true;
+            }
+        });
+        if (repeating) {
+            return null;
+        } else {
+            let boardInfo = new BoardInfo();
+            boardInfo = {
+                name: name,
+                playerLimit: playerLimit,
+                socketUrl: name,
+                numberOfPlayers: 0,
+                playerLimitReached: false
+            }
+            const boardInstance = new Board(boardInfo, appInstance, this.playerService, this.jsonService, this.rxService);        
+            this.boards.push(boardInstance);
+            return boardInstance;
+        }
     }
 
     getBoardsInfo(): Array<BoardInfo>{
         let result = new Array<BoardInfo>();
         this.boards.forEach((board: Board) => {
-            const data = new BoardInfo();
-            data.name = board.name;
-            data.numberOfPlayers = board.getPlayers.length;
-            data.socketUrl = board.socketHandler.url;
-            data.playerLimitReached = board.isLimitReached();
+            const data = board.boardInfo;
             result.push(data);
         });
         return result;
     }
+
+
 } 
 
 export default BoardService;

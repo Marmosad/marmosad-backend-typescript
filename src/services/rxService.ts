@@ -1,5 +1,4 @@
 var Rx = require('rxjs');
-import Board from '../board';
 import { interfaces, injectable, inject } from "inversify";
 
 export interface RxInterface {

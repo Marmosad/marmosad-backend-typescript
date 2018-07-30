@@ -2,10 +2,10 @@
 import { interfaces, injectable, inject } from "inversify";
 import { TYPES } from "../models/types";
 import { DbInterface } from "./dbService";
-import { RxInterface } from "./rxService";
 import { WhiteCardModel } from '../models/jsonModel';
 
 export interface JsonInterface {
+    dbService: DbInterface;
     createPlayer(callback, playerID);
     getNewBlackCard();
     getNewWhiteCard(owner);    
@@ -13,22 +13,14 @@ export interface JsonInterface {
 
 @injectable()
 export class JsonService implements JsonInterface{
-    playerSubject;
-    whiteCardSubject;
-    blackCardSubject;
-    dbService: DbInterface;
-    rxService: RxInterface;
+    public dbService: DbInterface;
+
 
     constructor(
         @inject(TYPES.DbInterface) _dbService: DbInterface,
-        @inject(TYPES.RxInterface) _rxService: RxInterface
     ) {
         this.dbService = _dbService;
-        this.rxService = _rxService;
         this.dbService.start();
-        this.playerSubject = this.rxService.getPlayerSubject();
-        this.whiteCardSubject = this.rxService.getWhiteCardSubject();
-        this.blackCardSubject = this.rxService.getBlackCardSubject();
     }
 
     createPlayer (callback, playerId): void {

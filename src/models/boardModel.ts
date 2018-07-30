@@ -3,4 +3,5 @@ export default class BoardInfo {
     numberOfPlayers: number;
     socketUrl: string;
     playerLimitReached: boolean;
+    playerLimit: number;
 }

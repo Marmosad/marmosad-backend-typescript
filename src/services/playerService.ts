@@ -6,14 +6,16 @@ import { RxInterface } from "./rxService";
 
 export interface PlayerInterface {
     createPlayer(playerName, socket, socketid): void;
+    rxService: RxInterface;
+    jsonService: JsonInterface;
 }
 
 //rewrite as module in typescript
 @injectable()
 export class PlayerService implements PlayerInterface {
-    private jsonService: JsonInterface;
-    private rxService: RxInterface;
-    private playerSubject: any;
+    public jsonService: JsonInterface;
+    public rxService: RxInterface;
+    private playerSubject: any; 
 
     constructor(
         @inject(TYPES.JsonInterface) _jsonService: JsonInterface,

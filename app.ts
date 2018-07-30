@@ -5,6 +5,8 @@ import * as cors from 'cors';
 import { container } from './src/services/containerService';
 import { TYPES } from './src/models/types'
 import { EnvInterface } from "./src/services/envService";
+import * as bodyParser from "body-parser";
+
 
 // pre-initialize all services for non service classes to use TODO: REMOVE
 // import { dbService, envService, jsonService, playerService, rxService } from './src/barrels/services'
@@ -38,7 +40,7 @@ console.log('Running is production mode:', envService.prodMode ? 'true' : 'false
 
 if(envService.prodMode) {
     appInstance.app.get('/', function (req, res) {
-        console.log('serving files');
+        console.log('serving files');   
         res.sendFile(path.join(__dirname, 'dist/index.html'));
     });
 } else {
@@ -46,11 +48,21 @@ if(envService.prodMode) {
 }
 
 appInstance.app.use(express.static(path.join(__dirname, 'dist')));
-
+appInstance.app.use(bodyParser.json());
+appInstance.app.use(bodyParser.urlencoded({ extended: false }));
 
 appInstance.app.get('/boards', function (req, res) {
-    console.log(appInstance.boardService.getBoardsInfo());
     res.send(JSON.stringify(appInstance.boardService.getBoardsInfo()));
+});
+
+appInstance.app.post('/boards/generate', function (req, res) {
+    const nonRepeating = (appInstance.boardService.newBoard(req.body.name, req.body.playerLimit) !== null);
+    console.log(nonRepeating);
+    if(nonRepeating) {
+        res.send();
+    } else {
+        res.status(404).send();
+    }
 });
 
 export {
