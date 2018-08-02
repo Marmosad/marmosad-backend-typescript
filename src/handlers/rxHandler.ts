@@ -1,14 +1,6 @@
 var Rx = require('rxjs');
-import { interfaces, injectable, inject } from "inversify";
 
-export interface RxInterface {
-    getPlayerSubject(): any;
-    getBlackCardSubject(): any;
-    getWhiteCardSubject(): any;                    
-}
-
-@injectable()
-export class RxService implements RxInterface {
+export default class RxHandler {
 
     playerSubject = new Rx.Subject();
     blackCardSubject = new Rx.Subject();

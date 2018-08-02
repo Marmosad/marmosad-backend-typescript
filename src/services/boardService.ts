@@ -2,9 +2,7 @@ import Board from '../board';
 import BoardInfo from '../models/boardModel';
 import { interfaces, injectable, inject } from "inversify";
 import { App, appInstance } from '../../app';
-import { PlayerInterface } from '../services/playerService';
 import { JsonInterface } from '../services/jsonService';
-import { RxInterface } from '../services/rxService';
 import { container } from '../services/containerService';
 import { TYPES } from '../models/types';
 
@@ -19,16 +17,12 @@ export interface BoardInterface {
 export class BoardService implements BoardInterface{
 
     boards: Array<Board> = new Array<Board>();
-    private playerService: PlayerInterface;
     private jsonService: JsonInterface;
-    private rxService: RxInterface;
 
     constructor(
-        @inject(TYPES.PlayerInterface) _playerService: PlayerInterface,
+        @inject(TYPES.JsonInterface) _jsonService: JsonInterface,
     ) {
-        this.playerService = _playerService;
-        this.jsonService = _playerService.jsonService;
-        this.rxService = _playerService.rxService;
+        this.jsonService = _jsonService;
         setTimeout(() => {
             this.newBoard('name1', 5);
             this.newBoard('name2', 5);
@@ -56,7 +50,7 @@ export class BoardService implements BoardInterface{
                 numberOfPlayers: 0,
                 playerLimitReached: false
             }
-            const boardInstance = new Board(boardInfo, appInstance, this.playerService, this.jsonService, this.rxService);        
+            const boardInstance = new Board(boardInfo, appInstance, this.jsonService);        
             this.boards.push(boardInstance);
             return boardInstance;
         }

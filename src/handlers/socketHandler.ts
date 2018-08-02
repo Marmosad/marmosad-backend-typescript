@@ -25,7 +25,6 @@ export default class SocketHandler{
     }
     setupSocket(socket): void{
         let self = this;
-        console.log(socket.handshake.query.name, socket, socket.id);
         this.board.joinedPlayer(socket.handshake.query.name, socket, socket.id);
         socket.on('sendMsg', function (data) {
             self.chatHandler.onMessage(data.msg, data.from);
