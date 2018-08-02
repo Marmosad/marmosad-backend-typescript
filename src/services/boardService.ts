@@ -10,6 +10,8 @@ import { TYPES } from '../models/types';
 
 export interface BoardInterface {
     newBoard(name: string, numberOfPlayers: number): Board;
+    updateBoard(name: string, newPlayerLimit: number, newName: string): Board;
+    removeBoard(name: string);
     getBoardsInfo(): Array<BoardInfo>;
 }
 
@@ -58,6 +60,34 @@ export class BoardService implements BoardInterface{
             this.boards.push(boardInstance);
             return boardInstance;
         }
+    }
+
+    updateBoard(name: string, newPlayerLimit: number, newName: string): Board {
+
+        let boards = this.getBoardsInfo();
+        let repeating = false;
+        boards.forEach((board) => {
+            if (board.name === newName && name != newName) {
+                repeating = true;
+            }
+        });
+        if (repeating) {
+            return null;
+        };
+
+        boards.forEach((board) => {
+            if (board.name === name) {
+                this.removeBoard(board.name);
+                boards.splice(boards.indexOf(board),1);
+            }
+        });
+
+        let boardInstance = this.newBoard(newName, newPlayerLimit);
+        return boardInstance;
+    }
+
+    removeBoard(name: string) {
+        
     }
 
     getBoardsInfo(): Array<BoardInfo>{

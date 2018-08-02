@@ -36,7 +36,7 @@ appInstance.http.listen(8081, function () {
 const path = require('path'); // was const
 
 let envService = container.get<EnvInterface>(TYPES.EnvInterface);
-console.log('Running is production mode:', envService.prodMode ? 'true' : 'false');
+console.log('Running in production mode:', envService.prodMode ? 'true' : 'false');
 
 if(envService.prodMode) {
     appInstance.app.get('/', function (req, res) {
