@@ -79,6 +79,7 @@ class Board {
             return this.INSTANCE_ID;
         }
     };
+    // get date instance
     initInstance (http) {
         this.socketHandler.start(http);
         return this.boardData.generateInstanceId();
@@ -101,6 +102,7 @@ class Board {
     getPlayerName (socketId) {
         return this.boardData.players[socketId].data.playerName;
     }
+    // makes player, calls upadte players, checks if player limit is reached
     joinedPlayer (playerName, socket, socketid) {
         this.playerHandler.createPlayer(playerName, socket, socketid);
         this.updatePlayersInDisplay();
@@ -117,6 +119,7 @@ class Board {
         this.boardInfo.numberOfPlayers = Object.keys(this.boardData.players).length;
         this.boardInfo.playerLimitReached = false;
     }
+    // important
     startGame () {
         if(this.boardData.phase !== this.boardData.Phases.startGame){
             return false;
