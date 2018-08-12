@@ -1,5 +1,5 @@
 import Board from '../board';
-import BoardInfo from '../models/boardModel';
+import { BoardInfo } from '../models/boardModel';
 import { interfaces, injectable, inject } from "inversify";
 import { App, appInstance } from '../../app';
 import { JsonInterface } from '../services/jsonService';
@@ -8,8 +8,7 @@ import { TYPES } from '../models/types';
 
 export interface BoardInterface {
     newBoard(name: string, numberOfPlayers: number): Board;
-    updateBoard(name: string, newPlayerLimit: number, newName: string): Board;
-    removeBoard(name: string);
+    updateBoard(name: string, newPlayerLimit: number, newName: string): void;
     getBoardsInfo(): Array<BoardInfo>;
 }
 
@@ -34,54 +33,28 @@ export class BoardService implements BoardInterface{
     newBoard(name: string, playerLimit: number): Board {
         let boards = this.getBoardsInfo();
         let repeating = false;
-        boards.forEach((board) => {
-            if (board.name === name) {
-                repeating = true;
-            }
-        });
-        if (repeating) {
-            return null;
-        } else {
-            let boardInfo = new BoardInfo();
-            boardInfo = {
-                name: name,
-                playerLimit: playerLimit,
-                socketUrl: name,
-                numberOfPlayers: 0,
-                playerLimitReached: false
-            }
-            const boardInstance = new Board(boardInfo, appInstance, this.jsonService);        
-            this.boards.push(boardInstance);
-            return boardInstance;
-        }
-    }
-
-    updateBoard(name: string, newPlayerLimit: number, newName: string): Board {
-
-        let boards = this.getBoardsInfo();
-        let repeating = false;
-        boards.forEach((board) => {
-            if (board.name === newName && name != newName) {
-                repeating = true;
-            }
-        });
-        if (repeating) {
-            return null;
-        };
-
-        boards.forEach((board) => {
-            if (board.name === name) {
-                this.removeBoard(board.name);
-                boards.splice(boards.indexOf(board),1);
-            }
-        });
-
-        let boardInstance = this.newBoard(newName, newPlayerLimit);
+        const boardInfo = Object.assign(new BoardInfo(), {
+            name: name,
+            playerLimit: playerLimit,
+            socketUrl: name,
+            numberOfPlayers: 0,
+            playerLimitReached: false
+        })
+        const boardInstance = new Board(boardInfo, appInstance, this.jsonService);        
+        this.boards.push(boardInstance);
         return boardInstance;
     }
 
-    removeBoard(name: string) {
-        
+    updateBoard(socketUrl: string, newPlayerLimit: number, newName: string): void {
+
+        let boards = this.boards;
+
+        boards.forEach((board) => {
+            if (board.boardInfo.socketUrl === socketUrl) {
+                board.boardInfo.name = newName;
+                board.boardInfo.playerLimit = newPlayerLimit;
+            }
+        });
     }
 
     getBoardsInfo(): Array<BoardInfo>{

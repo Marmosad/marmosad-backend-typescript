@@ -44,7 +44,11 @@ if(envService.prodMode) {
         res.sendFile(path.join(__dirname, 'dist/index.html'));
     });
 } else {
-    appInstance.app.use(cors());
+    appInstance.app.use(function(req, res, next) {
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+        next();
+    });
 }
 
 appInstance.app.use(express.static(path.join(__dirname, 'dist')));
@@ -63,6 +67,11 @@ appInstance.app.post('/boards/generate', function (req, res) {
     } else {
         res.status(404).send();
     }
+});
+
+appInstance.app.post('/boards/update', function (req, res) {
+    appInstance.boardService.updateBoard(req.body.name, req.body.playerLimit, req.body.newName);
+    res.send();
 });
 
 export {

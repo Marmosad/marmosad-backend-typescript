@@ -2,6 +2,7 @@
 import { TYPES } from "../models/types";
 import { JsonInterface, JsonService } from "../services/jsonService";
 import { RxHandler } from "../barrels/handlers";
+import { Socket } from "socket.io";
 
 export default class PlayerHandler {
     public jsonService: JsonInterface;
@@ -16,7 +17,7 @@ export default class PlayerHandler {
         this.playerSubject = this.rxHandler.getPlayerSubject()
     }
 
-    createPlayer (playerName, socket, socketid): void {
+    createPlayer (playerName: string, socket: Socket, socketid: string): void {
         let self = this;
         this.jsonService.createPlayer(function (hand) {
             self.playerSubject.next({

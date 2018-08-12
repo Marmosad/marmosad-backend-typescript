@@ -1,21 +1,24 @@
 import Board from "../board";
-import {ChatHandler} from "../barrels/handlers";
+import { ChatHandler } from "../barrels/handlers";
+import { Socket } from "socket.io";
 
 export default class SocketHandler{
-    private io = null;
+    private io: Socket = null;
     private _url = '';
     private chatHandler: ChatHandler;
     private board: Board;
     constructor(board: Board){
+        board.boardInfo.socketUrl = '/' + board.boardInfo.name + '-' + board.boardInfo.instanceId.getTime();
         this.url = board.boardInfo.socketUrl;
         this.chatHandler = new ChatHandler(board, this);
         this.board = board;
+
     }
 
     start(http): void {
         let self = this;
-        this.url = '/' + this.board.name;
-        this.io = require('socket.io')(http,{ path: '/' + this.board.name});
+        this.io = require('socket.io')(http,{ path: this.url });
+        console.log(this.url);
         this.io.on('connection', function (socket) {
             self.setupSocket(socket);
         });
@@ -23,7 +26,7 @@ export default class SocketHandler{
     emit(a, b): void {
         this.io.emit(a, b);
     }
-    setupSocket(socket): void{
+    setupSocket(socket: Socket): void{
         let self = this;
         this.board.joinedPlayer(socket.handshake.query.name, socket, socket.id);
         socket.on('sendMsg', function (data) {
