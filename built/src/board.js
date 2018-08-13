@@ -1,95 +1,73 @@
-import { SocketHandler, PlayerHandler, RxHandler } from './barrels/handlers'
-// import { playerService, jsonService, rxService } from './barrels/services'
-import { App } from '../app'
-import { container } from './services/containerService';
-import { TYPES } from "./models/types";
-import { JsonInterface, JsonService } from "./services/jsonService";
-
-import stringify = require('json-stringify-safe');
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var handlers_1 = require("./barrels/handlers");
 var MAX_SCORE = 4;
-import events = require('events');
-import { BoardInfo, Phases, BoardDisplay, InstanceId } from './models/boardModel';
-import { PlayerData, Player, Players } from './models/playerModel';
-import { WhiteCardModel, BlackCardModel } from './models/jsonModel';
+var events = require("events");
+var boardModel_1 = require("./models/boardModel");
+var playerModel_1 = require("./models/playerModel");
 var eventEmitter = new events.EventEmitter();
 var isLimitReached = false;
 //eventEmitter.on('Limit Reached', limitReached);
-
-
-class Board {
-    public boardInfo: BoardInfo;
-
-    private _socketHandler;
-    private jsonService: JsonInterface;
-    private phase = Phases.startGame;
-
-    private players = new Players();
-    private display = new BoardDisplay();
-    
-    private playerHandler: PlayerHandler;
-
-    constructor(
-        boardInfo: BoardInfo,
-        app: App,
-        _jsonService: JsonInterface,
-        ) {
-        this.playerHandler = new PlayerHandler(_jsonService);
+var Board = /** @class */ (function () {
+    function Board(boardInfo, app, _jsonService) {
+        this.phase = boardModel_1.Phases.startGame;
+        this.players = new playerModel_1.Players();
+        this.display = new boardModel_1.BoardDisplay();
+        this.playerHandler = new handlers_1.PlayerHandler(_jsonService);
         this.jsonService = _jsonService;
-
         this.boardInfo = boardInfo;
         boardInfo.socketUrl = boardInfo.name;
-        this._socketHandler = new SocketHandler(this);
-
+        this._socketHandler = new handlers_1.SocketHandler(this);
         this.initInstance(app.http);
-        let self = this;
+        var self = this;
         this.playerHandler.rxHandler.getPlayerSubject().subscribe(function (player) {
             self.players[player.data.playerId] = player;
             self.updatePlayersInDisplay();
             self.updateCurrentDisplay();
         });
-        this.playerHandler.rxHandler.getBlackCardSubject().subscribe(function (blackCard: BlackCardModel) {
+        this.playerHandler.rxHandler.getBlackCardSubject().subscribe(function (blackCard) {
             self.display.blackCard = blackCard;
             self.updatePlayersInDisplay();
             self.updateCurrentDisplay();
         });
-        this.playerHandler.rxHandler.getWhiteCardSubject().subscribe(function (whiteCard: WhiteCardModel) {
+        this.playerHandler.rxHandler.getWhiteCardSubject().subscribe(function (whiteCard) {
             self.players[whiteCard.owner].data.hand.push(whiteCard);
             self.updatePlayersInDisplay();
             self.updateCurrentDisplay();
         });
     }
     // get date instance
-    initInstance (http): InstanceId {
+    Board.prototype.initInstance = function (http) {
         this.socketHandler.start(http);
         return this.boardInfo.instanceId;
-    }
-    getPlayers (): Players {
+    };
+    Board.prototype.getPlayers = function () {
         return this.players;
-    }
-    getDisplay (): BoardDisplay {
+    };
+    Board.prototype.getDisplay = function () {
         return this.display;
-    }
-    getInstanceId (): InstanceId {
+    };
+    Board.prototype.getInstanceId = function () {
         return this.boardInfo.instanceId;
-    }
-    setPlayers (players: Players): void {
-       this.players = players;
-    }
-    setDisplay (display: BoardDisplay): void {
+    };
+    Board.prototype.setPlayers = function (players) {
+        this.players = players;
+    };
+    Board.prototype.setDisplay = function (display) {
         this.display = display;
-    }
-    getPlayerName (socketId: string): string {
+    };
+    Board.prototype.getPlayerName = function (socketId) {
         return this.players[socketId].data.playerName;
-    }
+    };
     // makes player, calls upadte players, checks if player limit is reached
-    joinedPlayer (playerName: string, socket: any, socketid: string): void {
+    Board.prototype.joinedPlayer = function (playerName, socket, socketid) {
         this.playerHandler.createPlayer(playerName, socket, socketid);
         this.updatePlayersInDisplay();
         this.boardInfo.numberOfPlayers = Object.keys(this.players).length;
         this.boardInfo.playerLimitReached = this.boardInfo.numberOfPlayers > this.boardInfo.playerLimit;
-    }
-    removePlayer (playerId: string): void {
-        if(this.players[playerId]){
+    };
+    Board.prototype.removePlayer = function (playerId) {
+        if (this.players[playerId]) {
             this.players[playerId].socket.disconnect(true);
         }
         delete this.players[playerId];
@@ -97,31 +75,31 @@ class Board {
         this.updateCurrentDisplay();
         this.boardInfo.numberOfPlayers = Object.keys(this.players).length;
         this.boardInfo.playerLimitReached = false;
-    }
-    updateBoardInfo(newBoardInfo: BoardInfo): BoardInfo {
+    };
+    Board.prototype.updateBoardInfo = function (newBoardInfo) {
         this.boardInfo = newBoardInfo;
         return this.boardInfo;
-    }
+    };
     // check return type
-    startGame () {  
-        if(this.phase !== Phases.startGame){
+    Board.prototype.startGame = function () {
+        if (this.phase !== boardModel_1.Phases.startGame) {
             return false;
         }
         this.playerHandler.rxHandler.getNewBlackCard();
         this.players[Object.keys(this.players)[0]].data.isJudge = true;
         this.display.currentJudge = this.players[Object.keys(this.players)[0]].data.playerId;
         this.updatePlayersInDisplay();
-        this.phase = Phases.submission;
+        this.phase = boardModel_1.Phases.submission;
         this.updateCurrentDisplay();
-    }
-    submission (whiteCard: WhiteCardModel): boolean {
-        if (this.phase !== Phases.submission) {
+    };
+    Board.prototype.submission = function (whiteCard) {
+        if (this.phase !== boardModel_1.Phases.submission) {
             console.log('submission failed because incorrect phase');
             return false;
         }
         console.log(Object.keys(this.players) + ' ,' + this.display.currentJudge);
         console.log(whiteCard);
-        if(this.display.currentJudge === whiteCard.owner){
+        if (this.display.currentJudge === whiteCard.owner) {
             return false;
         }
         //console.log('attempting to find id ' + whiteCard.owner + ' of \n' + this.players[whiteCard.owner]);
@@ -136,43 +114,41 @@ class Board {
         //console.log(this.display.submissions.length);
         //console.log(Object.keys(this.players).length - 1);
         if (this.display.submissions.length >= Object.keys(this.players).length - 1) {
-            this.phase = Phases.judgement;
+            this.phase = boardModel_1.Phases.judgement;
             // console.log('this.display.submissions.length >= Object.keys(this.players).length - 1');
         }
         return true; //error handling maybe? Can't hurt
-    }
-    judgement (whiteCard: WhiteCardModel): boolean {
-        if (this.phase !== Phases.judgement) {
+    };
+    Board.prototype.judgement = function (whiteCard) {
+        if (this.phase !== boardModel_1.Phases.judgement) {
             return false;
         }
-        this.phase = Phases.updateScore;
+        this.phase = boardModel_1.Phases.updateScore;
         this.updateScore(whiteCard.owner);
         return true;
-    }
-    updateScore (playerId: string): boolean {
-        if (this.phase !== Phases.updateScore) {
+    };
+    Board.prototype.updateScore = function (playerId) {
+        if (this.phase !== boardModel_1.Phases.updateScore) {
             return false;
         }
         this.players[playerId].data.score += 1;
         this.updatePlayersInDisplay();
         this.updateCurrentDisplay();
-
         if (this.players[playerId].data.score > MAX_SCORE) { // This variable dictates how long the games go oops.
             this.endGame(playerId);
-        } else {
-            this.phase = Phases.four;
+        }
+        else {
+            this.phase = boardModel_1.Phases.four;
             this.phase4();
         }
         return true;
-    }
-    phase4 (): boolean {
-        if (this.phase !== Phases.four) {
+    };
+    Board.prototype.phase4 = function () {
+        if (this.phase !== boardModel_1.Phases.four) {
             return false;
         }
-
         // Adds a new black card to current display
         this.playerHandler.rxHandler.getNewBlackCard();
-
         // Adds a new white card to each hand
         this.display.submissions = [];
         var key;
@@ -185,57 +161,60 @@ class Board {
             }
         }
         key = null;
-
         // Sets current judge to not judge. Might not need in the future.
         this.players[this.display.currentJudge].data.isJudge = false;
         //console.log(Object.keys(this.players));
-
         // Selects next judge
         this.display.currentJudge = Object.keys(this.players)[Math.round((Object.keys(this.players).length - 1) * Math.random())];
         //console.log(this.display.currentJudge + ' is judge');
         this.players[this.display.currentJudge].data.isJudge = true;
-
         // Start next round. This will be rearranged
         this.updatePlayersInDisplay();
         this.updateCurrentDisplay();
-        this.phase = Phases.submission;
+        this.phase = boardModel_1.Phases.submission;
         console.log('here I am ' + this.phase);
         return true;
-    }
-    endGame (playerId: string): void {
-      this.socketHandler.emit('result', playerId);
-      setTimeout(function () {
-        this.socketHandler.emit('reset', null)
-      }, 3000)
-    }
-    reset (): void {
+    };
+    Board.prototype.endGame = function (playerId) {
+        this.socketHandler.emit('result', playerId);
+        setTimeout(function () {
+            this.socketHandler.emit('reset', null);
+        }, 3000);
+    };
+    Board.prototype.reset = function () {
         this.phase = 0;
-        this.players = new Players();
-        this.display = new BoardDisplay();
+        this.players = new playerModel_1.Players();
+        this.display = new boardModel_1.BoardDisplay();
         this.updateCurrentDisplay();
-    }
-    updateCurrentDisplay (): void {
+    };
+    Board.prototype.updateCurrentDisplay = function () {
         this.socketHandler.emit('updateDisplay', this.getDisplay());
-    }
+    };
     //
-    updatePlayersInDisplay (): void {
+    Board.prototype.updatePlayersInDisplay = function () {
         this.display.players = [];
         for (var i = 0; i < Object.keys(this.players).length; i++) {
             this.display.players.push(this.players[Object.keys(this.players)[i]].data);
         }
         console.log(this.display.players);
-         
-    }//Decided to implement this as a function in the end cuz prior approach would only update display at user join time.
-    isLimitReached(): boolean {
+    }; //Decided to implement this as a function in the end cuz prior approach would only update display at user join time.
+    Board.prototype.isLimitReached = function () {
         return isLimitReached;
-    }
-
-    get name(): string {
-        return this.boardInfo.name;
-    }
-    get socketHandler(): SocketHandler {
-        return this._socketHandler;
-    }
-}
-
-export default Board;
+    };
+    Object.defineProperty(Board.prototype, "name", {
+        get: function () {
+            return this.boardInfo.name;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Board.prototype, "socketHandler", {
+        get: function () {
+            return this._socketHandler;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    return Board;
+}());
+exports.default = Board;

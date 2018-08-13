@@ -3,12 +3,11 @@ import { interfaces, injectable, inject } from "inversify";
 import { TYPES } from "../models/types";
 import { DbInterface } from "./dbService";
 import { WhiteCardModel } from '../models/jsonModel';
+import { getRandomInt } from '../handlers/rxHandler'
 
 export interface JsonInterface {
     dbService: DbInterface;
-    createPlayer(callback, playerID);
-    getNewBlackCard();
-    getNewWhiteCard(owner);
+    createPlayer(callback, playerID): void;
 }
 
 @injectable()
@@ -45,27 +44,4 @@ export class JsonService implements JsonInterface{
         }
         this.dbService.getWhiteCard(getRandomInt(1, this.dbService.whiteCardsSize), recursion);
     }
-    getNewBlackCard () {
-        this.dbService.getBlackCard(getRandomInt(1, this.dbService.blackCardsSize), function (blackCard) {
-            this.blackCardSubject.next(blackCard);
-        })
-    }
-    getNewWhiteCard (owner) {
-        this.dbService.getWhiteCard(getRandomInt(1, this.dbService.blackCardsSize), function (card) {
-            var whiteCard = {
-                cardId: card.id,
-                body: card.body,
-                owner: owner
-            };
-            this.whiteCardSubject.next(whiteCard);
-        })
-    }
-}
-
-function getRandomInt(min, max): number {
-    var retval = Math.floor(Math.random() * (max - min + 1)) + min;
-    if (retval < 1) {
-        retval = 1
-    }
-    return retval;
 }

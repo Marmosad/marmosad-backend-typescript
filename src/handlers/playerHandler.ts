@@ -13,7 +13,7 @@ export default class PlayerHandler {
         _jsonService: JsonService,
     ) {
         this.jsonService = _jsonService;
-        this.rxHandler = new RxHandler;
+        this.rxHandler = new RxHandler(this.jsonService.dbService);
         this.playerSubject = this.rxHandler.getPlayerSubject()
     }
 

@@ -1,32 +1,27 @@
-import Board from "../board";
-import { ChatHandler } from "../barrels/handlers";
-import { Socket } from "socket.io";
-
-export default class SocketHandler{
-    private io: Socket = null;
-    private _url = '';
-    private chatHandler: ChatHandler;
-    private board: Board;
-    constructor(board: Board){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var handlers_1 = require("../barrels/handlers");
+var SocketHandler = /** @class */ (function () {
+    function SocketHandler(board) {
+        this.io = null;
+        this._url = '';
         board.boardInfo.socketUrl = '/' + board.boardInfo.instanceId.getTime();
         this.url = board.boardInfo.socketUrl;
-        this.chatHandler = new ChatHandler(board, this);
+        this.chatHandler = new handlers_1.ChatHandler(board, this);
         this.board = board;
-
     }
-
-    start(http): void {
-        let self = this;
-        this.io = require('socket.io')(http,{ path: this.url });
+    SocketHandler.prototype.start = function (http) {
+        var self = this;
+        this.io = require('socket.io')(http, { path: this.url });
         this.io.on('connection', function (socket) {
             self.setupSocket(socket);
         });
-    }
-    emit(a, b): void {
+    };
+    SocketHandler.prototype.emit = function (a, b) {
         this.io.emit(a, b);
-    }
-    setupSocket(socket: Socket): void{
-        let self = this;
+    };
+    SocketHandler.prototype.setupSocket = function (socket) {
+        var self = this;
         this.board.joinedPlayer(socket.handshake.query.name, socket, socket.id);
         socket.on('sendMsg', function (data) {
             self.chatHandler.onMessage(data.msg, data.from);
@@ -51,15 +46,20 @@ export default class SocketHandler{
             console.log(card + "submitted");
             console.log(self.board.submission(card));
         });
-
         socket.on('judgment', function (card) {
             self.board.judgement(card); // TODO why does this count as a submission
         });
-    }
-    get url(): string {
-        return this._url;
-    }
-    set url(url: string) {
-        this._url = url;
-    }
-}
+    };
+    Object.defineProperty(SocketHandler.prototype, "url", {
+        get: function () {
+            return this._url;
+        },
+        set: function (url) {
+            this._url = url;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    return SocketHandler;
+}());
+exports.default = SocketHandler;

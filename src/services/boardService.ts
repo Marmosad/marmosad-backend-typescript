@@ -24,11 +24,10 @@ export class BoardService implements BoardInterface{
     ) {
         this.jsonService = _jsonService;
         setTimeout(() => {
-            this.newBoard('name1', 5);
-            this.newBoard('name2', 5);
-            this.newBoard('name3', 5);
-            this.newBoard('name4', 5);
-        }, 2000);
+            this.newBoard('Board 1', 3);
+            this.newBoard('Board 2', 3);
+            this.newBoard('Board 3', 3);
+        }, 1000);
     }
 
     newBoard(name: string, playerLimit: number): Board {

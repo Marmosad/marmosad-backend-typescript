@@ -12,8 +12,7 @@ export class EnvService implements EnvInterface {
     private loaded = false;
 
     constructor() {
-        console.log('loading env variables');
-        console.log(process.argv);
+        console.log('Fetching Env Config.');        
         const args = process.argv;
         const params = args.filter((x) => {
             return x.substr(0, 2) === '--';

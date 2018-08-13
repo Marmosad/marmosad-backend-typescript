@@ -4,6 +4,7 @@ export class WhiteCardModel {
     owner: string;
 }
 
-//export class BlackCardModel {
-//
-//}
+export class BlackCardModel {
+    id: number;
+    body: string;
+}
