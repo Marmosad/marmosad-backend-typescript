@@ -70,8 +70,10 @@ appInstance.app.post('/boards/generate', function (req, res) {
 });
 
 appInstance.app.post('/boards/update', function (req, res) {
-    appInstance.boardService.updateBoard(req.body.name, req.body.playerLimit, req.body.newName);
-    res.send();
+    appInstance.boardService.updateBoard(req.body.socketUrl, req.body.newPlayerLimit, req.body.newName);
+    const updatedBoardInfo = appInstance.boardService.getBoardInfo(req.body.socketUrl)
+    console.log(updatedBoardInfo);
+    res.send(JSON.stringify(updatedBoardInfo));
 });
 
 export {

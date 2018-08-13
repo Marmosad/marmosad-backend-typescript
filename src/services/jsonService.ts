@@ -8,7 +8,7 @@ export interface JsonInterface {
     dbService: DbInterface;
     createPlayer(callback, playerID);
     getNewBlackCard();
-    getNewWhiteCard(owner);    
+    getNewWhiteCard(owner);
 }
 
 @injectable()

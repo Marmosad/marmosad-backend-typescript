@@ -3,3 +3,7 @@ export class WhiteCardModel {
     body: string;
     owner: string;
 }
+
+//export class BlackCardModel {
+//
+//}

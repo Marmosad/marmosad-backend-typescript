@@ -10,6 +10,7 @@ export interface BoardInterface {
     newBoard(name: string, numberOfPlayers: number): Board;
     updateBoard(name: string, newPlayerLimit: number, newName: string): void;
     getBoardsInfo(): Array<BoardInfo>;
+    getBoardInfo(socketUrl: string): BoardInfo;
 }
 
 @injectable()
@@ -47,14 +48,23 @@ export class BoardService implements BoardInterface{
 
     updateBoard(socketUrl: string, newPlayerLimit: number, newName: string): void {
 
-        let boards = this.boards;
-
-        boards.forEach((board) => {
+        this.boards.forEach((board) => {
             if (board.boardInfo.socketUrl === socketUrl) {
-                board.boardInfo.name = newName;
-                board.boardInfo.playerLimit = newPlayerLimit;
+                board.updateBoardInfo(
+                    Object.assign(board.boardInfo, {
+                        name: newName,
+                        playerLimit: newPlayerLimit,
+                    })
+                )
             }
         });
+    }
+
+    getBoardInfo(socketUrl: string): BoardInfo {
+        console.log(this.getBoardsInfo());
+        return this.getBoardsInfo().find((boardInfo: BoardInfo) => {
+            return boardInfo.socketUrl === socketUrl;
+        })
     }
 
     getBoardsInfo(): Array<BoardInfo>{
