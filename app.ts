@@ -73,6 +73,11 @@ appInstance.app.post('/boards/update', function (req, res) {
     res.send(JSON.stringify(updatedBoardInfo));
 });
 
+appInstance.app.post('/boards/remove', function (req, res) {
+    appInstance.boardService.removeBoard(req.body.socketUrl);
+    res.send();
+});
+
 export {
     appInstance
 }

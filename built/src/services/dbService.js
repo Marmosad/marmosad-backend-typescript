@@ -52,7 +52,7 @@ var DbService = /** @class */ (function () {
         this.connection.query('SELECT * FROM whitecards WHERE id = ' + id, function (err, results, fields) {
             if (err)
                 throw err;
-            console.log("white card id is" + id);
+            // console.log("white card id is" + id);
             callback(results[0]);
         });
     };
@@ -60,7 +60,7 @@ var DbService = /** @class */ (function () {
         this.connection.query('SELECT * FROM `blackcards` WHERE `﻿id`=' + id, function (err, results, fields) {
             if (err)
                 throw err;
-            console.log("blackcard id is" + id);
+            // console.log("blackcard id is" + id);
             callback(results[0]);
         });
     };

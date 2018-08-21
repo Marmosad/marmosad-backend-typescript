@@ -57,3 +57,7 @@ appInstance.app.post('/boards/update', function (req, res) {
     var updatedBoardInfo = appInstance.boardService.getBoardInfo(req.body.socketUrl);
     res.send(JSON.stringify(updatedBoardInfo));
 });
+appInstance.app.post('/boards/remove', function (req, res) {
+    appInstance.boardService.removeBoard(req.body.socketUrl);
+    res.send();
+});

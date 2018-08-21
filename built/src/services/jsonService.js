@@ -26,14 +26,14 @@ var JsonService = /** @class */ (function () {
         var self = this;
         var hand = [];
         function recursion(card) {
-            console.log(card);
+            // console.log(card);
             var whiteCard = new jsonModel_1.WhiteCardModel();
             whiteCard = {
                 cardId: card.id,
                 body: card.body,
                 owner: playerId
             };
-            console.log(whiteCard);
+            // console.log(whiteCard);
             hand.push(whiteCard);
             if (hand.length !== 7) {
                 self.dbService.getWhiteCard(rxHandler_1.getRandomInt(1, self.dbService.whiteCardsSize), recursion);

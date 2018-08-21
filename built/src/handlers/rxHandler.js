@@ -20,7 +20,7 @@ var RxHandler = /** @class */ (function () {
     RxHandler.prototype.getNewBlackCard = function () {
         var self = this;
         this.dbService.getBlackCard(getRandomInt(1, this.dbService.blackCardsSize), function (blackCard) {
-            console.log('black card', blackCard);
+            // console.log('black card', blackCard);
             self.blackCardSubject.next(blackCard);
         });
     };

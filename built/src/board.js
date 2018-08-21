@@ -6,7 +6,6 @@ var events = require("events");
 var boardModel_1 = require("./models/boardModel");
 var playerModel_1 = require("./models/playerModel");
 var eventEmitter = new events.EventEmitter();
-var isLimitReached = false;
 //eventEmitter.on('Limit Reached', limitReached);
 var Board = /** @class */ (function () {
     function Board(boardInfo, app, _jsonService) {
@@ -42,6 +41,7 @@ var Board = /** @class */ (function () {
         return this.boardInfo.instanceId;
     };
     Board.prototype.getPlayers = function () {
+        console.log(this.players);
         return this.players;
     };
     Board.prototype.getDisplay = function () {
@@ -64,6 +64,7 @@ var Board = /** @class */ (function () {
         this.playerHandler.createPlayer(playerName, socket, socketid);
         this.updatePlayersInDisplay();
         this.boardInfo.numberOfPlayers = Object.keys(this.players).length;
+        console.log(this.boardInfo.numberOfPlayers, '>', this.boardInfo.playerLimit);
         this.boardInfo.playerLimitReached = this.boardInfo.numberOfPlayers > this.boardInfo.playerLimit;
     };
     Board.prototype.removePlayer = function (playerId) {
@@ -74,7 +75,7 @@ var Board = /** @class */ (function () {
         this.updatePlayersInDisplay();
         this.updateCurrentDisplay();
         this.boardInfo.numberOfPlayers = Object.keys(this.players).length;
-        this.boardInfo.playerLimitReached = false;
+        this.boardInfo.playerLimitReached = this.boardInfo.numberOfPlayers > this.boardInfo.playerLimit;
     };
     Board.prototype.updateBoardInfo = function (newBoardInfo) {
         this.boardInfo = newBoardInfo;
@@ -98,7 +99,7 @@ var Board = /** @class */ (function () {
             return false;
         }
         console.log(Object.keys(this.players) + ' ,' + this.display.currentJudge);
-        console.log(whiteCard);
+        // console.log(whiteCard);
         if (this.display.currentJudge === whiteCard.owner) {
             return false;
         }
@@ -153,9 +154,9 @@ var Board = /** @class */ (function () {
         this.display.submissions = [];
         var key;
         var keys = Object.keys(this.players);
-        console.log(keys);
+        // console.log(keys);
         for (key in keys) {
-            console.log(key);
+            // console.log(key);
             if (keys[key] !== this.display.currentJudge) {
                 this.playerHandler.rxHandler.getNewWhiteCard(keys[key]);
             }
@@ -196,11 +197,8 @@ var Board = /** @class */ (function () {
         for (var i = 0; i < Object.keys(this.players).length; i++) {
             this.display.players.push(this.players[Object.keys(this.players)[i]].data);
         }
-        console.log(this.display.players);
+        // console.log(this.display.players);
     }; //Decided to implement this as a function in the end cuz prior approach would only update display at user join time.
-    Board.prototype.isLimitReached = function () {
-        return isLimitReached;
-    };
     Object.defineProperty(Board.prototype, "name", {
         get: function () {
             return this.boardInfo.name;

@@ -24,27 +24,29 @@ var SocketHandler = /** @class */ (function () {
         var self = this;
         this.board.joinedPlayer(socket.handshake.query.name, socket, socket.id);
         socket.on('sendMsg', function (data) {
+            console.log(self.io.client);
             self.chatHandler.onMessage(data.msg, data.from);
         });
         socket.on('disconnect', function (reason) {
-            console.log(socket.id + ' ' + reason);
+            // console.log(socket.id + ' ' + reason);
             self.board.removePlayer(socket.id);
         });
         socket.on('startGame', function () {
             console.log('startGame Socket event');
+            console.log(self.io.client);
             self.board.startGame();
         });
         socket.on('reset', function () {
             self.io.emit('boardReset', null);
-            var players = Object.keys(self.board.getPlayers());
-            for (var i in players) {
-                self.board.removePlayer(players[i]);
-            }
+            var playerKeys = Object.keys(self.board.getPlayers());
+            playerKeys.forEach(function (playerId) {
+                self.board.removePlayer(playerId);
+            });
             self.board.reset();
         });
         socket.on('submission', function (card) {
-            console.log(card + "submitted");
-            console.log(self.board.submission(card));
+            // console.log(card + "submitted");
+            // console.log(self.board.submission(card));
         });
         socket.on('judgment', function (card) {
             self.board.judgement(card); // TODO why does this count as a submission

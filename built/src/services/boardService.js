@@ -49,11 +49,27 @@ var BoardService = /** @class */ (function () {
                     name: newName,
                     playerLimit: newPlayerLimit,
                 }));
+                board.socketHandler.emit('boardReset', null);
+                board.reset;
+            }
+        });
+    };
+    BoardService.prototype.removeBoard = function (socketUrl) {
+        var _this = this;
+        this.boards.forEach(function (board) {
+            if (board.boardInfo.socketUrl === socketUrl) {
+                board.socketHandler.emit('boardReset', null);
+                var playerKeys = Object.keys(board.getPlayers());
+                playerKeys.forEach(function (playerId) {
+                    board.removePlayer(playerId);
+                    board.boardInfo = null;
+                    _this.boards.splice(_this.boards.indexOf(board), 1);
+                });
             }
         });
     };
     BoardService.prototype.getBoardInfo = function (socketUrl) {
-        console.log(this.getBoardsInfo());
+        // console.log(this.getBoardsInfo());
         return this.getBoardsInfo().find(function (boardInfo) {
             return boardInfo.socketUrl === socketUrl;
         });
