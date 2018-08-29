@@ -17,3 +17,6 @@ Functions are in lowerCamelCase
 Interfaces are UpperCamelCase
 
 Try to leave two spaces between code blocks
+Make Models for Objects where applicable
+Handlers should use default export for Classes
+Services should export instances of Classes
