@@ -1,6 +1,6 @@
 # Marmosad Backend
 
-This project was generated with [Typescript](https://github.com/Microsoft/TypeScript) along with [Node](https://github.com/nodejs).
+This project was generated using [Typescript](https://github.com/Microsoft/TypeScript) along with [Node](https://github.com/nodejs).
 
 ## Getting Started
 
