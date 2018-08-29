@@ -4,13 +4,11 @@ This project was generated with [Typescript](https://github.com/Microsoft/TypeSc
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
-
-### Prerequisites
-
 For this project, you only need to install [Node](https://nodejs.org/en/) to keep the node_modules folder updated with npm.
 
 [Postman](https://www.getpostman.com/) may also be useful for API testing.
+
+We suggest using [Vscode](https://code.visualstudio.com/) or [Webstorm](https://www.jetbrains.com/webstorm/) as your IDE.
 
 ### Development server
 
