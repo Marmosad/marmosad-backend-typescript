@@ -1,7 +1,6 @@
-marmosad-backend-rev
 # Marmosad Backend
 
-This project was generated with [Typescript](https://github.com/Microsoft/TypeScript) along with [Node](https://github.com/nodejs)
+This project was generated with [Typescript](https://github.com/Microsoft/TypeScript) along with [Node](https://github.com/nodejs).
 
 ## Getting Started
 
@@ -12,6 +11,7 @@ These instructions will get you a copy of the project up and running on your loc
 For this project, you only need to install [Node](https://nodejs.org/en/) to keep the node_modules folder updated with npm.
 
 [Postman] (https://www.getpostman.com/) may also be useful for API testing.
+
 ### Installing
 
 A step by step series of examples that tell you how to get a development env running
