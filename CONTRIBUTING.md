@@ -6,9 +6,9 @@ email, or any other method with the owners of this repository before making a ch
 ## Pull Request Process
 
 1. Ensure any install or build dependencies are removed before the end of the layer when doing a 
-   build.
+   build
 2. Document your changes
-3. Contact one of the developers after submitting a merge request.
+3. Contact one of the developers after submitting a merge request
 
 ## Style Guide
 
