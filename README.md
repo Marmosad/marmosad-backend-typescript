@@ -37,17 +37,24 @@ npm test-prod
 
 ## Deployment
 
-Add additional notes about how to deploy this on a live system
+To run the front end with the back end, run
+```
+ng build
+```
+on the front end.
 
-## Built With
+The backend should be run in development.
 
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
+
+## Signficant modules
+
+* [InversifyJS](https://github.com/inversify/InversifyJS) - Container control
+* [Socket.io](https://github.com/socketio/socket.io) - Front-end communication
+* [ts-node](https://github.com/TypeStrong/ts-node) - Executing typescript
 
 ## Contributing
 
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our style guide, and the process for submitting pull requests to us.
 
 ## Dependencies
 
@@ -55,16 +62,9 @@ Our dependencies are listed in [package.json](package.json).
 
 ## Authors
 
-
 * **Jonathan Yang** - [Jono1202](https://github.com/jono1202)
 * **Brendan Zhang** - [Blzzhang](https://github.com/blzzhang)
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Acknowledgments
-
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
