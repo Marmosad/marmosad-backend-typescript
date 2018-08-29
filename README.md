@@ -10,44 +10,31 @@ These instructions will get you a copy of the project up and running on your loc
 
 For this project, you only need to install [Node](https://nodejs.org/en/) to keep the node_modules folder updated with npm.
 
-[Postman] (https://www.getpostman.com/) may also be useful for API testing.
+[Postman](https://www.getpostman.com/) may also be useful for API testing.
 
-### Installing
+### Development server
 
-A step by step series of examples that tell you how to get a development env running
-
-Say what the step will be
+To run in development, use
 
 ```
-Give the example
+npm start
 ```
-
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
-
-## Running the tests
-
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
+To test, use
 
 ```
-Give an example
+npm test
 ```
 
-### And coding style tests
+### Production server
 
-Explain what these tests test and why
+To run in production, use
+```
+npm start-prod
+```
+To test, use
 
 ```
-Give an example
+npm test-prod
 ```
 
 ## Deployment
@@ -70,9 +57,9 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 ## Authors
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
 
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+* **Jonathan Yang** - [Jono1202](https://github.com/jono1202)
+* **Brendan Zhang** - [Blzzhang](https://github.com/blzzhang)
 
 ## License
 
