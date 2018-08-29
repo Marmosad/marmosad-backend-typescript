@@ -13,10 +13,15 @@ email, or any other method with the owners of this repository before making a ch
 ## Style Guide
 
 Classes are in UpperCamelCase
+
 Functions are in lowerCamelCase
+
 Interfaces are UpperCamelCase
 
 Try to leave two spaces between code blocks
+
 Make Models for Objects where applicable
+
 Handlers should use default export for Classes
+
 Services should export instances of Classes
