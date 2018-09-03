@@ -12,14 +12,13 @@ import { BoardInfo, Phases, BoardDisplay, InstanceId } from './models/boardModel
 import { PlayerData, Player, Players } from './models/playerModel';
 import { WhiteCardModel, BlackCardModel } from './models/jsonModel';
 var eventEmitter = new events.EventEmitter();
-var isLimitReached = false;
 //eventEmitter.on('Limit Reached', limitReached);
 
 
 class Board {
     public boardInfo: BoardInfo;
 
-    private _socketHandler;
+    private _socketHandler: SocketHandler;
     private jsonService: JsonInterface;
     private phase = Phases.startGame;
 
@@ -85,8 +84,8 @@ class Board {
     joinedPlayer (playerName: string, socket: any, socketid: string): void {
         this.playerHandler.createPlayer(playerName, socket, socketid);
         this.updatePlayersInDisplay();
-        this.boardInfo.numberOfPlayers = Object.keys(this.players).length;
-        this.boardInfo.playerLimitReached = this.boardInfo.numberOfPlayers > this.boardInfo.playerLimit;
+        this.boardInfo.numberOfPlayers = Object.keys(this.players).length + 1;
+        this.boardInfo.playerLimitReached = this.boardInfo.numberOfPlayers >= this.boardInfo.playerLimit;
     }
     removePlayer (playerId: string): void {
         if(this.players[playerId]){
@@ -96,7 +95,7 @@ class Board {
         this.updatePlayersInDisplay();
         this.updateCurrentDisplay();
         this.boardInfo.numberOfPlayers = Object.keys(this.players).length;
-        this.boardInfo.playerLimitReached = false;
+        this.boardInfo.playerLimitReached = this.boardInfo.numberOfPlayers > this.boardInfo.playerLimit;
     }
     updateBoardInfo(newBoardInfo: BoardInfo): BoardInfo {
         this.boardInfo = newBoardInfo;
@@ -226,9 +225,6 @@ class Board {
         console.log(this.display.players);
          
     }//Decided to implement this as a function in the end cuz prior approach would only update display at user join time.
-    isLimitReached(): boolean {
-        return isLimitReached;
-    }
 
     get name(): string {
         return this.boardInfo.name;

@@ -29,6 +29,7 @@ export default class SocketHandler{
         let self = this;
         this.board.joinedPlayer(socket.handshake.query.name, socket, socket.id);
         socket.on('sendMsg', function (data) {
+            console.log(self.io.client);
             self.chatHandler.onMessage(data.msg, data.from);
         });
         socket.on('disconnect', function (reason) {
@@ -37,14 +38,15 @@ export default class SocketHandler{
         });
         socket.on('startGame', function () {
             console.log('startGame Socket event');
-            self.board.startGame();
+            console.log(self.io.client);
+            self.board.startGame(); 
         });
         socket.on('reset', function () {
             self.io.emit('boardReset', null);
-            var players = Object.keys(self.board.getPlayers());
-            for (var i in players) {
-                self.board.removePlayer(players[i]);
-            }
+            var playerKeys = Object.keys(self.board.getPlayers());
+            playerKeys.forEach((playerId: string) => {
+                self.board.removePlayer(playerId);
+            });
             self.board.reset();
         });
         socket.on('submission', function (card) {
