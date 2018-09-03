@@ -84,8 +84,8 @@ class Board {
     joinedPlayer (playerName: string, socket: any, socketid: string): void {
         this.playerHandler.createPlayer(playerName, socket, socketid);
         this.updatePlayersInDisplay();
-        this.boardInfo.numberOfPlayers = Object.keys(this.players).length;
-        this.boardInfo.playerLimitReached = this.boardInfo.numberOfPlayers > this.boardInfo.playerLimit;
+        this.boardInfo.numberOfPlayers = Object.keys(this.players).length + 1;
+        this.boardInfo.playerLimitReached = this.boardInfo.numberOfPlayers >= this.boardInfo.playerLimit;
     }
     removePlayer (playerId: string): void {
         if(this.players[playerId]){
