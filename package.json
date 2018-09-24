@@ -5,9 +5,8 @@
   "main": "app.js",
   "scripts": {
     "tsc": "tsc",
-    "start": "ts-node app.ts --env=development",
-    "start:watch": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' app.ts",
-    "start-prod": "ts-node app.ts --env=production"
+    "start": "npm run tsc && node built/app.js --env=development",
+    "start-prod": "npm run tsc && node built/app.js --env=production"
   },
   "author": "",
   "license": "ISC",
@@ -28,7 +27,5 @@
     "typescript": "^2.9.2"
   },
   "devDependencies": {
-    "nodemon": "^1.18.3",
-    "ts-node": "^7.0.1"
   }
 }
