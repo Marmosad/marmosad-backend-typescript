@@ -204,7 +204,7 @@ class Board {
     endGame (playerId: string): void {
       this.socketHandler.emit('result', playerId);
       setTimeout(function () {
-        this.socketHandler.emit('reset', null)
+        this.socketHandler.emit('resetBoard', null)
       }, 3000)
     }
     reset (): void {
