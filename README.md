@@ -27,7 +27,7 @@ npm test
 
 To run in production, use
 ```
-npm start-prod
+npm run start-prod
 ```
 To test, use
 
