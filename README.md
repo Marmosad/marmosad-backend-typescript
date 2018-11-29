@@ -1,4 +1,5 @@
 # Marmosad Backend
+The project originated from [here](https://github.com/Marmosad/marmosad-backend-es5) and was ported to TS in this repository for ease of further development.
 
 This project was generated using [Typescript](https://github.com/Microsoft/TypeScript) along with [Node](https://github.com/nodejs).
 
@@ -17,7 +18,7 @@ To run in development, use
 ```
 npm start
 ```
-To test, use
+To test, use (We don't have  any :D)
 
 ```
 npm test
@@ -61,9 +62,9 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our style guide, a
 Our dependencies are listed in [package.json](package.json).
 
 ## Authors
-
 * **Jonathan Yang** - [Jono1202](https://github.com/jono1202)
 * **Brendan Zhang** - [Blzzhang](https://github.com/blzzhang)
+* **Wen Yu Ge** - [gewenyu99](https://github.com/gewenyu99) (Thanks a lot for forgetting me, guys :D)
 
 ## License
 
