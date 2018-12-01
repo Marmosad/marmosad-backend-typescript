@@ -3,6 +3,9 @@ The project originated from [here](https://github.com/Marmosad/-deprecated-marmo
 
 This project was generated using [Typescript](https://github.com/Microsoft/TypeScript) along with [Node](https://github.com/nodejs).
 
+The app is broken right now because we ran out of Google Cloud credits (We need to go not more MLH hackathons).
+It can be found here http://marmosad.me/;
+
 ## Getting Started
 
 For this project, you only need to install [Node](https://nodejs.org/en/) to keep the node_modules folder updated with npm.
