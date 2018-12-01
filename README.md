@@ -1,5 +1,5 @@
 # Marmosad Backend
-The project originated from [here](https://github.com/Marmosad/marmosad-backend-es5) and was ported to TS in this repository for ease of further development.
+The project originated from [here](https://github.com/Marmosad/-deprecated-marmosad-backend-mmkay) and was ported to TS in this repository for ease of further development.
 
 This project was generated using [Typescript](https://github.com/Microsoft/TypeScript) along with [Node](https://github.com/nodejs).
 
