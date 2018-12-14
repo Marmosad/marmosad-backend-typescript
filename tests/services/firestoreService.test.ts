@@ -5,24 +5,24 @@ import {container} from "../../src/inversify.config";
 
 describe('End-to-end tests', () => {
     const fs: FirestoreService = container.resolve<FirestoreService>(FirestoreService)
-    it('Should return white card', () => {
+    test('Should return white card', () => {
         return fs.getWhiteCard('room-309', 1).then(data => {
             expect(data.cardId).toEqual(1);
             expect(data.body).toBeDefined()
         });
-    });
-    it('Should return black card', () => {
+    }, 20000);
+    test('Should return black card', () => {
         return fs.getBlackCard('room-309', 1).then(data => {
             expect(data.cardId).toEqual(1);
             expect(data.body).toBeDefined()
         });
-    });
-    it('Should return card pack', () => {
+    }, 20000);
+    test('Should return card pack', () => {
         return fs.getPack('room-309').then(data => {
             expect(data.whiteCardCount).toBeDefined();
             expect(data.blackCardCount).toBeDefined()
         });
-    });
+    }, 20000);
 });
 
 

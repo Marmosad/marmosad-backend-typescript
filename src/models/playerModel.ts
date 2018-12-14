@@ -1,5 +1,5 @@
-import { WhiteCardModel } from "./jsonModel";
-import { Socket } from "dgram";
+import {WhiteCardModel} from "./jsonModel";
+import {Socket} from 'socket.io';
 
 export class PlayerData {
     playerName: string;
@@ -16,4 +16,9 @@ export class Player {
 
 export class Players {
     [key: string]: Player;
+}
+
+export interface Connection {
+    name: string;
+    socket: Socket;
 }

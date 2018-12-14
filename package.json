@@ -23,12 +23,14 @@
     "request-promise-native": "^1.0.5",
     "ts-node": "^7.0.1",
     "typescript": "^3.2.2",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.2",
+    "socket.io": "latest"
   },
   "devDependencies": {
     "@types/jest": "^23.3.10",
     "@types/request-promise-native": "^1.0.15",
     "jest": "^23.6.0",
-    "ts-jest": "^23.10.5"
+    "ts-jest": "^23.10.5",
+    "socket.io-client": "latest"
   }
 }

@@ -4,38 +4,34 @@ import * as bodyParser from "body-parser";
 import {PORT} from "./config";
 import BoardService, {} from "./services/boardServices";
 import {container} from "./inversify.config";
+import {Http} from "./services/httpSingletonService";
 
 export class App {
-    public app: express.Application;
+    private http = container.get<Http>(Http).http;
     private _port;
-    public boardService: BoardService;
+    private boardService: BoardService;
     constructor() {
-        this.boardService = container.resolve<BoardService>(BoardService);
-        this.app = express();
-        this.config();
-        this.setupEndpoints();
+        // Waits or server to boot.
+        container.get<Http>(Http).httpStart().then(()=>{
+           console.log('server started successfully.')
+            this.setupEndpoints();
+            this.boardService = new BoardService();
+        }).catch((err)=>{
+            console.log(err)
+        });
     }
-    private config(): void{
-        // support application/json type post data
-        this.app.use(bodyParser.json());
 
-        //support application/x-www-form-urlencoded post data
-        this.app.use(bodyParser.urlencoded({ extended: false }));
-
-        //port
-        this._port = PORT
-    }
     get port(): number {
         return this._port;
     }
 
     private setupEndpoints() {
         const self = this;
-        self.app.get('/boards', function (req, res) {
+        self.http.get('/boards', function (req, res) {
             res.send(self.boardService.getBoardsInfo());
         });
 
-        self.app.post('/boards/generate', function (req, res) {
+        self.http.post('/boards/generate', function (req, res) {
             const nonRepeating = self.boardService.newBoard(req.body.name, req.body.playerLimit);
             if (nonRepeating) {
                 res.status(200).send("Successfully created " + req.body.name);
@@ -44,7 +40,7 @@ export class App {
             }
         });
 
-        self.app.post('/boards/remove', function (req, res) {
+        self.http.post('/boards/remove', function (req, res) {
             const exist = self.boardService.removeBoard(req.body.socketUrl);
             if (exist) {
                 res.status(200).send("Successfully removed " + req.body.socketUrl);
@@ -56,4 +52,4 @@ export class App {
 }
 
 
-export default new App();
+export default App;

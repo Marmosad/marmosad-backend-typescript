@@ -2,6 +2,7 @@ import {injectable} from "inversify";
 import {BoardInfo, PLAYER_COUNT_LOWER_BOUND, PLAYER_COUNT_UPPER_BOUND} from "../models/boardModel";
 import Board from "../board";
 import * as uuid4 from 'uuid/v4'
+import {container} from "../inversify.config";
 
 export interface BoardInterface {
     newBoard(name: string, numberOfPlayers: number): boolean;
@@ -15,7 +16,6 @@ export interface BoardInterface {
     getBoardInfoByName(name: string): BoardInfo;
 }
 
-@injectable()
 export class BoardService implements BoardInterface {
     boards: Array<Board> = new Array<Board>();
 
@@ -70,8 +70,10 @@ export class BoardService implements BoardInterface {
             playerLimitReached: false,
             socketUrl: uuid4() //instance id is also the socket url
         } as BoardInfo;
-        const boardInstance = new Board(boardInfo);
+        const boardInstance = container.resolve(Board);
+        boardInstance.info = boardInfo;
         this.boards.push(boardInstance);
+        boardInstance.startSocket();
         return true;
     }
 

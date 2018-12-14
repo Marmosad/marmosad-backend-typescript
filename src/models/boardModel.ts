@@ -1,5 +1,7 @@
 import { PlayerData } from "./playerModel";
+import {injectable} from "inversify";
 
+@injectable()
 export class BoardInfo {
     name: string;
     numberOfPlayers: number;

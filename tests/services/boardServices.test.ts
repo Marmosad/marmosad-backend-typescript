@@ -7,7 +7,7 @@ import {BoardInfo, PLAYER_COUNT_LOWER_BOUND, PLAYER_COUNT_UPPER_BOUND} from "../
 
 describe('Unit tests on success', () => {
     it('board init test', () => {
-        const boardService = container.resolve<BoardService>(BoardService);
+        const boardService = new BoardService();
         const currentBoard = boardService.getBoardsInfo() as BoardInfo[];
         expect(currentBoard.length).toEqual(3);
         expect(currentBoard[0].name).toEqual('Board 1');
@@ -15,7 +15,7 @@ describe('Unit tests on success', () => {
         expect(currentBoard[2].name).toEqual('Board 3');
     });
     it('board info test', () => {
-        const boardService = container.resolve<BoardService>(BoardService);
+        const boardService = new BoardService();
         const currentBoard = boardService.getBoardsInfo() as BoardInfo[];
         expect(boardService.getBoardInfo(currentBoard[0].socketUrl).socketUrl).toEqual(currentBoard[0].socketUrl);
         expect(boardService.getBoardInfo(currentBoard[0].socketUrl).name).toEqual(currentBoard[0].name);
@@ -29,7 +29,7 @@ describe('Unit tests on success', () => {
 
     });
     it('board remove test', () => {
-        const boardService = container.resolve<BoardService>(BoardService);
+        const boardService = new BoardService();
         const currentBoard = boardService.getBoardsInfo() as BoardInfo[];
         expect(boardService.getBoardsInfo().length).toEqual(3);
         expect(boardService.removeBoard(currentBoard[0].socketUrl)).toEqual(true);
@@ -38,7 +38,7 @@ describe('Unit tests on success', () => {
         expect(boardService.removeBoard(currentBoard[0].socketUrl)).toEqual(false);
     });
     it('board add test', () => {
-        const boardService = container.resolve<BoardService>(BoardService);
+        const boardService = new BoardService();
         expect(boardService.getBoardsInfo().length).toEqual(3);
         expect(boardService.newBoard(boardService.getBoardsInfo()[0].name, 5)).toEqual(false);
         expect(boardService.getBoardsInfo().length).toEqual(3);
