@@ -3,23 +3,20 @@ import { PlayerData } from "./playerModel";
 export class BoardInfo {
     name: string;
     numberOfPlayers: number;
-    socketUrl: string;
     playerLimitReached: boolean;
     playerLimit: number;
-    instanceId: InstanceId = generateInstanceId();
+    socketUrl: string;
 }
-
-export type InstanceId = Date; 
-function generateInstanceId(): InstanceId {
-    return new Date;
-}
-
 export class BoardDisplay {
     blackCard: any = null; //This should be a black card object
     submissions: Array<any> = [];
     currentJudge: string = ''; // The player ID of the person who is the judge
     players: Array<any> = [];
 }
+
+export const PLAYER_COUNT_UPPER_BOUND = 8;
+export const PLAYER_COUNT_LOWER_BOUND = 3;
+
 
 export enum Phases {
     startGame = 0,

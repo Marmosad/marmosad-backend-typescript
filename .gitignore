@@ -74,3 +74,6 @@ typings/
 # Transpiled Files
 built/
 dist/
+
+.vs/*
+.vscode/*
