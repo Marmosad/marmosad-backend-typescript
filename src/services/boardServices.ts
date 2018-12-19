@@ -17,7 +17,7 @@ export interface BoardInterface {
 }
 
 export class BoardService implements BoardInterface {
-    boards: Array<Board> = new Array<Board>();
+    private boards: Array<Board> = new Array<Board>();
 
     constructor() {
         this.newBoard('Board 1', 3);

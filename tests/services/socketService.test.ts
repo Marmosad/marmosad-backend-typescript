@@ -2,39 +2,37 @@ import {container} from "../../src/inversify.config";
 import {SocketService} from "../../src/services/socketServices";
 import {} from "ts-jest"
 import {Http} from "../../src/services/httpSingletonService";
-import * as io from "socket.io-client"
+import * as io_client from "socket.io-client"
 
-const HTTP_ROOT = 'http://localhost:8081';
+const HTTP_ROOT = 'http://localhost:8081/';
 let socketA: SocketService;
 let client1;
 let client2;
 describe('Singleton test', () => {
-
     afterEach(() => {
         socketA.stop();
-        client1.disconnect();
-        client2.disconnect();
+        if (client1) {
+            client1.disconnect();
+        }
+        if (client2) {
+            client2.disconnect();
+        }
+
     });
-    it('should receive chat', done => {
+    it('should connect', done => {
             container.get<Http>(Http).httpStart().then(() => {
-                let http = container.get<Http>(Http).http;
+                let http = container.get<Http>(Http).httpServer;
                 socketA = container.resolve(SocketService);
                 socketA.start('a');
-                client1 = io(HTTP_ROOT, {
-                    query: 'name=' + "1",
-                    path: 'a'
-                });
-                client2 = io(HTTP_ROOT, {
-                    query: 'name=' + "2",
-                    path: 'a'
-                });
-
-                client1.emit('chat', 'sup');
-                socketA.emitChat('a', '123');
-                client2.on('chat', (data) => {
-                    console.log(data);
-                    expect(data).toBeTruthy();
+                socketA.io.on('connection', function (socket: any) {
+                    console.log('[TEST EVENT] Player: ' + socket.handshake.query.name + ' joined.')
+                    expect(socket.handshake.query.name).toEqual('1')
                     done()
+                });
+                console.log(HTTP_ROOT);
+                client1 = io_client(HTTP_ROOT, {
+                    query: 'name=' + "1",
+                    path: '/a'
                 });
             })
         }

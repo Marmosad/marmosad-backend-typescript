@@ -2,14 +2,11 @@ import {BoardInfo} from "./models/boardModel";
 import {inject, injectable} from "inversify";
 import {Socket} from "socket.io";
 import {SocketService} from "./services/socketServices";
-import {Http} from "./services/httpSingletonService";
 
 @injectable()
 class Board {
     private _info: BoardInfo;
-
-    constructor(@inject(SocketService) private socket: SocketService) {
-    }
+    @inject(SocketService) private socket: SocketService
 
     set info(bi: BoardInfo) {
         this._info = bi;
@@ -19,9 +16,8 @@ class Board {
         return this._info
     }
 
-    public startSocket() {
-        this.socket.start('a');
-        console.log('[DBG] socket started at ' + this.info.socketUrl);
+    public startSocket(url = this.info.socketUrl) {
+        this.socket.start(url);
     }
 }
 

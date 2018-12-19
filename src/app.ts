@@ -7,13 +7,13 @@ import {container} from "./inversify.config";
 import {Http} from "./services/httpSingletonService";
 
 export class App {
-    private http = container.get<Http>(Http).http;
+    private express = container.get<Http>(Http).express;
     private _port;
     private boardService: BoardService;
     constructor() {
         // Waits or server to boot.
         container.get<Http>(Http).httpStart().then(()=>{
-           console.log('server started successfully.')
+            console.log('server started successfully.')
             this.setupEndpoints();
             this.boardService = new BoardService();
         }).catch((err)=>{
@@ -27,11 +27,11 @@ export class App {
 
     private setupEndpoints() {
         const self = this;
-        self.http.get('/boards', function (req, res) {
+        self.express.get('/boards', function (req, res) {
             res.send(self.boardService.getBoardsInfo());
         });
 
-        self.http.post('/boards/generate', function (req, res) {
+        self.express.post('/boards/generate', function (req, res) {
             const nonRepeating = self.boardService.newBoard(req.body.name, req.body.playerLimit);
             if (nonRepeating) {
                 res.status(200).send("Successfully created " + req.body.name);
@@ -40,7 +40,7 @@ export class App {
             }
         });
 
-        self.http.post('/boards/remove', function (req, res) {
+        self.express.post('/boards/remove', function (req, res) {
             const exist = self.boardService.removeBoard(req.body.socketUrl);
             if (exist) {
                 res.status(200).send("Successfully removed " + req.body.socketUrl);
