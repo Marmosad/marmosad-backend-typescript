@@ -65,8 +65,7 @@ export class FirestoreService implements FirestoreInterface {
         return response.then(function (body) {
             const response = JSON.parse(body) as Response;
             return response.responseObj as Pack;
-        })
-            .catch(function (err) {
+        }).catch(function (err) {
                 console.log(err);
                 throw err;
             });
@@ -76,8 +75,7 @@ export class FirestoreService implements FirestoreInterface {
         return response.then(function (body) {
             const response = JSON.parse(body) as Response;
             return response.responseObj as Card;
-        })
-            .catch(function (err) {
+        }).catch(function (err) {
                 console.log(err);
                 throw err;
             });

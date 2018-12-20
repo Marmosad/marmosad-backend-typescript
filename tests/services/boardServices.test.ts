@@ -4,7 +4,6 @@ import {container} from "../../src/inversify.config";
 import {BoardInfo, PLAYER_COUNT_LOWER_BOUND, PLAYER_COUNT_UPPER_BOUND} from "../../src/models/boardModel";
 
 
-
 describe('Unit tests on success', () => {
     it('board init test', () => {
         const boardService = new BoardService();

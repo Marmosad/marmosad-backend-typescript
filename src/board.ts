@@ -6,7 +6,7 @@ import {SocketService} from "./services/socketServices";
 @injectable()
 class Board {
     private _info: BoardInfo;
-    @inject(SocketService) private socket: SocketService
+    @inject(SocketService) private socket: SocketService;
 
     set info(bi: BoardInfo) {
         this._info = bi;

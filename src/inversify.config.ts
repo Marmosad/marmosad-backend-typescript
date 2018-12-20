@@ -1,6 +1,5 @@
 import "reflect-metadata"
 import {Container} from "inversify";
-import {TYPES} from "./models/types";
 import {FirestoreService} from "./services/firestoreService";
 import BoardManagementService from "./services/boardServices";
 import {Http} from "./services/httpSingletonService";
