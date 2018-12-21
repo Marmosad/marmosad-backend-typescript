@@ -1,10 +1,18 @@
 import {inject, injectable} from "inversify";
-import {Pack} from "../Interface/firestoreInterface";
-import {FirestoreService} from "../services/firestoreService";
-import {random, swap} from "../utils";
+import {Card, Pack} from "../Interface/firestoreInterface";
+import {FirestoreService} from "../service/firestoreService";
+import {random, swap} from "../util";
+
+export interface DeckInterface {
+    initialize(packNames: string[]): Promise<boolean>;
+    packs: Map<string, Pack>;
+    generateCardStack(n: number): number[];
+    drawWhiteCard(): Promise<Card>;
+    drawBlackCard(): Promise<Card>;
+}
 
 @injectable()
-export class Deck {
+export class Deck implements DeckInterface{
     // Packs <pack name: string, pack: Pack>
     private _packs: Map<string, Pack> = new Map<string, Pack>();
     @inject(FirestoreService) private firestoreService: FirestoreService;
@@ -21,7 +29,7 @@ export class Deck {
         return true
     }
 
-    get packs() {
+    get packs(): Map<string, Pack>{
         return this._packs;
     }
 
@@ -41,7 +49,7 @@ export class Deck {
         return shuffled;
     }
 
-    public async drawWhiteCard() {
+    public async drawWhiteCard(): Promise<Card> {
         const cardPacks = this.packs.keys();
         const cardPack = this.pickRandomPack(cardPacks);
         const cardId = this.packs.get(cardPack).whiteCardStack.pop();
@@ -49,7 +57,7 @@ export class Deck {
         return await this.firestoreService.getWhiteCard(cardPack, cardId)
     }
 
-    public async drawBlackCard() {
+    public async drawBlackCard(): Promise<Card>{
         const cardPacks = this.packs.keys();
         const cardPack = this.pickRandomPack(cardPacks);
         const cardId = this.packs.get(cardPack).blackCardStack.pop();
@@ -57,7 +65,7 @@ export class Deck {
         return await this.firestoreService.getBlackCard(cardPack, cardId)
     }
 
-    public pickRandomPack = (cardPacks: IterableIterator<string>)=>{
+    private pickRandomPack = (cardPacks: IterableIterator<string>)=>{
         let randPack = random(1, this.packs.size) - 1;
         let counter = 0;
         while (counter < randPack) {

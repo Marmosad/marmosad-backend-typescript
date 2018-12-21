@@ -1,12 +1,14 @@
 import {BoardInfo} from "../Interface/boardInterface";
 import {inject, injectable} from "inversify";
 import {Socket} from "socket.io";
-import {SocketService} from "../services/socketService";
+import {SocketService} from "../service/socketService";
+import {Deck} from "./deck";
 
 @injectable()
 class Board {
     private _info: BoardInfo;
     @inject(SocketService) private socket: SocketService;
+    @inject(Deck) private deck: Deck;
 
     set info(bi: BoardInfo) {
         this._info = bi;

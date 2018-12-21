@@ -1,4 +1,4 @@
-import {FirestoreService} from "../../src/services/firestoreService";
+import {FirestoreService} from "../../src/service/firestoreService";
 import {} from "ts-jest"
 import {container} from "../../src/inversify.config";
 

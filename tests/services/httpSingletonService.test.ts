@@ -1,7 +1,7 @@
-import {FirestoreService} from "../../src/services/firestoreService";
+import {FirestoreService} from "../../src/service/firestoreService";
 import {container} from "../../src/inversify.config";
 import {inject, injectable, interfaces} from "inversify";
-import {Http, HttpInterface} from "../../src/services/httpSingletonService";
+import {Http, HttpInterface} from "../../src/service/httpSingletonService";
 import {} from "ts-jest"
 import * as uuid4 from "uuid/v4"
 

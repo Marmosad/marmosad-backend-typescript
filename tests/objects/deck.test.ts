@@ -2,7 +2,7 @@ import {container} from "../../src/inversify.config";
 import {Deck} from "../../src/object/deck";
 import {} from "ts-jest"
 import {Card} from "../../src/Interface/firestoreInterface";
-import {random} from "../../src/utils";
+import {random} from "../../src/util";
 
 const ifUnique = (arr, num) => {
     let ret = 0;

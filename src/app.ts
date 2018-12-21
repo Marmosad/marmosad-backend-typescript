@@ -2,9 +2,9 @@ import "reflect-metadata"
 import * as express from "express";
 import * as bodyParser from "body-parser";
 import {PORT} from "./config";
-import BoardService, {} from "./services/boardService";
+import BoardService, {} from "./service/boardService";
 import {container} from "./inversify.config";
-import {Http} from "./services/httpSingletonService";
+import {Http} from "./service/httpSingletonService";
 
 export class App {
     private express = container.get<Http>(Http).express;
