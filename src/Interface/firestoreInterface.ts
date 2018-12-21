@@ -12,6 +12,8 @@ export interface Response {
 export interface Pack {
     whiteCardCount: number;
     blackCardCount: number;
+    whiteCardStack?: number[];
+    blackCardStack?: number[]
 }
 
 export interface Card {
