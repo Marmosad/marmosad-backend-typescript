@@ -1,6 +1,6 @@
 import {injectable} from "inversify";
-import {BoardInfo, PLAYER_COUNT_LOWER_BOUND, PLAYER_COUNT_UPPER_BOUND} from "../models/boardModel";
-import Board from "../board";
+import {BoardInfo, PLAYER_COUNT_LOWER_BOUND, PLAYER_COUNT_UPPER_BOUND} from "../Interface/boardInterface";
+import Board from "../object/board";
 import * as uuid4 from 'uuid/v4'
 import {container} from "../inversify.config";
 

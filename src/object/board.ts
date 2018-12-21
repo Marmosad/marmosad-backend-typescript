@@ -1,7 +1,7 @@
-import {BoardInfo} from "./models/boardModel";
+import {BoardInfo} from "../Interface/boardInterface";
 import {inject, injectable} from "inversify";
 import {Socket} from "socket.io";
-import {SocketService} from "./services/socketServices";
+import {SocketService} from "../services/socketService";
 
 @injectable()
 class Board {

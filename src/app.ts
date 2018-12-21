@@ -2,7 +2,7 @@ import "reflect-metadata"
 import * as express from "express";
 import * as bodyParser from "body-parser";
 import {PORT} from "./config";
-import BoardService, {} from "./services/boardServices";
+import BoardService, {} from "./services/boardService";
 import {container} from "./inversify.config";
 import {Http} from "./services/httpSingletonService";
 
@@ -13,7 +13,7 @@ export class App {
     constructor() {
         // Waits or server to boot.
         container.get<Http>(Http).httpStart().then(()=>{
-            console.log('server started successfully.')
+            console.log('server started successfully.');
             this.setupEndpoints();
             this.boardService = new BoardService();
         }).catch((err)=>{

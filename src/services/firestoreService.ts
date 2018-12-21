@@ -1,5 +1,5 @@
 import {interfaces, injectable, inject} from "inversify";
-import {Card, FirebaseEndpoints, Pack, Response} from "../models/firestoreModel";
+import {Card, FirebaseEndpoints, Pack, Response} from "../Interface/firestoreInterface";
 import * as rp from 'request-promise-native'
 import {FIREBASE_GET_BLACK_CARD, FIREBASE_GET_PACK, FIREBASE_GET_WHITE_CARD} from "../config";
 

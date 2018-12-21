@@ -1,10 +1,10 @@
 import "reflect-metadata"
 import {Container} from "inversify";
 import {FirestoreService} from "./services/firestoreService";
-import BoardManagementService from "./services/boardServices";
+import BoardManagementService from "./services/boardService";
 import {Http} from "./services/httpSingletonService";
-import Board from "./board";
-import {SocketService} from "./services/socketServices";
+import Board from "./object/board";
+import {SocketService} from "./services/socketService";
 
 
 const container = new Container();

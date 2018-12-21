@@ -1,9 +1,9 @@
 import {container} from "../../src/inversify.config";
-import {SocketService} from "../../src/services/socketServices";
+import {SocketService} from "../../src/services/socketService";
 import {} from "ts-jest"
 import {Http} from "../../src/services/httpSingletonService";
 import * as io_client from "socket.io-client"
-import {Chat} from "../../src/models/socketModel";
+import {Chat} from "../../src/Interface/socketInterface";
 
 const HTTP_ROOT = 'http://localhost:8081/';
 let socketA: SocketService;
@@ -84,13 +84,34 @@ describe('Socket service disconnect test', () => {
             });
         })
     });
+    afterEach(() => {
+        socketA.stop();
+        if (client1) {
+            client1.disconnect();
+        }
+        if (client2) {
+            client2.disconnect();
+        }
+        http.close();
+    });
+    it('should remove connection test via kill', (done) => {
+            client1.emit('kill', 'testing end socket event');
+            // Soft disconnects from client side doesn't kill the socket immediately, so we use the kill event
+            // a more costly way to kill the socket is socket.disconnect() which takes ~60s to register
+            setTimeout(() => {
+                expect(socketA.getConnection(name)).toBeUndefined();
+                done()
+            }, 2000);
+        }
+    );
     it('should remove connection test', (done) => {
             client1.close();
+            // this takes a long ass time :') socket.io's limitations not ours.
             setTimeout(() => {
-                // expect(socketA.getConnection(name)).toBeNull();
-                // done()
-            }, 3000);
-        }, 100000000
+                expect(socketA.getConnection(name)).toBeUndefined();
+                done()
+            }, 7000); // ping
+        }, 60000
     );
 });
 

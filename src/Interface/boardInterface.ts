@@ -1,4 +1,3 @@
-import { PlayerData } from "./playerModel";
 import {injectable} from "inversify";
 
 @injectable()

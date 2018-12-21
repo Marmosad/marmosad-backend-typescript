@@ -1,7 +1,7 @@
-import {BoardService} from "../../src/services/boardServices";
+import {BoardService} from "../../src/services/boardService";
 import {} from "ts-jest"
 import {container} from "../../src/inversify.config";
-import {BoardInfo, PLAYER_COUNT_LOWER_BOUND, PLAYER_COUNT_UPPER_BOUND} from "../../src/models/boardModel";
+import {BoardInfo, PLAYER_COUNT_LOWER_BOUND, PLAYER_COUNT_UPPER_BOUND} from "../../src/Interface/boardInterface";
 
 
 describe('Unit tests on success', () => {
