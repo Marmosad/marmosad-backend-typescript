@@ -54,9 +54,7 @@ typings/
 # Yarn Integrity file
 .yarn-integrity
 
-# dotenv environment variables file
-.env
-.DS_Store
+
 
 # User-specific stuff:
 .idea/**/workspace.xml
