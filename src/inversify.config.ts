@@ -12,5 +12,5 @@ container.bind<FirestoreService>(FirestoreService).toSelf();
 container.bind<HttpInterface>(Http).toSelf().inSingletonScope();
 container.bind<Board>(Board).toSelf();
 container.bind<SocketService>(SocketService).toSelf();
-container.bind<DeckInterface>(Deck).toSelf();
+container.bind<Deck>(Deck).toSelf();
 export {container};

@@ -53,7 +53,7 @@ describe('Deck init test', () => {
     });
     it('should generate shuffled card stack', function () {
         const size = Math.floor(Math.random() * 1000);
-        const stack = deck.shuffleStack(deck.generateCardStack(size));
+        const stack = Deck.shuffle(deck.generateCardStack(size));
         for (const card of stack) {
             expect(Number.isInteger(card)).toBeTruthy();
             expect(card).toBeGreaterThanOrEqual(1);

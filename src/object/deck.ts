@@ -17,14 +17,14 @@ export class Deck implements DeckInterface{
     private _packs: Map<string, Pack> = new Map<string, Pack>();
     @inject(FirestoreService) private firestoreService: FirestoreService;
 
-    public async initialize(packNames: string[]): Promise<boolean> {
+    public async initialize(packNames: string[] = ['room-309']): Promise<boolean> {
         for (const name of packNames) {
             const pack: Pack = await this.firestoreService.getPack(name) as Pack;
             this.packs.set(name, pack);
             //generate black card stack and shuffle
-            this.packs.get(name).blackCardStack = this.shuffleStack(this.generateCardStack(pack.blackCardCount));
+            this.packs.get(name).blackCardStack = Deck.shuffle(this.generateCardStack(pack.blackCardCount));
             //generate white card stack and shuffle
-            this.packs.get(name).whiteCardStack = this.shuffleStack(this.generateCardStack(pack.whiteCardCount));
+            this.packs.get(name).whiteCardStack = Deck.shuffle(this.generateCardStack(pack.whiteCardCount));
         }
         return true
     }
@@ -41,7 +41,7 @@ export class Deck implements DeckInterface{
         return stack;
     }
 
-    public shuffleStack(stack: number[]): number[] {
+    public static shuffle(stack: number[]): number[] {
         const shuffled = stack.slice(0, stack.length); // deep copy
         for (let i = shuffled.length - 1; i >= 0; i--) {
             swap(shuffled, random(0, i), i)

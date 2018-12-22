@@ -2,6 +2,7 @@ import {injectable} from "inversify";
 
 @injectable()
 export class BoardInfo {
+    cardPacks: string[];
     name: string;
     numberOfPlayers: number;
     playerLimitReached: boolean;
