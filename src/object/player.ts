@@ -1,5 +1,5 @@
-import {PlayerInterface} from "../Interface/playerInterface";
-import {Card} from "../Interface/firestoreInterface";
+import {PlayerInterface} from "../interface/playerInterface";
+import {Card} from "../interface/firestoreInterface";
 
 export class Player implements PlayerInterface{
     hand: Array<Card>;

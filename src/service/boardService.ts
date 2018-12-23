@@ -1,5 +1,5 @@
 import {injectable} from "inversify";
-import {BoardInfo, PLAYER_COUNT_LOWER_BOUND, PLAYER_COUNT_UPPER_BOUND} from "../Interface/boardInterface";
+import {BoardInfo, PLAYER_COUNT_LOWER_BOUND, PLAYER_COUNT_UPPER_BOUND} from "../interface/boardInterface";
 import Board from "../object/board";
 import * as uuid4 from 'uuid/v4'
 import {container} from "../inversify.config";
@@ -43,7 +43,7 @@ export class BoardService implements BoardInterface {
         return null
     }
 
-    getBoardsInfo(): Array<BoardInfo> {
+    getBoardsInfo(): Array<BoardInfo> { //TODO Deep copy
         const boardInfoArray = [] as BoardInfo[];
         for (const board of this.boards) {
             boardInfoArray.push(board.info as BoardInfo)

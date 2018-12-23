@@ -1,9 +1,9 @@
 import * as Socket from 'socket.io';
 import {inject, injectable} from "inversify";
 import {Http} from "./httpSingletonService";
-import {Chat} from "../Interface/socketInterface";
+import {Chat} from "../interface/socketInterface";
 import {Subject} from "rxjs";
-import {ConnectionEvent, rxEvents, RxEventsInterface} from "../Interface/rxEventInterface";
+import {RxEventsInterface} from "../interface/rxEventInterface";
 
 export interface SocketInterface {
     start(url, subject): void
@@ -18,12 +18,11 @@ export class SocketService implements SocketInterface {
     private _io: Socket.Server = null;
     private _connections = new Map<string, Socket.Socket>();
     private _url: string;
-    private boardSubject: Subject<RxEventsInterface>;
 
     constructor(@inject(Http) private http: Http) {
     }
 
-    public start(url, subject:Subject<RxEventsInterface> = null): void {
+    public start(url, subject: Subject<RxEventsInterface> = null): void {
         this._url = '/' + url;
         this._io = Socket(this.http.httpServer, {
             path: this._url, serveClient: false,
@@ -37,9 +36,6 @@ export class SocketService implements SocketInterface {
             this.handleNewConnection(socket)
         });
 
-        if (subject != null){
-            this.boardSubject = subject;
-        }
     }
 
     public stop(): Promise<void> {
@@ -81,15 +77,6 @@ export class SocketService implements SocketInterface {
             this.getConnection(name).disconnect(true);
         });
         socket.on('disconnecting', (reason) => {
-            if(this.boardSubject != null){
-                this.boardSubject.next({
-                    event: rxEvents.playerDisconnect,
-                    eventData: {
-                        playerName: name,
-                        socketUrl: this.io.path()
-                    } as ConnectionEvent
-                } as RxEventsInterface);
-            }
             console.log('[EVENT] ' + name + ' disconneting due to ' + reason);
             this.handleDisconnect(socket, name)
         });

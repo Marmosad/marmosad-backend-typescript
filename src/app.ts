@@ -1,7 +1,4 @@
 import "reflect-metadata"
-import * as express from "express";
-import * as bodyParser from "body-parser";
-import {PORT} from "./config";
 import BoardService, {} from "./service/boardService";
 import {container} from "./inversify.config";
 import {Http} from "./service/httpSingletonService";

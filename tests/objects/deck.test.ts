@@ -1,7 +1,7 @@
 import {container} from "../../src/inversify.config";
 import {Deck} from "../../src/object/deck";
 import {} from "ts-jest"
-import {Card} from "../../src/Interface/firestoreInterface";
+import {Card} from "../../src/interface/firestoreInterface";
 import {random} from "../../src/util";
 
 const ifUnique = (arr, num) => {
@@ -30,7 +30,7 @@ describe('Deck init test', () => {
         expect(deck.packs.get('room-309')).toBeTruthy();
         expect(deck.packs.get('room-309').blackCardCount).toEqual(deck.packs.get('room-309').blackCardStack.length);
         expect(deck.packs.get('room-309').whiteCardCount).toEqual(deck.packs.get('room-309').whiteCardStack.length);
-    }, 10000);
+    }, 20000);
     it('should generate random', () => {
         const upper = Math.floor(Math.random() * 100);
         const lower = Math.floor(Math.random() * 10);

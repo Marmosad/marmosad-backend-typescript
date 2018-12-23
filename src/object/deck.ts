@@ -1,5 +1,5 @@
 import {inject, injectable} from "inversify";
-import {Card, Pack} from "../Interface/firestoreInterface";
+import {Card, Pack} from "../interface/firestoreInterface";
 import {FirestoreService} from "../service/firestoreService";
 import {random, swap} from "../util";
 

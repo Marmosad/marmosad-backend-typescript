@@ -3,7 +3,7 @@ import {SocketService} from "../../src/service/socketService";
 import {} from "ts-jest"
 import {Http} from "../../src/service/httpSingletonService";
 import * as io_client from "socket.io-client"
-import {Chat} from "../../src/Interface/socketInterface";
+import {Chat} from "../../src/interface/socketInterface";
 
 const HTTP_ROOT = 'http://localhost:8081/';
 let socketA: SocketService;
@@ -61,7 +61,6 @@ describe('Socket service connect test', () => {
             })
         }
     );
-
 });
 
 

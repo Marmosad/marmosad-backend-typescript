@@ -1,16 +1,13 @@
-import {BoardInfo} from "../Interface/boardInterface";
+import {BoardInfo, State} from "../interface/boardInterface";
 import {inject, injectable} from "inversify";
-import {Socket} from "socket.io";
 import {SocketService} from "../service/socketService";
 import {Deck} from "./deck";
-import {Subject} from "rxjs";
 
 @injectable()
 class Board {
     private _info: BoardInfo;
     @inject(SocketService) private socket: SocketService;
     @inject(Deck) private deck: Deck;
-    private boardSubject: Subject<any> = new Subject<any>();
     constructor(){
     }
 
