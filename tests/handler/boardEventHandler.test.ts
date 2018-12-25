@@ -1,10 +1,17 @@
 import {BoardEventHandler} from "../../src/handler/boardEventHandler";
-import {ConnectionEvent, RxEvents, RxEventsInterface, SubmissionEvent} from "../../src/interface/rxEventInterface";
+import {
+    ConnectionEvent,
+    JudgementEvent,
+    RxEvents,
+    RxEventsInterface,
+    SubmissionEvent
+} from "../../src/interface/rxEventInterface";
 import {State} from "../../src/interface/boardInterface";
-import * as test from 'ts-jest'
+import * as jest from "ts-jest"
 import {Card} from "../../src/interface/firestoreInterface";
 
-test;
+console.log('Testing on jest ' + jest.version);
+
 
 const boardEventHandler = new BoardEventHandler();
 
@@ -52,7 +59,7 @@ describe('Board event handler connection events tests', () => {
             eventData: {playerName: "1", socketUrl: "234"} as ConnectionEvent
         } as RxEventsInterface);
         boardEventHandler.emitEvent({
-            event: RxEvents.judgedSubmissions,
+            event: RxEvents.judgedSubmission,
             eventData: {playerName: "1", socketUrl: "234"} as ConnectionEvent
         } as RxEventsInterface);
         boardEventHandler.emitEvent({
@@ -75,7 +82,7 @@ describe('Board event handler connection events tests', () => {
             eventData: {playerName: "1", socketUrl: "234"} as ConnectionEvent
         } as RxEventsInterface);
         boardEventHandler.emitEvent({
-            event: RxEvents.judgedSubmissions,
+            event: RxEvents.judgedSubmission,
             eventData: {playerName: "1", socketUrl: "234"} as ConnectionEvent
         } as RxEventsInterface);
         boardEventHandler.emitEvent({
@@ -110,7 +117,7 @@ describe('Board event handler game events tests', () => {
             } as SubmissionEvent
         } as RxEventsInterface);
         boardEventHandler.emitEvent({
-            event: RxEvents.judgedSubmissions,
+            event: RxEvents.judgedSubmission,
             eventData: {
                 playerName: "1",
                 socketUrl: "234",
@@ -133,8 +140,8 @@ describe('Board event handler game events tests', () => {
         boardEventHandler.gameState = State.judgement;
 
         boardEventHandler.subscribe((next: RxEventsInterface) => {
-            expect(next.event).toEqual(RxEvents.judgedSubmissions);
-            const eventData = next.eventData as SubmissionEvent;
+            expect(next.event).toEqual(RxEvents.judgedSubmission);
+            const eventData = next.eventData as JudgementEvent;
             expect(eventData.socketUrl).toEqual("234");
             expect(eventData.playerName).toEqual("1");
             expect(eventData.cardPack).toEqual("test-cards");
@@ -147,9 +154,7 @@ describe('Board event handler game events tests', () => {
             eventData: {
                 playerName: "1",
                 socketUrl: "234",
-                cardPack: 'test-cards',
-                card: {cardId: 22, body: "test"} as Card
-            } as SubmissionEvent
+            } as ConnectionEvent
         } as RxEventsInterface);
         boardEventHandler.emitEvent({
             event: RxEvents.playedWhiteCard,
@@ -161,13 +166,15 @@ describe('Board event handler game events tests', () => {
             } as SubmissionEvent
         } as RxEventsInterface);
         boardEventHandler.emitEvent({
-            event: RxEvents.judgedSubmissions,
+            event: RxEvents.judgedSubmission,
             eventData: {
                 playerName: "1",
                 socketUrl: "234",
+                owner: 'wenyuge',
+                ownerUrl: '123asdDFQ#@',
                 cardPack: 'test-cards',
                 card: {cardId: 22, body: "test"} as Card
-            } as SubmissionEvent
+            } as JudgementEvent
         } as RxEventsInterface)
     });
 });

@@ -1,6 +1,8 @@
 import {FirestoreService} from "../../src/service/firestoreService";
-import {} from "ts-jest"
+import * as jest from "ts-jest"
 import {container} from "../../src/inversify.config";
+
+console.log('Testing on jest ' + jest.version);
 
 
 describe('End-to-end tests', () => {

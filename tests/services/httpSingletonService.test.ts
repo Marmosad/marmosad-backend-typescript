@@ -1,13 +1,15 @@
-import {FirestoreService} from "../../src/service/firestoreService";
 import {container} from "../../src/inversify.config";
-import {inject, injectable, interfaces} from "inversify";
-import {Http, HttpInterface} from "../../src/service/httpSingletonService";
-import {} from "ts-jest"
+import {injectable} from "inversify";
+import {Http} from "../../src/service/httpSingletonService";
+import * as jest from "ts-jest"
 import * as uuid4 from "uuid/v4"
+
+console.log('Testing on jest ' + jest.version);
 
 @injectable()
 class TestClass {
     public uid;
+
     constructor(private http: Http) {
         this.uid = uuid4()
     }

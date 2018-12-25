@@ -4,7 +4,7 @@ import {Card} from "./firestoreInterface";
 
 export interface RxEventsInterface {
     event: RxEvents;
-    eventData: ConnectionEvent | SubmissionEvent;
+    eventData: ConnectionEvent | SubmissionEvent | JudgementEvent;
 };
 
 export interface ConnectionEvent {
@@ -17,9 +17,16 @@ export interface SubmissionEvent extends ConnectionEvent{
     card: Card;
 }
 
+export interface JudgementEvent extends ConnectionEvent{
+    cardPack: string;
+    card: Card;
+    owner: string;
+    ownerUrl: string;
+}
+
 export enum RxEvents {
     playerConnect = 0,
     playerDisconnect = 0,
     playedWhiteCard = 1,
-    judgedSubmissions = 2,
+    judgedSubmission = 2,
 }

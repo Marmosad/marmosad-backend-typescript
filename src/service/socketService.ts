@@ -77,7 +77,7 @@ export class SocketService implements SocketInterface {
             this.getConnection(name).disconnect(true);
         });
         socket.on('disconnecting', (reason) => {
-            console.log('[EVENT] ' + name + ' disconneting due to ' + reason);
+            console.log('[EVENT] ' + name + ' disconnecting due to ' + reason);
             this.handleDisconnect(socket, name)
         });
     }

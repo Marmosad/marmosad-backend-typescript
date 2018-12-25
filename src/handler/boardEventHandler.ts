@@ -1,7 +1,9 @@
 import {RxEventsInterface} from "../interface/rxEventInterface";
 import {State} from "../interface/boardInterface";
 import {Subject} from "rxjs";
+import {injectable} from "inversify";
 
+@injectable()
 export class BoardEventHandler {
     get gameState(): State {
         return this._gameState;
@@ -24,11 +26,11 @@ export class BoardEventHandler {
     } ;
     public emitEvent = (gameEvent: RxEventsInterface) => {
         if (this.gameState as number == gameEvent.event as number) {
-            this._subject.next(gameEvent as RxEventsInterface)
-            console.log("[EVENT] accepted ", gameEvent )
+            this._subject.next(gameEvent as RxEventsInterface);
+            console.log("[EVENT] accepted ", gameEvent );
         }
         else {
-            console.log("[EVENT] rejected ", gameEvent )
+            console.log("[EVENT] rejected ", gameEvent );
         }
     };
 }

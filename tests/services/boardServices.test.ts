@@ -1,7 +1,9 @@
 import {BoardService} from "../../src/service/boardService";
-import {} from "ts-jest"
-import {container} from "../../src/inversify.config";
-import {BoardInfo, PLAYER_COUNT_LOWER_BOUND, PLAYER_COUNT_UPPER_BOUND} from "../../src/interface/boardInterface";
+import * as jest from "ts-jest"
+
+console.log('Testing on jest ' + jest.version);import {container} from "../../src/inversify.config";
+import {PLAYER_COUNT_LOWER_BOUND, PLAYER_COUNT_UPPER_BOUND} from "../../src/interface/boardInterface";
+import {BoardInfo} from "../../src/object/boardComponent";
 
 
 describe('Unit tests on success', () => {

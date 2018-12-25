@@ -1,8 +1,10 @@
 import {container} from "../../src/inversify.config";
 import {Deck} from "../../src/object/deck";
-import {} from "ts-jest"
+import * as jest from "ts-jest"
 import {Card} from "../../src/interface/firestoreInterface";
 import {random} from "../../src/util";
+
+console.log('Testing on jest ' + jest.version);
 
 const ifUnique = (arr, num) => {
     let ret = 0;
@@ -75,7 +77,7 @@ describe('Deck draw test with API', () => {
         expect(deck.packs.get('room-309').whiteCardStack.length).toEqual(size - 1);
         expect(deck.packs.get('room-309').whiteCardCount).toEqual(size - 1);
         expect(ifContains(deck.packs.get('room-309').whiteCardStack, card)).toEqual(false);
-        console.log("[TEST EVENT] card returned by deck" , card);
+        console.log("[TEST EVENT] card returned by deck", card);
     }, 10000);
     it('should return valid black card and decrement deck', async () => {
         // this test currently only accounts for the one card pack we have
@@ -87,6 +89,6 @@ describe('Deck draw test with API', () => {
         expect(deck.packs.get('room-309').blackCardStack.length).toEqual(size - 1);
         expect(deck.packs.get('room-309').blackCardCount).toEqual(size - 1);
         expect(ifContains(deck.packs.get('room-309').blackCardStack, card)).toEqual(false);
-        console.log("[TEST EVENT] card returned by deck" , card);
+        console.log("[TEST EVENT] card returned by deck", card);
     }, 10000);
 });

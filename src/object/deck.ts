@@ -50,6 +50,7 @@ export class Deck implements DeckInterface{
     }
 
     public async drawWhiteCard(): Promise<Card> {
+        console.log('[DBG] new card draw called ');
         const cardPacks = this.packs.keys();
         const cardPack = this.pickRandomPack(cardPacks);
         const cardId = this.packs.get(cardPack).whiteCardStack.pop();
