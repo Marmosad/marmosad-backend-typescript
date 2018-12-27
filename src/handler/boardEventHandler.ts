@@ -18,13 +18,16 @@ export class BoardEventHandler {
     constructor() {
         this._gameState = State.startGame;
         this._subject = new Subject()
-
     }
 
     public subscribe = (arg) => {
         return this._subject.subscribe(arg);
-    } ;
+    };
+
     public emitEvent = (gameEvent: RxEventsInterface) => {
+        // if game ended ignore everything
+        if (this.gameState == State.endGame)
+            return;
         if (this.gameState as number == gameEvent.event as number) {
             this._subject.next(gameEvent as RxEventsInterface);
             console.log("[EVENT] accepted ", gameEvent );

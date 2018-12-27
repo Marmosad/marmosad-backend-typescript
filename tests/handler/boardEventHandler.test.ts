@@ -13,9 +13,15 @@ import {Card} from "../../src/interface/firestoreInterface";
 console.log('Testing on jest ' + jest.version);
 
 
-const boardEventHandler = new BoardEventHandler();
+let boardEventHandler;
 
 describe('Board event handler connection events tests', () => {
+    beforeEach(()=>{
+        boardEventHandler = new BoardEventHandler();
+    });
+    afterEach(()=>{
+        boardEventHandler = null;
+    });
     it('start game events player connect', (done) => {
         boardEventHandler.gameState = State.startGame;
 
@@ -94,6 +100,12 @@ describe('Board event handler connection events tests', () => {
 
 
 describe('Board event handler game events tests', () => {
+    beforeEach(()=>{
+        boardEventHandler = new BoardEventHandler();
+    });
+    afterEach(()=>{
+       boardEventHandler = null;
+    });
     it('should accept only submissions events', (done) => {
         boardEventHandler.gameState = State.submission;
 
@@ -121,10 +133,12 @@ describe('Board event handler game events tests', () => {
             eventData: {
                 playerName: "1",
                 socketUrl: "234",
+                owner: 'wenyuge',
+                ownerUrl: '123asdDFQ#@',
                 cardPack: 'test-cards',
                 card: {cardId: 22, body: "test"} as Card
-            } as SubmissionEvent
-        } as RxEventsInterface);
+            } as JudgementEvent
+        } as RxEventsInterface)
         boardEventHandler.emitEvent({
             event: RxEvents.playedWhiteCard,
             eventData: {

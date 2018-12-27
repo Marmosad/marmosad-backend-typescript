@@ -1,14 +1,20 @@
-export class BoardInfo {
-    cardPacks: string[];
-    name: string;
+import {Card} from "../interface/firestoreInterface";
+
+export interface BoardInfo {
+    readonly cardPacks: string[];
+    readonly name: string;
     numberOfPlayers: number;
     playerLimitReached: boolean;
-    playerLimit: number;
-    socketUrl: string;
+    readonly playerLimit: number;
+    readonly socketUrl: string;
 }
 
-export class BoardDisplay {
-    blackCard: any = null; //This should be a black card object
-    submissions: Array<any> = [];
-    currentJudge: string = ''; // The player ID of the person who is the judge
+export interface BoardDisplay {
+    blackCard: any; //This should be a black card object
+    submissions: Array<Card>;
+    currentJudge: string; // The player ID of the person who is the judge
+}
+
+export interface PlayerDisplay extends BoardDisplay{
+    playerHand: Array<Card>;
 }

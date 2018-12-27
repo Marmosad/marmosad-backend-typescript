@@ -1,5 +1,6 @@
 export const PLAYER_COUNT_UPPER_BOUND = 8;
 export const PLAYER_COUNT_LOWER_BOUND = 3;
+export const MAX_SCORE = 10;
 
 
 export enum State {
@@ -8,5 +9,5 @@ export enum State {
     judgement = 2,
     updateScore = 3,
     dealNewCards = 4,
-    endGame = 5
+    endGame = 69
 }

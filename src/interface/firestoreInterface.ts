@@ -12,11 +12,11 @@ export interface Response {
 export interface Pack {
     whiteCardCount: number;
     blackCardCount: number;
-    whiteCardStack?: number[];
-    blackCardStack?: number[]
+    whiteCardStack?: Card[];
+    blackCardStack?: Card[]
 }
 
 export interface Card {
     cardId: number;
-    body: string;
+    body?: string;
 }

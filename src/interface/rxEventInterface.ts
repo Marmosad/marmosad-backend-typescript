@@ -4,10 +4,15 @@ import {Card} from "./firestoreInterface";
 
 export interface RxEventsInterface {
     event: RxEvents;
-    eventData: ConnectionEvent | SubmissionEvent | JudgementEvent;
+    eventData: ConnectionEvent | SubmissionEvent | JudgementEvent | EndGameEvent;
 };
 
 export interface ConnectionEvent {
+    playerName: string;
+    socketUrl: string;
+}
+
+export interface EndGameEvent {
     playerName: string;
     socketUrl: string;
 }
@@ -29,4 +34,5 @@ export enum RxEvents {
     playerDisconnect = 0,
     playedWhiteCard = 1,
     judgedSubmission = 2,
+    gameEnded = 69
 }

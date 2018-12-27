@@ -2,8 +2,8 @@ import * as Socket from 'socket.io';
 import {inject, injectable} from "inversify";
 import {Http} from "./httpSingletonService";
 import {Chat} from "../interface/socketInterface";
-import {Subject} from "rxjs";
-import {RxEventsInterface} from "../interface/rxEventInterface";
+import {ConnectionEvent, RxEvents, RxEventsInterface} from "../interface/rxEventInterface";
+import {BoardDisplay, PlayerDisplay} from "../object/boardComponent";
 
 export interface SocketInterface {
     start(url, subject): void
@@ -18,11 +18,12 @@ export class SocketService implements SocketInterface {
     private _io: Socket.Server = null;
     private _connections = new Map<string, Socket.Socket>();
     private _url: string;
+    private gameEventEmitter = null;
 
     constructor(@inject(Http) private http: Http) {
     }
 
-    public start(url, subject: Subject<RxEventsInterface> = null): void {
+    public start(url, subject: (gameEvent: RxEventsInterface) => void): void {
         this._url = '/' + url;
         this._io = Socket(this.http.httpServer, {
             path: this._url, serveClient: false,
@@ -35,7 +36,7 @@ export class SocketService implements SocketInterface {
         this.io.on('connection', (socket: Socket.Socket) => {
             this.handleNewConnection(socket)
         });
-
+        this.gameEventEmitter = subject;
     }
 
     public stop(): Promise<void> {
@@ -58,36 +59,49 @@ export class SocketService implements SocketInterface {
         console.log('[EVENT] Player: ' + name + ' joined.');
         this.setupSocket(socket, name);
         this.addConnection(name, socket);
+        if (typeof this.gameEventEmitter !== 'undefined')
+            this.gameEventEmitter({
+                event: RxEvents.playerConnect,
+                eventData: {playerName: name, socketUrl: this.io.path()} as ConnectionEvent
+            });
     }
 
-    private handleDisconnect(socket: Socket.Socket, name) {
-        this._connections.delete(name);
+    private handleDisconnect(socket: Socket.Socket, playerName) {
+        this._connections.delete(playerName);
+        this.gameEventEmitter({
+            event: RxEvents.playerDisconnect,
+            eventData: {playerName: playerName, socketUrl: this.io.path()} as ConnectionEvent
+        });
     }
 
-    private setupSocket(socket: Socket.Socket, name) {
+    private setupSocket(socket: Socket.Socket, playerName) {
         socket.join('chat');
         socket.join('game');
         socket.on('chat', (msg) => {
             console.log('chat found', msg);
             if (msg.trim()) {
-                this.emitChat(name, msg);
+                this.emitChat(playerName, msg);
             }
         });
         socket.on('kill', (reason) => {
-            this.getConnection(name).disconnect(true);
+            this.getConnection(playerName).disconnect(true);
         });
         socket.on('disconnecting', (reason) => {
-            console.log('[EVENT] ' + name + ' disconnecting due to ' + reason);
-            this.handleDisconnect(socket, name)
+            console.log('[EVENT] ' + playerName + ' disconnecting due to ' + reason);
+            this.handleDisconnect(socket, playerName)
         });
     }
 
-    private addConnection(name: string, socket: Socket.Socket): void {
-        this._connections.set(name, socket);
+    private addConnection(playerName: string, socket: Socket.Socket): void {
+        this._connections.set(playerName, socket);
     }
 
-    public getConnection(name: string): Socket.Socket {
-        return this._connections.get(name)
+    public getConnection(playerName: string): Socket.Socket {
+        return this._connections.get(playerName)
+    }
+
+    public emitDisplayUpdate(playerName: string, display: PlayerDisplay) {
+        this.getConnection(playerName).send('updateDisplay', display)
     }
 
     get url(): string {

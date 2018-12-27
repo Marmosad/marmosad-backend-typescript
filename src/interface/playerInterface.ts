@@ -10,6 +10,3 @@ export class PlayerInterface {
     socketUrl: any;
 }
 
-export class Players {
-    [key: string]: Player;
-}

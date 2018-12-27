@@ -1,10 +1,11 @@
 import {inject, injectable} from "inversify";
 import {SocketService} from "../service/socketService";
 import {Deck} from "./deck";
-import {BoardDisplay, BoardInfo} from "./boardComponent";
+import {BoardDisplay, BoardInfo, PlayerDisplay} from "./boardComponent";
 import {BoardEventHandler} from "../handler/boardEventHandler";
 import {
     ConnectionEvent,
+    EndGameEvent,
     JudgementEvent,
     RxEvents,
     RxEventsInterface,
@@ -12,30 +13,32 @@ import {
 } from "../interface/rxEventInterface";
 import {Player} from "./player";
 import {Card} from "../interface/firestoreInterface";
+import {MAX_SCORE, State} from "../interface/boardInterface";
 
 @injectable()
 class Board {
     private eventHandlerStarted = false;
     private _info: BoardInfo;
-    private display: BoardDisplay;
+    private readonly display: BoardDisplay;
     private players: Map<string, Player> = new Map<string, Player>();
     @inject(SocketService) private socket: SocketService;
     @inject(Deck) private deck: Deck;
 
     constructor(private _eventHandler: BoardEventHandler) {
         this.startEventHandler();
+        this.display = {blackCard: null, currentJudge: '', submissions: []} as BoardDisplay;
     }
 
     public startEventHandler() {
         if (this.eventHandlerStarted)
             return;
-        this.eventHandler.subscribe((next: RxEventsInterface) => {
+        this.eventHandler.subscribe(async (next: RxEventsInterface) => {
             switch (next.event) {
                 case RxEvents.playedWhiteCard:
                     this.playWhiteCard(next.eventData as SubmissionEvent);
                     break;
                 case RxEvents.judgedSubmission:
-                    this.judgedSubmission(next.eventData as JudgementEvent);
+                    await this.judgedSubmission(next.eventData as JudgementEvent);
                     break;
                 case RxEvents.playerConnect:
                     this.playerConnect(next.eventData as ConnectionEvent).then(this.updateDisplay);
@@ -45,8 +48,8 @@ class Board {
                     break;
                 default:
                     break;
-
             }
+            this.updateDisplay();
         });
         this.eventHandlerStarted = true;
     }
@@ -64,8 +67,9 @@ class Board {
     get eventHandler(): BoardEventHandler {
         return this._eventHandler;
     }
+
     public startSocket(url = this.info.socketUrl) {
-        this.socket.start(url);
+        this.socket.start(url, this.eventHandler.emitEvent);
     }
 
     public async initDeck(cardPack: string[]) {
@@ -73,35 +77,78 @@ class Board {
     }
 
     public playWhiteCard(eventData: SubmissionEvent) {
-
+        const playerName = eventData.playerName;
+        if (playerName !== this.display.currentJudge && !this.players.get(playerName).hasPlayed)
+            return;
+        this.display.submissions.push(eventData.card);
+        this.players.get(playerName).hasPlayed = true;
+        // remove card from player hand
+        this.players.get(playerName).hand.splice(this.players.get(playerName).hand.indexOf(eventData.card), 1);
     }
 
-    public judgedSubmission(eventData: JudgementEvent) {
-
+    public async judgedSubmission(eventData: JudgementEvent) {
+        const playerName = eventData.playerName;
+        const owner = eventData.owner;
+        if (playerName === this.display.currentJudge)
+            return;
+        this.players.get(owner).score++;
+        if (this.players.get(owner).score > MAX_SCORE) { // This variable dictates how long the games go oops.
+            this.eventHandler.gameState = State.endGame;
+            this.endGame(owner);
+        } else {
+            this.eventHandler.gameState = State.dealNewCards;
+            await this.dealNewCards();
+        }
     }
 
     public async playerConnect(eventData: ConnectionEvent) {
         const newPlayer = new Player(eventData.socketUrl, eventData.playerName);
         console.log('[DBG] player added as ', eventData);
-        while (newPlayer.hand.length < 7){
-            const newCard = await this.deck.drawWhiteCard();
-            console.log('[DBG] attempting to add new card to player ', newCard);
-            newPlayer.fillHand(newCard as Card);
-        }
-        console.log('[EVENT] new player added: ', newPlayer);
-        this.players.set(newPlayer.playerName, newPlayer as Player);
+        await this.fillPlayerHand(newPlayer);
+        this.players.set(eventData.playerName, newPlayer as Player);
+        this.info.numberOfPlayers += 1;
+        console.log('[EVENT] new player added: ', this.players.get(eventData.playerName));
         return;
     }
-    public playerDisconnect(eventData: ConnectionEvent) {
 
+    private async fillPlayerHand(player: Player) {
+        while (player.hand.length < 7) {
+            const newCard = await this.deck.drawWhiteCard();
+            console.log('[DBG] attempting to add new card to player ', newCard);
+            player.fillHand(newCard as Card);
+        }
+    }
+
+    public playerDisconnect(eventData: ConnectionEvent) {
+        this.info.numberOfPlayers -= 1;
+        this.players.delete(eventData.playerName);
     }
 
     public updateDisplay() {
-
+        this.players.forEach((value, key) => {
+            const playerDisplay = this.display as PlayerDisplay;
+            playerDisplay.playerHand = this.players.get(key).hand;
+            this.socket.emitDisplayUpdate(key, playerDisplay as PlayerDisplay)
+        })
     }
 
-    public getPlayer(name:string){
+    public getPlayer(name: string) {
         return this.players.get(name);
+    }
+
+    public endGame(playerName: string): void {
+        this.eventHandler.emitEvent({
+            event: RxEvents.gameEnded,
+            eventData: {playerName: playerName} as EndGameEvent
+        } as RxEventsInterface);
+    }
+
+    public async dealNewCards() {
+        this.display.blackCard = await this.deck.drawBlackCard();
+        this.display.submissions = [] as Card[];
+        this.players.forEach(async (value) => {
+            await this.fillPlayerHand(value);
+        })
     }
 }
 

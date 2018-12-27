@@ -5,14 +5,18 @@ import {random, swap} from "../util";
 
 export interface DeckInterface {
     initialize(packNames: string[]): Promise<boolean>;
+
     packs: Map<string, Pack>;
-    generateCardStack(n: number): number[];
+
+    generateCardStack(n: number): Card[];
+
     drawWhiteCard(): Promise<Card>;
+
     drawBlackCard(): Promise<Card>;
 }
 
 @injectable()
-export class Deck implements DeckInterface{
+export class Deck implements DeckInterface {
     // Packs <pack name: string, pack: Pack>
     private _packs: Map<string, Pack> = new Map<string, Pack>();
     @inject(FirestoreService) private firestoreService: FirestoreService;
@@ -26,23 +30,45 @@ export class Deck implements DeckInterface{
             //generate white card stack and shuffle
             this.packs.get(name).whiteCardStack = Deck.shuffle(this.generateCardStack(pack.whiteCardCount));
         }
+
         return true
     }
 
-    get packs(): Map<string, Pack>{
+    get packs(): Map<string, Pack> {
         return this._packs;
     }
 
-    public generateCardStack(n: number): number[] {
+    public generateCardStack(n: number): Card[] {
         const stack = new Array(n);
         for (let i = 1; i <= n; i++) {
-            stack[i - 1] = i;
+            stack[i - 1] = {cardId: i} as Card;
         }
         return stack;
     }
 
-    public static shuffle(stack: number[]): number[] {
-        const shuffled = stack.slice(0, stack.length); // deep copy
+    public cacheCards() {
+        this.packs.forEach((value, key, map) => {
+            for (let i = this.packs.get(key).whiteCardStack.length - 1; i >= 0; i--) {
+                this.firestoreService.getWhiteCard(key, this.packs.get(key).whiteCardStack[i].cardId).then(((card: Card) => {
+                    // prevents race conditions
+                    if (typeof this.packs.get(key).whiteCardStack[i] !== "undefined")
+                        this.packs.get(key).whiteCardStack[i].body = card.body;
+                }));
+
+            }
+            for (let i = this.packs.get(key).blackCardStack.length - 1; i >= 0; i--) {
+                this.firestoreService.getBlackCard(key, this.packs.get(key).blackCardStack[i].cardId).then(((card: Card) => {
+                    // prevents race conditions
+                    if (typeof this.packs.get(key).blackCardStack[i] !== "undefined")
+                        this.packs.get(key).blackCardStack[i].body = card.body;
+                }));
+
+            }
+        })
+    }
+
+    public static shuffle(stack: Card[]): Card[] {
+        const shuffled = stack.slice(0, stack.length);
         for (let i = shuffled.length - 1; i >= 0; i--) {
             swap(shuffled, random(0, i), i)
         }
@@ -53,20 +79,26 @@ export class Deck implements DeckInterface{
         console.log('[DBG] new card draw called ');
         const cardPacks = this.packs.keys();
         const cardPack = this.pickRandomPack(cardPacks);
-        const cardId = this.packs.get(cardPack).whiteCardStack.pop();
+        const card = this.packs.get(cardPack).whiteCardStack.pop();
         this.packs.get(cardPack).whiteCardCount -= 1;
-        return await this.firestoreService.getWhiteCard(cardPack, cardId)
+        if (card.body) {
+            return card;
+        }
+        return await this.firestoreService.getWhiteCard(cardPack, card.cardId)
     }
 
-    public async drawBlackCard(): Promise<Card>{
+    public async drawBlackCard(): Promise<Card> {
         const cardPacks = this.packs.keys();
         const cardPack = this.pickRandomPack(cardPacks);
-        const cardId = this.packs.get(cardPack).blackCardStack.pop();
+        const card = this.packs.get(cardPack).blackCardStack.pop();
         this.packs.get(cardPack).blackCardCount -= 1;
-        return await this.firestoreService.getBlackCard(cardPack, cardId)
+        if (card.body) {
+            return card;
+        }
+        return await this.firestoreService.getBlackCard(cardPack, card.cardId)
     }
 
-    private pickRandomPack = (cardPacks: IterableIterator<string>)=>{
+    private pickRandomPack = (cardPacks: IterableIterator<string>) => {
         let randPack = random(1, this.packs.size) - 1;
         let counter = 0;
         while (counter < randPack) {

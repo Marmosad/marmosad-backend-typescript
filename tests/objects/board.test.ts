@@ -26,7 +26,8 @@ describe('Board tests', () => {
         await boardInstance.initDeck(['room-309']);
     });
 
-    it('should initialize board correctly', function () {
+    it(
+        'should initialize board correctly', function () {
         expect(boardInstance.info.name).toEqual(boardInfo.name);
         expect(boardInstance.info.playerLimit).toEqual(boardInfo.playerLimit);
         expect(boardInstance.info.numberOfPlayers).toEqual(boardInfo.numberOfPlayers);
@@ -39,14 +40,12 @@ describe('Board tests', () => {
             playerName: "1",
             socketUrl: "234",
         } as ConnectionEvent);
-        setTimeout(()=> { // we wanna wait to see if there's overfill with our hand.
-            console.log(boardInstance.getPlayer("1"));
-            expect(boardInstance.getPlayer("1").hand.length).toEqual(7);
-            expect(boardInstance.getPlayer("1").socketUrl).toEqual("234");
-            expect(boardInstance.getPlayer("1").isJudge).toEqual(false);
-            expect(boardInstance.getPlayer("1").playerName).toEqual("1");
-            expect(boardInstance.getPlayer("1").score).toEqual(0);
-        }, 2000)
+        console.log(boardInstance.getPlayer("1"));
+        expect(boardInstance.getPlayer("1").hand.length).toEqual(7);
+        expect(boardInstance.getPlayer("1").socketUrl).toEqual("234");
+        expect(boardInstance.getPlayer("1").isJudge).toEqual(false);
+        expect(boardInstance.getPlayer("1").playerName).toEqual("1");
+        expect(boardInstance.getPlayer("1").score).toEqual(0);
     });
 
 });

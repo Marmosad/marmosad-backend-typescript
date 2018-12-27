@@ -9,9 +9,12 @@ export class Player implements PlayerInterface {
     public playerName: string;
     public score: number;
     public socketUrl: string;
+    public hasPlayed: boolean = false;
     @inject(FirestoreService) private firestoreService: FirestoreService;
 
     constructor(socketUrl: string, playerName: string) {
+        this.playerName = playerName;
+        this.socketUrl = socketUrl;
         this.isJudge = false;
         this.score = 0;
     }
