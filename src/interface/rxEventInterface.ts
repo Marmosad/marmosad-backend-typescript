@@ -1,6 +1,4 @@
-import {GameState} from "../object/gameState";
-import {State} from "./boardInterface";
-import {Card} from "./firestoreInterface";
+import {DealtCard} from "./playerInterface";
 
 export interface RxEventsInterface {
     event: RxEvents;
@@ -17,19 +15,20 @@ export interface EndGameEvent {
     socketUrl: string;
 }
 
-export interface SubmissionEvent extends ConnectionEvent{
+export interface SubmissionEvent extends ConnectionEvent {
     cardPack: string;
-    card: Card;
+    card: DealtCard;
 }
 
-export interface JudgementEvent extends ConnectionEvent{
+export interface JudgementEvent extends ConnectionEvent {
     cardPack: string;
-    card: Card;
+    card: DealtCard;
     owner: string;
     ownerUrl: string;
 }
 
 export enum RxEvents {
+    startGame = 5,
     playerConnect = 0,
     playerDisconnect = 0,
     playedWhiteCard = 1,

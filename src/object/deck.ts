@@ -17,7 +17,7 @@ export interface DeckInterface {
 
 @injectable()
 export class Deck implements DeckInterface {
-    // Packs <pack name: string, pack: Pack>
+    // Packs <pack boardName: string, pack: Pack>
     private _packs: Map<string, Pack> = new Map<string, Pack>();
     @inject(FirestoreService) private firestoreService: FirestoreService;
 

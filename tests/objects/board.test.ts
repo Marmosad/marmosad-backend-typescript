@@ -9,7 +9,7 @@ import * as jest from "ts-jest"
 console.log('Testing on jest ' + jest.version);
 
 const boardInfo = {
-    name: 'testBoard',
+    playerName: 'testBoard',
     playerLimit: 6,
     numberOfPlayers: 0,
     playerLimitReached: false,
@@ -28,7 +28,7 @@ describe('Board tests', () => {
 
     it(
         'should initialize board correctly', function () {
-        expect(boardInstance.info.name).toEqual(boardInfo.name);
+        expect(boardInstance.info.boardName).toEqual(boardInfo.boardName);
         expect(boardInstance.info.playerLimit).toEqual(boardInfo.playerLimit);
         expect(boardInstance.info.numberOfPlayers).toEqual(boardInfo.numberOfPlayers);
         expect(boardInstance.info.playerLimitReached).toEqual(boardInfo.playerLimitReached);

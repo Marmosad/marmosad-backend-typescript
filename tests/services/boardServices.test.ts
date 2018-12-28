@@ -11,19 +11,19 @@ describe('Unit tests on success', () => {
         const boardService = new BoardService();
         const currentBoard = boardService.getBoardsInfo() as BoardInfo[];
         expect(currentBoard.length).toEqual(3);
-        expect(currentBoard[0].name).toEqual('Board 1');
-        expect(currentBoard[1].name).toEqual('Board 2');
-        expect(currentBoard[2].name).toEqual('Board 3');
+        expect(currentBoard[0].boardName).toEqual('Board 1');
+        expect(currentBoard[1].boardName).toEqual('Board 2');
+        expect(currentBoard[2].boardName).toEqual('Board 3');
     });
     it('board info test', () => {
         const boardService = new BoardService();
         const currentBoard = boardService.getBoardsInfo() as BoardInfo[];
         expect(boardService.getBoardInfo(currentBoard[0].socketUrl).socketUrl).toEqual(currentBoard[0].socketUrl);
-        expect(boardService.getBoardInfo(currentBoard[0].socketUrl).name).toEqual(currentBoard[0].name);
+        expect(boardService.getBoardInfo(currentBoard[0].socketUrl).boardName).toEqual(currentBoard[0].boardName);
         expect(boardService.getBoardInfo(currentBoard[1].socketUrl).socketUrl).toEqual(currentBoard[1].socketUrl);
-        expect(boardService.getBoardInfo(currentBoard[1].socketUrl).name).toEqual(currentBoard[1].name);
+        expect(boardService.getBoardInfo(currentBoard[1].socketUrl).boardName).toEqual(currentBoard[1].boardName);
         expect(boardService.getBoardInfo(currentBoard[2].socketUrl).socketUrl).toEqual(currentBoard[2].socketUrl);
-        expect(boardService.getBoardInfo(currentBoard[2].socketUrl).name).toEqual(currentBoard[2].name);
+        expect(boardService.getBoardInfo(currentBoard[2].socketUrl).boardName).toEqual(currentBoard[2].boardName);
         expect(boardService.getBoardInfo('234')).toBeNull();
         expect(boardService.getBoardInfoByName('Board 1').socketUrl).toEqual(currentBoard[0].socketUrl);
         expect(boardService.getBoardInfoByName('Board 2314')).toBeNull();
@@ -41,7 +41,7 @@ describe('Unit tests on success', () => {
     it('board add test', () => {
         const boardService = new BoardService();
         expect(boardService.getBoardsInfo().length).toEqual(3);
-        expect(boardService.newBoard(boardService.getBoardsInfo()[0].name, 5)).toEqual(false);
+        expect(boardService.newBoard(boardService.getBoardsInfo()[0].boardName, 5)).toEqual(false);
         expect(boardService.getBoardsInfo().length).toEqual(3);
         expect(boardService.newBoard("123", PLAYER_COUNT_LOWER_BOUND - 1)).toEqual(false);
         expect(boardService.getBoardsInfo().length).toEqual(3);

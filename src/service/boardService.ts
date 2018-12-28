@@ -37,7 +37,7 @@ export class BoardService implements BoardInterface {
 
     getBoardInfoByName(name: string): BoardInfo {
         for (const board of this.boards) {
-            if (board.info.name === name) {
+            if (board.info.boardName === name) {
                 return board.info as BoardInfo;
             }
         }
@@ -60,16 +60,16 @@ export class BoardService implements BoardInterface {
 
         let boards = this.getBoardsInfo();
         for (const board of boards) {
-            if (board.name == name) {
+            if (board.boardName == name) {
                 return false;
             }
         }
         const boardInfo = {
-            name: name,
+            boardName: name,
             playerLimit: numberOfPlayers,
             numberOfPlayers: 0,
             playerLimitReached: false,
-            socketUrl: uuid4() //instance id is also the socket url
+            socketUrl: '/' + uuid4() //instance id is also the socket url
         } as BoardInfo;
         const boardInstance = container.resolve(Board);
         boardInstance.info = boardInfo;

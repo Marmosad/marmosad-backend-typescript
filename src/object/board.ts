@@ -1,7 +1,7 @@
 import {inject, injectable} from "inversify";
 import {SocketService} from "../service/socketService";
 import {Deck} from "./deck";
-import {BoardDisplay, BoardInfo, PlayerDisplay} from "./boardComponent";
+import {BoardDisplay, BoardInfo, PlayerDisplay, Score} from "./boardComponent";
 import {BoardEventHandler} from "../handler/boardEventHandler";
 import {
     ConnectionEvent,
@@ -14,13 +14,18 @@ import {
 import {Player} from "./player";
 import {Card} from "../interface/firestoreInterface";
 import {MAX_SCORE, State} from "../interface/boardInterface";
+import {DealtCard} from "../interface/playerInterface";
 
 @injectable()
 class Board {
+    get players(): Map<string, Player> {
+        return this._players;
+    }
+
     private eventHandlerStarted = false;
     private _info: BoardInfo;
     private readonly display: BoardDisplay;
-    private players: Map<string, Player> = new Map<string, Player>();
+    private _players: Map<string, Player> = new Map<string, Player>();
     @inject(SocketService) private socket: SocketService;
     @inject(Deck) private deck: Deck;
 
@@ -41,15 +46,18 @@ class Board {
                     await this.judgedSubmission(next.eventData as JudgementEvent);
                     break;
                 case RxEvents.playerConnect:
-                    this.playerConnect(next.eventData as ConnectionEvent).then(this.updateDisplay);
+                    await this.playerConnect(next.eventData as ConnectionEvent);
                     break;
                 case RxEvents.playerDisconnect:
                     this.playerDisconnect(next.eventData as ConnectionEvent);
                     break;
+                case RxEvents.startGame:
+                    this.updateDisplay(this.players);
+                    break;
                 default:
                     break;
             }
-            this.updateDisplay();
+            this.updateDisplay(this.players);
         });
         this.eventHandlerStarted = true;
     }
@@ -80,10 +88,14 @@ class Board {
         const playerName = eventData.playerName;
         if (playerName !== this.display.currentJudge && !this.players.get(playerName).hasPlayed)
             return;
-        this.display.submissions.push(eventData.card);
+        this.display.submissions.push({cardId: eventData.card.cardId, body: eventData.card.body, owner: playerName});
         this.players.get(playerName).hasPlayed = true;
         // remove card from player hand
         this.players.get(playerName).hand.splice(this.players.get(playerName).hand.indexOf(eventData.card), 1);
+    }
+
+    private dealCard(card: Card, owner: string): DealtCard {
+        return {cardId: card.cardId, body: card.body, owner: owner};
     }
 
     public async judgedSubmission(eventData: JudgementEvent) {
@@ -115,7 +127,7 @@ class Board {
         while (player.hand.length < 7) {
             const newCard = await this.deck.drawWhiteCard();
             console.log('[DBG] attempting to add new card to player ', newCard);
-            player.fillHand(newCard as Card);
+            player.fillHand(this.dealCard(newCard as Card, player.playerName));
         }
     }
 
@@ -124,10 +136,16 @@ class Board {
         this.players.delete(eventData.playerName);
     }
 
-    public updateDisplay() {
-        this.players.forEach((value, key) => {
+    public updateDisplay(players) {
+        let score = [];
+        players.forEach((value, key) => {
+            score.push({playerName: value.playerName, isJudge: value.isJudge, score: value.score} as Score);
+        });
+        players.forEach((value, key) => {
             const playerDisplay = this.display as PlayerDisplay;
             playerDisplay.playerHand = this.players.get(key).hand;
+            playerDisplay.score = score;
+            console.log('[EVENT] Update pushed with', key, playerDisplay as PlayerDisplay);
             this.socket.emitDisplayUpdate(key, playerDisplay as PlayerDisplay)
         })
     }
@@ -145,7 +163,7 @@ class Board {
 
     public async dealNewCards() {
         this.display.blackCard = await this.deck.drawBlackCard();
-        this.display.submissions = [] as Card[];
+        this.display.submissions = [] as DealtCard[];
         this.players.forEach(async (value) => {
             await this.fillPlayerHand(value);
         })

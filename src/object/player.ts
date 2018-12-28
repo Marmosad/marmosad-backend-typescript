@@ -1,10 +1,10 @@
-import {PlayerInterface} from "../interface/playerInterface";
+import {DealtCard, PlayerInterface} from "../interface/playerInterface";
 import {Card} from "../interface/firestoreInterface";
 import {inject} from "inversify";
 import {FirestoreService} from "../service/firestoreService";
 
 export class Player implements PlayerInterface {
-    public hand: Array<Card> = [];
+    public hand: Array<DealtCard> = [];
     public isJudge: boolean;
     public playerName: string;
     public score: number;
@@ -19,7 +19,7 @@ export class Player implements PlayerInterface {
         this.score = 0;
     }
 
-    public fillHand(card: Card) {
+    public fillHand(card: DealtCard) {
         console.log('[DBG] new card added to hand: ', card);
         this.hand.push(card);
     }

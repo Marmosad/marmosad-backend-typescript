@@ -1,6 +1,4 @@
-import {Socket} from 'socket.io';
 import {Card} from "./firestoreInterface";
-import {Player} from "../object/player";
 
 export class PlayerInterface {
     playerName: string;
@@ -10,3 +8,6 @@ export class PlayerInterface {
     socketUrl: any;
 }
 
+export interface DealtCard extends Card{
+    owner: string;
+}

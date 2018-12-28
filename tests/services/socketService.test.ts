@@ -29,15 +29,15 @@ describe('Socket service connect test', () => {
             container.get<Http>(Http).httpStart().then(() => {
                 http = container.get<Http>(Http).httpServer;
                 socketA = container.resolve(SocketService);
-                socketA.start('a', null);
+                socketA.start('/a', null);
                 socketA.io.on('connection', function (socket: any) {
-                    console.log('[TEST EVENT] Player: ' + socket.handshake.query.name + ' joined.');
-                    expect(socket.handshake.query.name).toEqual('1');
+                    console.log('[TEST EVENT] Player: ' + socket.handshake.query.playerName + ' joined.');
+                    expect(socket.handshake.query.playerName).toEqual('1');
                     done()
                 });
                 console.log(HTTP_ROOT);
                 client1 = io_client(HTTP_ROOT, {
-                    query: 'name=' + "1",
+                    query: 'boardName=' + "1",
                     path: '/a'
                 });
             })
@@ -48,15 +48,15 @@ describe('Socket service connect test', () => {
             container.get<Http>(Http).httpStart().then(() => {
                 http = container.get<Http>(Http).httpServer;
                 socketA = container.resolve(SocketService);
-                socketA.start('a', null);
+                socketA.start('/a', null);
                 console.log(HTTP_ROOT);
                 client1 = io_client(HTTP_ROOT, {
-                    query: 'name=' + name,
+                    query: 'boardName=' + name,
                     path: '/a'
                 });
                 socketA.io.on('connection', function (socket: any) {
-                    console.log('[TEST EVENT] Player: ' + socket.handshake.query.name + ' joined.');
-                    expect(socketA.getConnection(name).handshake.query.name).toEqual(name);
+                    console.log('[TEST EVENT] Player: ' + socket.handshake.query.playerName + ' joined.');
+                    expect(socketA.getConnection(name).handshake.query.playerName).toEqual(name);
                     http.close();
                     done()
                 });
@@ -72,15 +72,15 @@ describe('Socket service disconnect test', () => {
         container.get<Http>(Http).httpStart().then(() => {
             http = container.get<Http>(Http).httpServer;
             socketA = container.resolve(SocketService);
-            socketA.start('a', null);
+            socketA.start('/a', null);
             console.log(HTTP_ROOT);
             client1 = io_client(HTTP_ROOT, {
-                query: 'name=' + name,
+                query: 'boardName=' + name,
                 path: '/a'
             });
             socketA.io.on('connection', function (socket: any) {
-                console.log('[TEST EVENT] Player: ' + socket.handshake.query.name + ' joined.');
-                expect(socketA.getConnection(name).handshake.query.name).toEqual(name);
+                console.log('[TEST EVENT] Player: ' + socket.handshake.query.playerName + ' joined.');
+                expect(socketA.getConnection(name).handshake.query.playerName).toEqual(name);
                 done();
             });
         })
@@ -141,10 +141,10 @@ describe('Socket chat test', () => {
                 const chatmsg = 'ni hao';
                 http = container.get<Http>(Http).httpServer;
                 socketA = container.resolve(SocketService);
-                socketA.start('a', null);
+                socketA.start('/a', null);
                 console.log(HTTP_ROOT);
                 client1 = io_client(HTTP_ROOT, {
-                    query: 'name=' + '1',
+                    query: 'boardName=' + '1',
                     path: '/a'
                 }).on('chat', (chat) => {
                     console.log(chat);
@@ -157,7 +157,7 @@ describe('Socket chat test', () => {
                     }
                 });
                 client2 = io_client(HTTP_ROOT, {
-                    query: 'name=' + '2',
+                    query: 'boardName=' + '2',
                     path: '/a'
                 }).on('chat', (chat: Chat) => {
                     expect(chat.msg).toEqual(chatmsg);
@@ -168,7 +168,7 @@ describe('Socket chat test', () => {
                     }
                 });
                 client3 = io_client(HTTP_ROOT, {
-                    query: 'name=' + '3',
+                    query: 'boardName=' + '3',
                     path: '/a'
                 }).on('chat', (chat: Chat) => {
                     expect(chat.msg).toEqual(chatmsg);
@@ -179,7 +179,7 @@ describe('Socket chat test', () => {
                     }
                 });
                 client4 = io_client(HTTP_ROOT, {
-                    query: 'name=' + '4',
+                    query: 'boardName=' + '4',
                     path: '/a'
                 }).on('chat', (chat: Chat) => {
                     expect(chat.msg).toEqual(chatmsg);
@@ -200,10 +200,10 @@ describe('Socket chat test', () => {
                 const chatmsg = 'ni hao';
                 http = container.get<Http>(Http).httpServer;
                 socketA = container.resolve(SocketService);
-                socketA.start('a', null);
+                socketA.start('/a', null);
                 console.log(HTTP_ROOT);
                 client1 = io_client(HTTP_ROOT, {
-                    query: 'name=' + '1',
+                    query: 'boardName=' + '1',
                     path: '/a'
                 }).on('chat', (chat) => {
                     console.log(chat);
@@ -216,7 +216,7 @@ describe('Socket chat test', () => {
                     }
                 });
                 client2 = io_client(HTTP_ROOT, {
-                    query: 'name=' + '2',
+                    query: 'boardName=' + '2',
                     path: '/a'
                 }).on('chat', (chat: Chat) => {
                     expect(chat.msg).toEqual(chatmsg);
@@ -227,7 +227,7 @@ describe('Socket chat test', () => {
                     }
                 });
                 client3 = io_client(HTTP_ROOT, {
-                    query: 'name=' + '3',
+                    query: 'boardName=' + '3',
                     path: '/a'
                 }).on('chat', (chat: Chat) => {
                     expect(chat.msg).toEqual(chatmsg);
@@ -238,7 +238,7 @@ describe('Socket chat test', () => {
                     }
                 });
                 client4 = io_client(HTTP_ROOT, {
-                    query: 'name=' + '4',
+                    query: 'boardName=' + '4',
                     path: '/a'
                 }).on('chat', (chat: Chat) => {
                     expect(chat.msg).toEqual(chatmsg);
