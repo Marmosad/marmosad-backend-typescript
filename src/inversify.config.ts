@@ -10,11 +10,11 @@ import {BoardEventHandler} from "./handler/boardEventHandler";
 
 
 const container = new Container();
-container.bind<FirestoreService>(FirestoreService).toSelf();
+container.bind<FirestoreService>(FirestoreService).toSelf().inTransientScope();
 container.bind<HttpInterface>(Http).toSelf().inSingletonScope();
-container.bind<Board>(Board).toSelf();
-container.bind<SocketService>(SocketService).toSelf();
-container.bind<Deck>(Deck).toSelf();
-container.bind<BoardEventHandler>(BoardEventHandler).toSelf();
+container.bind<Board>(Board).toSelf().inTransientScope();
+container.bind<SocketService>(SocketService).toSelf().inTransientScope();
+container.bind<Deck>(Deck).toSelf().inTransientScope();
+container.bind<BoardEventHandler>(BoardEventHandler).toSelf().inTransientScope();
 
 export {container};

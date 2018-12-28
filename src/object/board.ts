@@ -18,20 +18,21 @@ import {DealtCard} from "../interface/playerInterface";
 
 @injectable()
 class Board {
-    get players(): Map<string, Player> {
-        return this._players;
+    get display(): BoardDisplay {
+        return this._display;
     }
 
     private eventHandlerStarted = false;
+
     private _info: BoardInfo;
-    private readonly display: BoardDisplay;
+    private readonly _display: BoardDisplay;
     private _players: Map<string, Player> = new Map<string, Player>();
     @inject(SocketService) private socket: SocketService;
     @inject(Deck) private deck: Deck;
 
     constructor(private _eventHandler: BoardEventHandler) {
         this.startEventHandler();
-        this.display = {blackCard: null, currentJudge: '', submissions: []} as BoardDisplay;
+        this._display = {blackCard: null, currentJudge: '', submissions: []} as BoardDisplay;
     }
 
     public startEventHandler() {
@@ -52,7 +53,7 @@ class Board {
                     this.playerDisconnect(next.eventData as ConnectionEvent);
                     break;
                 case RxEvents.startGame:
-                    this.updateDisplay(this.players);
+                    await this.dealNewCards();
                     break;
                 default:
                     break;
@@ -86,22 +87,31 @@ class Board {
 
     public playWhiteCard(eventData: SubmissionEvent) {
         const playerName = eventData.playerName;
-        if (playerName !== this.display.currentJudge && !this.players.get(playerName).hasPlayed)
+        if (this.players.get(playerName) == null || eventData.card.owner !== playerName) {
+            console.log('[WARNING] Card played by incorrect owner');
             return;
-        this.display.submissions.push({cardId: eventData.card.cardId, body: eventData.card.body, owner: playerName});
+        }
+        if (playerName === this._display.currentJudge || this.players.get(playerName).hasPlayed) {
+            console.log(playerName === this._display.currentJudge);
+            console.log(this.players.get(playerName).hasPlayed);
+            return;
+        }
+        console.log('[EVENT] Card played by', eventData.playerName);
+
+        this._display.submissions.push({cardId: eventData.card.cardId, body: eventData.card.body, owner: playerName});
         this.players.get(playerName).hasPlayed = true;
         // remove card from player hand
         this.players.get(playerName).hand.splice(this.players.get(playerName).hand.indexOf(eventData.card), 1);
     }
 
-    private dealCard(card: Card, owner: string): DealtCard {
+    public static dealCard(card: Card, owner: string): DealtCard {
         return {cardId: card.cardId, body: card.body, owner: owner};
     }
 
     public async judgedSubmission(eventData: JudgementEvent) {
         const playerName = eventData.playerName;
         const owner = eventData.owner;
-        if (playerName === this.display.currentJudge)
+        if (playerName === this._display.currentJudge)
             return;
         this.players.get(owner).score++;
         if (this.players.get(owner).score > MAX_SCORE) { // This variable dictates how long the games go oops.
@@ -118,7 +128,7 @@ class Board {
         console.log('[DBG] player added as ', eventData);
         await this.fillPlayerHand(newPlayer);
         this.players.set(eventData.playerName, newPlayer as Player);
-        this.info.numberOfPlayers += 1;
+        this.info.numberOfPlayers++;
         console.log('[EVENT] new player added: ', this.players.get(eventData.playerName));
         return;
     }
@@ -127,11 +137,13 @@ class Board {
         while (player.hand.length < 7) {
             const newCard = await this.deck.drawWhiteCard();
             console.log('[DBG] attempting to add new card to player ', newCard);
-            player.fillHand(this.dealCard(newCard as Card, player.playerName));
+            player.fillHand(Board.dealCard(newCard as Card, player.playerName));
         }
     }
 
     public playerDisconnect(eventData: ConnectionEvent) {
+        if (!this.players.has(eventData.playerName))
+            return;
         this.info.numberOfPlayers -= 1;
         this.players.delete(eventData.playerName);
     }
@@ -142,12 +154,16 @@ class Board {
             score.push({playerName: value.playerName, isJudge: value.isJudge, score: value.score} as Score);
         });
         players.forEach((value, key) => {
-            const playerDisplay = this.display as PlayerDisplay;
+            const playerDisplay = this._display as PlayerDisplay;
             playerDisplay.playerHand = this.players.get(key).hand;
             playerDisplay.score = score;
             console.log('[EVENT] Update pushed with', key, playerDisplay as PlayerDisplay);
             this.socket.emitDisplayUpdate(key, playerDisplay as PlayerDisplay)
         })
+    }
+
+    get players(): Map<string, Player> {
+        return this._players;
     }
 
     public getPlayer(name: string) {
@@ -164,9 +180,26 @@ class Board {
     public async dealNewCards() {
         this.display.blackCard = await this.deck.drawBlackCard();
         this.display.submissions = [] as DealtCard[];
+        this.display.currentJudge = this.selectNextJudge();
         this.players.forEach(async (value) => {
             await this.fillPlayerHand(value);
         })
+    }
+
+    public selectNextJudge(): string{
+        let playerIterator = this.players.keys();
+        let nextJudge;
+        while (nextJudge != this.display.currentJudge) { // this will not run if current judge is undefined.
+            nextJudge = playerIterator.next().value;
+            if (nextJudge == undefined){
+                break;
+            }
+        }
+        nextJudge = playerIterator.next().value;
+        if (nextJudge != undefined){
+            return nextJudge;
+        }
+        return this.players.keys().next().value;
     }
 }
 

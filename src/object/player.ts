@@ -5,9 +5,9 @@ import {FirestoreService} from "../service/firestoreService";
 
 export class Player implements PlayerInterface {
     public hand: Array<DealtCard> = [];
-    public isJudge: boolean;
+    public isJudge: boolean = false;
     public playerName: string;
-    public score: number;
+    public score: number = 0;
     public socketUrl: string;
     public hasPlayed: boolean = false;
     @inject(FirestoreService) private firestoreService: FirestoreService;
@@ -15,12 +15,9 @@ export class Player implements PlayerInterface {
     constructor(socketUrl: string, playerName: string) {
         this.playerName = playerName;
         this.socketUrl = socketUrl;
-        this.isJudge = false;
-        this.score = 0;
     }
 
     public fillHand(card: DealtCard) {
-        console.log('[DBG] new card added to hand: ', card);
         this.hand.push(card);
     }
 }
