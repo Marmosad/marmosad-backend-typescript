@@ -42,9 +42,14 @@ class Board {
             switch (next.event) {
                 case RxEvents.playedWhiteCard:
                     this.playWhiteCard(next.eventData as SubmissionEvent);
+                    if (this.display.submissions.length >= (this.info.numberOfPlayers - 1)) {
+                        this.eventHandler.gameState = State.judgement;
+                    }
                     break;
                 case RxEvents.judgedSubmission:
                     await this.judgedSubmission(next.eventData as JudgementEvent);
+                    this.dealNewCards();
+                    this.eventHandler.gameState = State.submission;
                     break;
                 case RxEvents.playerConnect:
                     await this.playerConnect(next.eventData as ConnectionEvent);
@@ -54,6 +59,7 @@ class Board {
                     break;
                 case RxEvents.startGame:
                     await this.dealNewCards();
+                    this.eventHandler.gameState = State.submission;
                     break;
                 default:
                     break;
@@ -101,7 +107,7 @@ class Board {
         this._display.submissions.push({cardId: eventData.card.cardId, body: eventData.card.body, owner: playerName});
         this.players.get(playerName).hasPlayed = true;
         // remove card from player hand
-        this.players.get(playerName).hand.splice(this.players.get(playerName).hand.indexOf(eventData.card), 1);
+        this.players.get(playerName).removeCard(eventData.card);
     }
 
     public static dealCard(card: Card, owner: string): DealtCard {
@@ -111,15 +117,12 @@ class Board {
     public async judgedSubmission(eventData: JudgementEvent) {
         const playerName = eventData.playerName;
         const owner = eventData.owner;
-        if (playerName === this._display.currentJudge)
+        if (owner === this._display.currentJudge)
             return;
         this.players.get(owner).score++;
         if (this.players.get(owner).score > MAX_SCORE) { // This variable dictates how long the games go oops.
             this.eventHandler.gameState = State.endGame;
             this.endGame(owner);
-        } else {
-            this.eventHandler.gameState = State.dealNewCards;
-            await this.dealNewCards();
         }
     }
 
@@ -136,7 +139,6 @@ class Board {
     private async fillPlayerHand(player: Player) {
         while (player.hand.length < 7) {
             const newCard = await this.deck.drawWhiteCard();
-            console.log('[DBG] attempting to add new card to player ', newCard);
             player.fillHand(Board.dealCard(newCard as Card, player.playerName));
         }
     }
@@ -157,7 +159,7 @@ class Board {
             const playerDisplay = this._display as PlayerDisplay;
             playerDisplay.playerHand = this.players.get(key).hand;
             playerDisplay.score = score;
-            console.log('[EVENT] Update pushed with', key, playerDisplay as PlayerDisplay);
+            console.log('[EVENT] Display update');
             this.socket.emitDisplayUpdate(key, playerDisplay as PlayerDisplay)
         })
     }
@@ -183,6 +185,8 @@ class Board {
         this.display.currentJudge = this.selectNextJudge();
         this.players.forEach(async (value) => {
             await this.fillPlayerHand(value);
+            value.hasPlayed = false;
+            this.updateDisplay(this.players);
         })
     }
 

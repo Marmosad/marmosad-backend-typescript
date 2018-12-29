@@ -23,7 +23,7 @@ describe('Board tests', () => {
     let boardInstance: Board;
     beforeEach(async () => {
         boardInstance = container.resolve(Board);
-        boardInstance.info = boardInfo;
+        boardInstance.info = JSON.parse(JSON.stringify(boardInfo));
         boardInstance.startSocket();
         boardInstance.startEventHandler();
         await boardInstance.initDeck(['room-309']);
@@ -87,7 +87,7 @@ describe("Board actions test", () => {
         expect(boardInstance.players.size).toEqual(3);
         expect(boardInstance.info.numberOfPlayers).toEqual(3);
 
-    });
+    }, 20000);
 
     it('should remove player on disconnect', async () => {
         await boardInstance.playerConnect({playerName: 'bob', socketUrl: 'somerandomshit1'});
@@ -111,7 +111,7 @@ describe("Board actions test", () => {
         boardInstance.playerDisconnect({playerName: 'jim', socketUrl: 'somerandomshit2'});
         expect(boardInstance.players.size).toEqual(0);
         expect(boardInstance.info.numberOfPlayers).toEqual(0);
-    });
+    }, 20000);
 
     it('should play white card only when valid', async () => {
         await boardInstance.playerConnect({playerName: 'bob', socketUrl: 'somerandomshit1'});
@@ -142,7 +142,22 @@ describe("Board actions test", () => {
             socketUrl: "ksd2d"
         } as SubmissionEvent);
         expect(boardInstance.display.submissions.length).toBe(1);
-    });
+    }, 20000);
+    it('should deal cards for a fresh board', async function () {
+        boardInstance.players.set('a', new Player('a', ''));
+        boardInstance.players.set('b', new Player('b', ''));
+        boardInstance.players.set('c', new Player('c', ''));
+        boardInstance.players.set('d', new Player('d', ''));
+        boardInstance.players.set('e', new Player('e', ''));
+        boardInstance.info.numberOfPlayers = 5;
+        await boardInstance.dealNewCards();
+        expect(boardInstance.display.currentJudge).toBeTruthy();
+        expect(boardInstance.display.blackCard.cardId).toBeGreaterThan(0);
+        expect(boardInstance.display.submissions).toEqual([]);
+        boardInstance.players.forEach(value => {
+            expect(value.hasPlayed).toEqual(false);
+        })
+    }, 20000);
 });
 
 describe("Board actions test, no deck", () => {

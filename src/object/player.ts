@@ -20,4 +20,11 @@ export class Player implements PlayerInterface {
     public fillHand(card: DealtCard) {
         this.hand.push(card);
     }
+
+    public removeCard(card: DealtCard) {
+        for (let i = 0; i < this.hand.length; i++) {
+            if (this.hand[i].cardId === card.cardId)
+                this.hand.splice(i, 1);
+        }
+    }
 }

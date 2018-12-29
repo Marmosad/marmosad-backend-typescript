@@ -2,8 +2,15 @@ import * as Socket from 'socket.io';
 import {inject, injectable} from "inversify";
 import {Http} from "./httpSingletonService";
 import {Chat} from "../interface/socketInterface";
-import {ConnectionEvent, RxEvents, RxEventsInterface} from "../interface/rxEventInterface";
+import {
+    ConnectionEvent,
+    JudgementEvent,
+    RxEvents,
+    RxEventsInterface,
+    SubmissionEvent
+} from "../interface/rxEventInterface";
 import {PlayerDisplay} from "../object/boardComponent";
+import {DealtCard} from "../interface/playerInterface";
 
 export interface SocketInterface {
     start(url, subject): void
@@ -55,15 +62,15 @@ export class SocketService implements SocketInterface {
     }
 
     private handleNewConnection(socket: Socket.Socket): void {
-        const name = socket.handshake.query.boardName;
-        console.log('[EVENT] Player: ' + name + ' joined.');
-        this.setupSocket(socket, name);
-        this.addConnection(name, socket);
+        const playerName = socket.handshake.query.playerName;
+        console.log('[EVENT] Player: ' + playerName + ' joined.');
+        this.setupSocket(socket, playerName);
+        this.addConnection(playerName, socket);
         if (this.gameEventEmitter == null)
             return;
         this.gameEventEmitter({
             event: RxEvents.playerConnect,
-            eventData: {playerName: name, socketUrl: this.io.path()} as ConnectionEvent
+            eventData: {playerName: playerName, socketUrl: this.io.path()} as ConnectionEvent
         });
     }
 
@@ -89,6 +96,28 @@ export class SocketService implements SocketInterface {
         socket.on('startGame', () => {
             console.log('[EVENT] startGame socket event triggered');
             this.gameEventEmitter({event: RxEvents.startGame, eventData: null} as RxEventsInterface)
+        });
+        socket.on('submission', (data: DealtCard) => {
+            console.log('[EVENT] submission socket event triggered');
+            this.gameEventEmitter({event: RxEvents.playedWhiteCard, eventData: {
+                    playerName: socket.handshake.query.playerName,
+                    socketUrl: this.url,
+                    card: data as DealtCard
+                } as SubmissionEvent
+            } as RxEventsInterface)
+        });
+        socket.on('judgment', (data: DealtCard) => {
+            console.log('[EVENT] judgment socket event triggered');
+            this.gameEventEmitter({
+                event: RxEvents.judgedSubmission,
+                eventData: {
+                    playerName: socket.handshake.query.playerName,
+                    socketUrl: this.url,
+                    owner: data.owner,
+                    ownerUrl: this.url,
+                    card: data as DealtCard
+                } as JudgementEvent
+            } as RxEventsInterface)
         });
         socket.on('kill', (reason) => {
             this.getConnection(playerName).disconnect(true);

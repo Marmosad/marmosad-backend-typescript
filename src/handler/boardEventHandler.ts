@@ -26,7 +26,7 @@ export class BoardEventHandler {
             this._subject.next(gameEvent as RxEventsInterface);
             console.log("[EVENT] accepted ", gameEvent);
         } else {
-            console.log("[EVENT] rejected ", gameEvent);
+            console.log("[EVENT] rejected ", gameEvent, (this.gameState as number == gameEvent.event as number), this.gameState);
         }
     };
 
@@ -35,6 +35,7 @@ export class BoardEventHandler {
     }
 
     set gameState(value: State) {
+        console.log("[EVENT] State updated to:", value);
         this._gameState = value;
     }
 }
