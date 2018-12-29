@@ -54,6 +54,7 @@ The backend should be run in development.
 * [InversifyJS](https://github.com/inversify/InversifyJS) - Container control
 * [Socket.io](https://github.com/socketio/socket.io) - Front-end communication
 * [ts-node](https://github.com/TypeStrong/ts-node) - Executing typescript
+* [Jest](https://jestjs.io/docs/en/getting-started) - Tests test tests!
 
 ## Contributing
 
