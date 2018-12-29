@@ -19,12 +19,11 @@ We suggest using [Vscode](https://code.visualstudio.com/) or [Webstorm](https://
 To run in development, use
 
 ```
-npm start
+yarn dev
 ```
-To test, use (We don't have  any :D)
-
+To test
 ```
-npm test
+yarn jest
 ```
 
 ### Production server
