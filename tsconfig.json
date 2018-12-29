@@ -1,15 +1,19 @@
 {
   "compilerOptions": {
-    "lib": ["es6"],    
-    "outDir": "./built",
+    "baseUrl": ".",
+    "paths": { "*": ["types/*"] },
+    "lib": ["es6", "dom"],
+    "outDir": "./dist",
     "allowJs": true,
     "module": "commonjs",
+    "types": ["reflect-metadata"],
     "target": "es5",
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    "moduleResolution": "node"
   },
   "include": [
     "./src/**/*",
-    "./app.ts"
+    "./index.ts"
   ]
 }
