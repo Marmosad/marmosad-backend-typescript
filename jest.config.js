@@ -1,7 +1,7 @@
 module.exports = {
     preset: 'ts-jest',
     testEnvironment: 'node',
-    setupFiles: ['./src/inversify.config.ts'],
+    setupFiles: ['./src/config/inversify.config.ts'],
     "roots": [
         "<rootDir>/"
     ],
