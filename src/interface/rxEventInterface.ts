@@ -30,7 +30,7 @@ export interface JudgementEvent extends ConnectionEvent {
 export enum RxEvents {
     startGame = 5,
     playerConnect = 0,
-    playerDisconnect = 0,
+    playerDisconnect = 3,
     playedWhiteCard = 1,
     judgedSubmission = 2,
     gameEnded = 69
