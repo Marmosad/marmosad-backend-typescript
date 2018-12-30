@@ -22,7 +22,7 @@ class Board {
         return this._display;
     }
 
-    private eventHandlerStarted = false;
+    public eventHandlerStarted = false;
 
     private _info: BoardInfo;
     private readonly _display: BoardDisplay;
@@ -31,40 +31,54 @@ class Board {
     @inject(Deck) private deck: Deck;
 
     constructor(private _eventHandler: BoardEventHandler) {
-        this.startEventHandler();
+        this.startEventHandler(
+            this.playWhiteCard,
+            this.judgedSubmission,
+            this.playerConnect,
+            this.playerDisconnect,
+            this.dealNewCards,
+            this.updateDisplay);
         this._display = {blackCard: null, currentJudge: '', submissions: []} as BoardDisplay;
     }
 
-    public startEventHandler() {
+    public startEventHandler(
+        playWhiteCard,
+        judgedSubmission,
+        playerConnect,
+        playerDisconnect,
+        dealNewCards,
+        updateDisplay
+    ) {
         if (this.eventHandlerStarted)
             return;
         this.eventHandler.subscribe(async (next: RxEventsInterface) => {
             switch (next.event) {
                 case RxEvents.playedWhiteCard:
-                    this.playWhiteCard(next.eventData as SubmissionEvent);
+                    console.log('123s');
+                    playWhiteCard(next.eventData as SubmissionEvent);
                     if (this.display.submissions.length >= (this.info.numberOfPlayers - 1)) {
                         this.eventHandler.gameState = State.judgement;
                     }
                     break;
                 case RxEvents.judgedSubmission:
-                    await this.judgedSubmission(next.eventData as JudgementEvent);
-                    this.dealNewCards();
+                    await judgedSubmission(next.eventData as JudgementEvent);
+                    await dealNewCards();
                     this.eventHandler.gameState = State.submission;
                     break;
                 case RxEvents.playerConnect:
-                    await this.playerConnect(next.eventData as ConnectionEvent);
+                    await playerConnect(next.eventData as ConnectionEvent);
                     break;
                 case RxEvents.playerDisconnect:
-                    this.playerDisconnect(next.eventData as ConnectionEvent);
+                    playerDisconnect(next.eventData as ConnectionEvent);
                     break;
                 case RxEvents.startGame:
-                    await this.dealNewCards();
+                    await dealNewCards();
                     this.eventHandler.gameState = State.submission;
                     break;
                 default:
                     break;
             }
-            this.updateDisplay(this.players);
+            updateDisplay(this.players);
         });
         this.eventHandlerStarted = true;
     }
@@ -190,17 +204,17 @@ class Board {
         })
     }
 
-    public selectNextJudge(): string{
+    public selectNextJudge(): string {
         let playerIterator = this.players.keys();
         let nextJudge;
         while (nextJudge != this.display.currentJudge) { // this will not run if current judge is undefined.
             nextJudge = playerIterator.next().value;
-            if (nextJudge == undefined){
+            if (nextJudge == undefined) {
                 break;
             }
         }
         nextJudge = playerIterator.next().value;
-        if (nextJudge != undefined){
+        if (nextJudge != undefined) {
             return nextJudge;
         }
         return this.players.keys().next().value;

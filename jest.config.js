@@ -18,6 +18,10 @@ module.exports = {
     ],
     "collectCoverageFrom": [
         "src/**/*.{ts}",
+        "!src/app.ts",
+        "!src/config.ts",
+        "!src/config/config.ts",
+        "!**/*/config.ts",
         "!<rootDir>/node_modules/",
         "!<rootDir>/src/config/"
     ],

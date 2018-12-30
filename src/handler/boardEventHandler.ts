@@ -5,7 +5,6 @@ import {injectable} from "inversify";
 
 @injectable()
 export class BoardEventHandler {
-
     private _subject: Subject<RxEventsInterface>;
     private _gameState: State;
 
@@ -22,7 +21,7 @@ export class BoardEventHandler {
         // if game ended ignore everything
         if (this.gameState == State.endGame)
             return;
-        if ((this.gameState as number == gameEvent.event as number) || (gameEvent.event === RxEvents.startGame && this.gameState as number === 0)) {
+        if ((this.gameState as number == gameEvent.event as number) || (gameEvent.event === RxEvents.startGame && this.gameState as number === 0) || gameEvent.event == RxEvents.playerDisconnect) {
             this._subject.next(gameEvent as RxEventsInterface);
             console.log("[EVENT] accepted ", gameEvent);
         } else {
@@ -37,5 +36,9 @@ export class BoardEventHandler {
     set gameState(value: State) {
         console.log("[EVENT] State updated to:", value);
         this._gameState = value;
+    }
+
+    get subject(): Subject<RxEventsInterface> {
+        return this._subject;
     }
 }
