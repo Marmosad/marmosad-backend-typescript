@@ -1,4 +1,4 @@
-import {container} from "../../src/inversify.config";
+import {container} from "../../src/config/inversify.config";
 import {SocketService} from "../../src/service/socketService";
 import * as jest from "ts-jest"
 import {Http} from "../../src/service/httpSingletonService";

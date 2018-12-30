@@ -16,4 +16,10 @@ module.exports = {
         "json",
         "node"
     ],
+    "collectCoverageFrom": [
+        "src/**/*.{ts}",
+        "!<rootDir>/node_modules/",
+        "!<rootDir>/src/config/"
+    ],
+    "coveragePathIgnorePatterns": ["/node_modules/", "<rootDir>/build/", "<rootDir>/coverage/", "<rootDir>/src/interface/"]
 }

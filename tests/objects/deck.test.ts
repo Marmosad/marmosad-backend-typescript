@@ -1,4 +1,4 @@
-import {container} from "../../src/inversify.config";
+import {container} from "../../src/config/inversify.config";
 import {Deck} from "../../src/object/deck";
 import * as jest from "ts-jest"
 import {Card} from "../../src/interface/firestoreInterface";
@@ -112,12 +112,12 @@ describe('Eventuality sync test', () => {
             expect(await deck.drawBlackCard()).toBeTruthy();
             setTimeout(() => {
                 const cs = deck.packs.get('room-309');
-                expect(cs.blackCardStack[random(1, cs.blackCardCount)].body).toBeTruthy();
-                expect(cs.blackCardStack[random(1, cs.blackCardCount)].body).toBeTruthy();
-                expect(cs.blackCardStack[random(1, cs.blackCardCount)].body).toBeTruthy();
-                expect(cs.whiteCardStack[random(1, cs.whiteCardCount)].body).toBeTruthy();
-                expect(cs.whiteCardStack[random(1, cs.whiteCardCount)].body).toBeTruthy();
-                expect(cs.whiteCardStack[random(1, cs.whiteCardCount)].body).toBeTruthy();
+                expect(cs.blackCardStack[random(0, cs.blackCardStack.length - 1)].body).toBeTruthy();
+                expect(cs.blackCardStack[random(0, cs.blackCardStack.length - 1)].body).toBeTruthy();
+                expect(cs.blackCardStack[random(0, cs.blackCardStack.length - 1)].body).toBeTruthy();
+                expect(cs.whiteCardStack[random(0, cs.blackCardStack.length - 1)].body).toBeTruthy();
+                expect(cs.whiteCardStack[random(0, cs.blackCardStack.length - 1)].body).toBeTruthy();
+                expect(cs.whiteCardStack[random(0, cs.blackCardStack.length - 1)].body).toBeTruthy();
                 done()
             }, 15000);
         });

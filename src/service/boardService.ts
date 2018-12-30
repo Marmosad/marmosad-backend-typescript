@@ -2,7 +2,7 @@ import {injectable} from "inversify";
 import {PLAYER_COUNT_LOWER_BOUND, PLAYER_COUNT_UPPER_BOUND} from "../interface/boardInterface";
 import Board from "../object/board";
 import * as uuid4 from 'uuid/v4'
-import {container} from "../inversify.config";
+import {container} from "../config/inversify.config";
 import {BoardInfo} from "../object/boardComponent";
 
 export interface BoardInterface {

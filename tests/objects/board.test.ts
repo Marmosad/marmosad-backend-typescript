@@ -1,4 +1,4 @@
-import {container} from "../../src/inversify.config";
+import {container} from "../../src/config/inversify.config";
 import * as uuid4 from 'uuid/v4'
 import Board from "../../src/object/board";
 import {BoardInfo} from "../../src/object/boardComponent";

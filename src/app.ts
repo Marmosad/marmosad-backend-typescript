@@ -1,6 +1,6 @@
 import "reflect-metadata"
 import BoardService, {} from "./service/boardService";
-import {container} from "./inversify.config";
+import {container} from "./config/inversify.config";
 import {Http} from "./service/httpSingletonService";
 
 export class App {
