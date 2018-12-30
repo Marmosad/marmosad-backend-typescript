@@ -6,8 +6,8 @@ This project was generated using [Typescript](https://github.com/Microsoft/TypeS
 The app _is_ *may be* broken right now because we ran out of Google Cloud credits (We need to go not more MLH hackathons).
 It can be found [here](http://marmosad.me/);
 
-[![Coverage Status](https://coveralls.io/repos/github/Marmosad/marmosad-backend-typescript/badge.svg)](https://coveralls.io/github/Marmosad/marmosad-backend-typescript)
-[![Build Status](https://travis-ci.com/Marmosad/marmosad-backend-typescript.svg?branch=master)](https://travis-ci.com/Marmosad/marmosad-backend-typescript)
+[![Coverage Status](https://coveralls.io/repos/github/Marmosad/marmosad-backend-typescript/badge.svg?branch=integration)](https://coveralls.io/github/Marmosad/marmosad-backend-typescript?branch=integration)
+[![Build Status](https://travis-ci.com/Marmosad/marmosad-backend-typescript.svg?branch=integration)](https://travis-ci.com/Marmosad/marmosad-backend-typescript)
 ## Getting Started
 
 For this project, you only need to install [Node](https://nodejs.org/en/) to keep the node_modules folder updated with npm.
