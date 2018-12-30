@@ -1,15 +1,15 @@
-import {container} from "../../src/inversify.config";
+import {container} from "../../src/config/inversify.config";
 import * as uuid4 from 'uuid/v4'
 import Board from "../../src/object/board";
 import {BoardInfo} from "../../src/object/boardComponent";
-import {ConnectionEvent, SubmissionEvent} from "../../src/interface/rxEventInterface";
+import {ConnectionEvent, RxEvents, RxEventsInterface, SubmissionEvent} from "../../src/interface/rxEventInterface";
 
-import * as jest from "ts-jest"
+import * as jestt from "ts-jest";
 import {random} from "../../src/util";
 import {DealtCard} from "../../src/interface/playerInterface";
 import {Player} from "../../src/object/player";
 
-console.log('Testing on jest ' + jest.version);
+console.log('Testing on jest ' + jestt.version);
 
 const boardInfo = {
     boardName: 'testBoard',
@@ -25,7 +25,6 @@ describe('Board tests', () => {
         boardInstance = container.resolve(Board);
         boardInstance.info = JSON.parse(JSON.stringify(boardInfo));
         boardInstance.startSocket();
-        boardInstance.startEventHandler();
         await boardInstance.initDeck(['room-309']);
     });
 
@@ -49,7 +48,7 @@ describe('Board tests', () => {
         expect(boardInstance.getPlayer("1").isJudge).toEqual(false);
         expect(boardInstance.getPlayer("1").playerName).toEqual("1");
         expect(boardInstance.getPlayer("1").score).toEqual(0);
-    });
+    }, 20000);
 });
 
 describe("Board actions test", () => {
@@ -59,7 +58,6 @@ describe("Board actions test", () => {
         boardInstance = container.resolve(Board);
         boardInstance.info = JSON.parse(JSON.stringify(boardInfo)); // deep copy! :')
         boardInstance.startSocket();
-        boardInstance.startEventHandler();
         await boardInstance.initDeck(['room-309']);
     });
     it('should add player on connection', async () => {
@@ -167,7 +165,6 @@ describe("Board actions test, no deck", () => {
         boardInstance = container.resolve(Board);
         boardInstance.info = JSON.parse(JSON.stringify(boardInfo)); // deep copy! :')
         boardInstance.startSocket();
-        boardInstance.startEventHandler();
     });
 
     it('should select next judge properly', async () => {
@@ -207,5 +204,56 @@ describe("Board actions test, no deck", () => {
         expect(Board.dealCard({cardId: rand, body: bod}, own).owner).toEqual(own);
         expect(Board.dealCard({cardId: rand, body: bod}, own).cardId).toEqual(rand);
         expect(Board.dealCard({cardId: rand, body: bod}, own).body).toEqual(bod);
+    });
+});
+
+describe("Event handler test", () => {
+    let playWhiteCard = jest.fn();
+    let judgedSubmission = jest.fn();
+    let playerConnect = jest.fn();
+    let playerDisconnect = jest.fn();
+    let dealNewCards = jest.fn();
+    let updateDisplay = jest.fn();
+    let boardInstance: Board;
+    beforeEach(async () => {
+        boardInstance = null;
+        boardInstance = container.resolve(Board);
+        boardInstance.info = JSON.parse(JSON.stringify(boardInfo)); // deep copy! :')
+        boardInstance.startSocket();
+    });
+    it('should handle play white card event', function () {
+        boardInstance.eventHandlerStarted = false;
+        boardInstance.startEventHandler(playWhiteCard, judgedSubmission, playerConnect, playerDisconnect, dealNewCards, updateDisplay);
+        boardInstance.eventHandler.subject.next({event: RxEvents.playedWhiteCard, eventData: null} as RxEventsInterface);
+        expect(playWhiteCard).toBeCalled();
+        expect(updateDisplay).toBeCalled();
+    });
+    it('should handle judgement event', function () {
+        boardInstance.eventHandlerStarted = false;
+        boardInstance.startEventHandler(playWhiteCard, judgedSubmission, playerConnect, playerDisconnect, dealNewCards, updateDisplay);
+        boardInstance.eventHandler.subject.next({event: RxEvents.judgedSubmission, eventData: null} as RxEventsInterface);
+        expect(judgedSubmission).toBeCalled();
+        expect(updateDisplay).toBeCalled();
+
+    });
+    it('should handle start game event', function () {
+        boardInstance.eventHandlerStarted = false;
+        boardInstance.startEventHandler(playWhiteCard, judgedSubmission, playerConnect, playerDisconnect, dealNewCards, updateDisplay);
+        boardInstance.eventHandler.subject.next({event: RxEvents.startGame, eventData: null} as RxEventsInterface);
+        expect(dealNewCards).toBeCalled();
+        expect(updateDisplay).toBeCalled();
+    });
+    it('should handle connect event', function () {
+        boardInstance.eventHandlerStarted = false;
+        boardInstance.startEventHandler(playWhiteCard, judgedSubmission, playerConnect, playerDisconnect, dealNewCards, updateDisplay);
+        boardInstance.eventHandler.subject.next({event: RxEvents.playerConnect, eventData: null} as RxEventsInterface);
+        expect(playerConnect).toBeCalled();
+    });
+    it('should handle playerDisconnect event', function () {
+        boardInstance.eventHandlerStarted = false;
+        boardInstance.startEventHandler(playWhiteCard, judgedSubmission, playerConnect, playerDisconnect, dealNewCards, updateDisplay);
+        boardInstance.eventHandler.subject.next({event: RxEvents.playerDisconnect, eventData: null} as RxEventsInterface);
+        expect(playerDisconnect).toBeCalled();
+        expect(updateDisplay).toBeCalled();
     });
 });

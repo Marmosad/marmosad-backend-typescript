@@ -1,4 +1,4 @@
-import {container} from "../../src/inversify.config";
+import {container} from "../../src/config/inversify.config";
 import {Deck} from "../../src/object/deck";
 import * as jest from "ts-jest"
 import {Card} from "../../src/interface/firestoreInterface";
@@ -100,26 +100,28 @@ describe('Eventuality sync test', () => {
         expect(deck.packs.get('room-309').blackCardStack[0].body).toBeFalsy();
         expect(deck.packs.get('room-309').whiteCardStack[0].body).toBeFalsy();
     });
-    it('should be synced over time', (done) => {
+    it('should not run into card draw problems after sync', (done) => {
         const deck = container.resolve(Deck);
         deck.initialize(['room-309']).then(async () => {
             expect(deck.packs.get('room-309').blackCardStack[0].body).toBeFalsy();
             expect(deck.packs.get('room-309').whiteCardStack[0].body).toBeFalsy();
             deck.cacheCards();
-            expect(await deck.drawWhiteCard()).toBeTruthy();
-            expect(await deck.drawBlackCard()).toBeTruthy();
-            expect(await deck.drawWhiteCard()).toBeTruthy();
-            expect(await deck.drawBlackCard()).toBeTruthy();
-            setTimeout(() => {
-                const cs = deck.packs.get('room-309');
-                expect(cs.blackCardStack[random(1, cs.blackCardCount)].body).toBeTruthy();
-                expect(cs.blackCardStack[random(1, cs.blackCardCount)].body).toBeTruthy();
-                expect(cs.blackCardStack[random(1, cs.blackCardCount)].body).toBeTruthy();
-                expect(cs.whiteCardStack[random(1, cs.whiteCardCount)].body).toBeTruthy();
-                expect(cs.whiteCardStack[random(1, cs.whiteCardCount)].body).toBeTruthy();
-                expect(cs.whiteCardStack[random(1, cs.whiteCardCount)].body).toBeTruthy();
+            expect((await deck.drawWhiteCard()).body).toBeTruthy();
+            expect((await deck.drawBlackCard()).body).toBeTruthy();
+            expect((await deck.drawWhiteCard()).body).toBeTruthy();
+            expect((await deck.drawBlackCard()).body).toBeTruthy();
+            setTimeout(async () => {
+                // :') please love me after seeing this gar
+                expect((await deck.drawWhiteCard()).body).toBeTruthy();
+                expect((await deck.drawBlackCard()).body).toBeTruthy();
+                expect((await deck.drawWhiteCard()).body).toBeTruthy();
+                expect((await deck.drawBlackCard()).body).toBeTruthy();
+                expect((await deck.drawWhiteCard()).body).toBeTruthy();
+                expect((await deck.drawBlackCard()).body).toBeTruthy();
+                expect((await deck.drawWhiteCard()).body).toBeTruthy();
+                expect((await deck.drawBlackCard()).body).toBeTruthy();
                 done()
-            }, 10000);
+            }, random(1, 6000));
         });
 
     }, 25000);

@@ -2,7 +2,7 @@ import {injectable} from "inversify";
 import * as express from "express";
 import {Server, createServer} from "http";
 import * as bodyParser from "body-parser";
-import {ENV, PORT} from "../config";
+import {ENV, PORT} from "../config/config";
 import * as uuid4 from 'uuid/v4'
 import * as cors from 'cors';
 
