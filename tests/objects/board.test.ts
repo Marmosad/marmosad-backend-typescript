@@ -49,7 +49,7 @@ describe('Board tests', () => {
         expect(boardInstance.getPlayer("1").isJudge).toEqual(false);
         expect(boardInstance.getPlayer("1").playerName).toEqual("1");
         expect(boardInstance.getPlayer("1").score).toEqual(0);
-    });
+    }, 20000);
 });
 
 describe("Board actions test", () => {
