@@ -75,7 +75,6 @@ export class BoardService implements BoardInterface {
         boardInstance.info = boardInfo;
         this.boards.push(boardInstance);
         boardInstance.startSocket();
-        boardInstance.startEventHandler();
         return true;
     }
 
