@@ -119,7 +119,7 @@ describe('Eventuality sync test', () => {
                 expect(cs.whiteCardStack[random(1, cs.whiteCardCount)].body).toBeTruthy();
                 expect(cs.whiteCardStack[random(1, cs.whiteCardCount)].body).toBeTruthy();
                 done()
-            }, 10000);
+            }, 15000);
         });
 
     }, 25000);
