@@ -99,7 +99,8 @@ export class SocketService implements SocketInterface {
         });
         socket.on('submission', (data: DealtCard) => {
             console.log('[EVENT] submission socket event triggered');
-            this.gameEventEmitter({event: RxEvents.playedWhiteCard, eventData: {
+            this.gameEventEmitter({
+                event: RxEvents.playedWhiteCard, eventData: {
                     playerName: socket.handshake.query.playerName,
                     socketUrl: this.url,
                     card: data as DealtCard
