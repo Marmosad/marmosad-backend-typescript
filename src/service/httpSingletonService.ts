@@ -37,11 +37,17 @@ export class Http implements HttpInterface {
         console.log("[EVENT] The selected environment is: ", ENV);
 
         if (ENV === "DEV" ) {
-            console.log("[WARNING] CORS is enabled for :4200");
+            console.log("[WARNING] CORS is only enabled for :4200");
             this._express.use(cors({
                 "origin": "http://localhost:4200",
                 "preflightContinue": false,
-                credentials: true
+                "credentials": true
+            }));
+        } else if (ENV === "PROD"){
+            this._express.use(cors({
+                "origin": "https://marmodb.firebaseapp.com",
+                "preflightContinue": false,
+                "credentials": true
             }));
         }
     }

@@ -8,9 +8,9 @@
   "scripts": {
     "build": "tsc",
     "dev": "export NODE_ENV=devel && ts-node ./index.ts",
-    "start": "node ./dist/index.js",
-    "prod": "npm run build && npm run start",
-    "coveralls": "jest --coverage && cat ./coverage/lcov.info | coveralls"
+    "start": "npm run build && npm run prod",
+    "prod": "export NODE_ENV=production && node ./dist/index.js",
+    "coveralls": "jest --coverage --runInBand && cat ./coverage/lcov.info | coveralls"
   },
   "dependencies": {
     "@reactivex/rxjs": "^6.3.3",
