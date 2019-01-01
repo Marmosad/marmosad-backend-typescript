@@ -5,7 +5,7 @@ import {injectable} from "inversify";
 
 @injectable()
 export class BoardEventHandler {
-    private _subject: Subject<RxEventsInterface>;
+    private readonly _subject: Subject<RxEventsInterface>;
     private _gameState: State;
 
     constructor() {

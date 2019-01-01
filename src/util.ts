@@ -21,3 +21,7 @@ export function random(lower: number, upper: number): number {
     }
     return rand;
 }
+
+export function stringNotEmpty(s: string): boolean{
+    return (s != null && typeof s != "undefined" && s != '' && s.trim() != '') as boolean;
+}
