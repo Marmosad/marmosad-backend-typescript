@@ -6,6 +6,8 @@ cache:
   directories:
   - node_modules
 before_install:
+- openssl aes-256-cbc -K $encrypted_49c6a8c92fa9_key -iv $encrypted_49c6a8c92fa9_iv
+  -in travis_service_key.json.enc -out travis_service_key.json -d
 - curl -o- -L https://yarnpkg.com/install.sh | bash
 - export PATH="$HOME/.yarn/bin:$PATH"
 - yarn upgrade
@@ -16,11 +18,6 @@ jobs:
   - stage: test
     script:
     - yarn coveralls
-  - stage: deploy
-    if: branch = master
-    script:
-      - openssl aes-256-cbc -K $encrypted_49c6a8c92fa9_key -iv $encrypted_49c6a8c92fa9_iv
-        -in travis_service_key.json.enc -out travis_service_key.json -d
 deploy:
   provider: gae
   keyfile: travis_service_key.json
