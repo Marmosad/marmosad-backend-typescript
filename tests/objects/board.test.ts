@@ -228,7 +228,7 @@ describe("Event handler test", () => {
         expect(playWhiteCard).toBeCalled();
         expect(updateDisplay).toBeCalled();
     });
-    it('should handle judgement event', function () {
+    it('should handle judgment event', function () {
         boardInstance.eventHandlerStarted = false;
         boardInstance.startEventHandler(playWhiteCard, judgedSubmission, playerConnect, playerDisconnect, dealNewCards, updateDisplay);
         boardInstance.eventHandler.subject.next({event: RxEvents.judgedSubmission, eventData: null} as RxEventsInterface);

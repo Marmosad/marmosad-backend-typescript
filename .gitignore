@@ -75,3 +75,5 @@ dist/
 
 .vs/*
 .vscode/*
+
+travis_service_key.json

@@ -57,7 +57,7 @@ class Board {
                     console.log('123s');
                     playWhiteCard(next.eventData as SubmissionEvent);
                     if (this.display.submissions.length >= (this.info.numberOfPlayers - 1)) {
-                        this.eventHandler.gameState = State.judgement;
+                        this.eventHandler.gameState = State.judgment;
                     }
                     break;
                 case RxEvents.judgedSubmission:

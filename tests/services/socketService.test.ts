@@ -4,10 +4,15 @@ import * as jest from "ts-jest"
 import {Http} from "../../src/service/httpSingletonService";
 import * as io_client from "socket.io-client"
 import {Chat} from "../../src/interface/socketInterface";
+import {BoardEventHandler} from "../../src/handler/boardEventHandler";
+import {State} from "../../src/interface/boardInterface";
+import {JudgementEvent, RxEvents, RxEventsInterface, SubmissionEvent} from "../../src/interface/rxEventInterface";
+import {DealtCard} from "../../src/interface/playerInterface";
+import {PORT} from "../../src/config/config";
 
 console.log('Testing on jest ' + jest.version);
 
-const HTTP_ROOT = 'http://localhost:8081/';
+const HTTP_ROOT = 'http://localhost:' + PORT + '/';
 let socketA: SocketService;
 let client1;
 let client2;
@@ -15,8 +20,8 @@ let client3;
 let client4;
 let http;
 describe('Socket service connect test', () => {
-    afterEach(() => {
-        socketA.stop();
+    afterEach(async () => {
+        await socketA.stop();
         if (client1) {
             client1.disconnect();
         }
@@ -35,7 +40,7 @@ describe('Socket service connect test', () => {
                     expect(socket.handshake.query.playerName).toEqual('1');
                     done()
                 });
-                console.log(HTTP_ROOT);
+                console.log(container.get(Http).port);
                 client1 = io_client(HTTP_ROOT, {
                     query: 'playerName=' + "1",
                     path: '/a'
@@ -85,8 +90,8 @@ describe('Socket service disconnect test', () => {
             });
         })
     });
-    afterEach(() => {
-        socketA.stop();
+    afterEach(async() => {
+        await socketA.stop();
         if (client1) {
             client1.disconnect();
         }
@@ -117,8 +122,8 @@ describe('Socket service disconnect test', () => {
 });
 
 describe('Socket chat test', () => {
-    afterEach(() => {
-        socketA.stop();
+    afterEach(async () => {
+        await socketA.stop();
         if (client1) {
             client1.disconnect();
         }
@@ -258,7 +263,73 @@ describe('Socket chat test', () => {
                 client1.emit('chat', '');
                 client1.emit('chat', '                ');
                 client1.emit('chat', chatmsg)
-            })
+            });
         }
     );
+});
+
+describe("Event Handler Tests", () => {
+    let boardEventHandler: BoardEventHandler;
+
+    afterEach(async () => {
+        await socketA.stop();
+        if (client1) {
+            client1.disconnect();
+        }
+        if (client2) {
+            client2.disconnect();
+        }
+        if (client3) {
+            client3.disconnect();
+        }
+        if (client2) {
+            client4.disconnect();
+        }
+        http.close();
+    });
+
+    beforeEach(async () => {
+        boardEventHandler = new BoardEventHandler();
+        await container.get<Http>(Http).httpStart();
+        http = container.get<Http>(Http).httpServer;
+        socketA = container.resolve(SocketService);
+        socketA.start('/test', boardEventHandler.emitEvent);
+    });
+    it('should emit submission to event handler', function (done) {
+        boardEventHandler.gameState = State.submission;
+        const temp = boardEventHandler.subscribe(async (next: RxEventsInterface)=>{
+            expect(next.event).toEqual(RxEvents.playedWhiteCard);
+            expect(next.eventData.playerName).toEqual('1');
+            expect((next.eventData as SubmissionEvent).card.body).toEqual('test');
+            expect((next.eventData as SubmissionEvent).card.owner).toEqual('test');
+            expect((next.eventData as SubmissionEvent).card.cardId).toEqual(0);
+            temp.unsubscribe();
+            done();
+        });
+        client1 = io_client(HTTP_ROOT, {
+            query: 'playerName' +
+                '=' + '1',
+            path: '/test'
+        });
+        client1.emit('submission', {body: "test", cardId: 0, owner: "test"} as DealtCard)
+    });
+    it('should emit judgment to event handler', function (done) {
+        boardEventHandler.gameState = State.judgment;
+        const temp = boardEventHandler.subscribe(async (next: RxEventsInterface)=>{
+            expect(next.event).toEqual(RxEvents.judgedSubmission);
+            expect(next.eventData.playerName).toEqual('1');
+            expect((next.eventData as JudgementEvent).card.body).toEqual('test');
+            expect((next.eventData as JudgementEvent).card.owner).toEqual('test');
+            expect((next.eventData as JudgementEvent).card.cardId).toEqual(0);
+            expect((next.eventData as JudgementEvent).owner).toEqual('test');
+            temp.unsubscribe();
+            done()
+        });
+        client1 = io_client(HTTP_ROOT, {
+            query: 'playerName' +
+                '=' + '1',
+            path: '/test'
+        });
+        client1.emit('judgment', {body: "test", cardId: 0, owner: "test"} as DealtCard)
+    });
 });
