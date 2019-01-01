@@ -2,8 +2,8 @@
   "name": "marmosad-backend-typescript",
   "version": "1.0.0",
   "main": "index.ts",
-  "repository": "https://github.com/gewenyu99/marmosad-backend-typescript.git",
-  "author": "Wen Yu Ge <gewenyu99@gmail.com>",
+  "repository": "https://github.com/Marmosad/marmosad-backend-typescript.git",
+  "author": "Marmosad Team",
   "license": "MIT",
   "scripts": {
     "build": "tsc",
