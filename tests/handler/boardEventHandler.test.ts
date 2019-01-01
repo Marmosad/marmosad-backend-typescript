@@ -150,8 +150,8 @@ describe('Board event handler game events tests', () => {
         } as RxEventsInterface)
     });
 
-    it('should accept only judgement events', (done) => {
-        boardEventHandler.gameState = State.judgement;
+    it('should accept only judgment events', (done) => {
+        boardEventHandler.gameState = State.judgment;
 
         boardEventHandler.subscribe((next: RxEventsInterface) => {
             expect(next.event).toEqual(RxEvents.judgedSubmission);

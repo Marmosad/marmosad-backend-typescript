@@ -16,8 +16,8 @@ describe("Game State", ()=>{
         gs.gameState = state;
         expect(gs.gameState).toEqual(state)
     });
-    it('should set state to judgement', function () {
-        const state = State.judgement;
+    it('should set state to judgment', function () {
+        const state = State.judgment;
         gs.gameState = state;
         expect(gs.gameState).toEqual(state)
     });

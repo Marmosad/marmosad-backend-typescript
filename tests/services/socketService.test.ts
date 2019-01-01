@@ -20,8 +20,8 @@ let client3;
 let client4;
 let http;
 describe('Socket service connect test', () => {
-    afterEach(() => {
-        socketA.stop();
+    afterEach(async () => {
+        await socketA.stop();
         if (client1) {
             client1.disconnect();
         }
@@ -40,7 +40,7 @@ describe('Socket service connect test', () => {
                     expect(socket.handshake.query.playerName).toEqual('1');
                     done()
                 });
-                console.log(HTTP_ROOT);
+                console.log(container.get(Http).port);
                 client1 = io_client(HTTP_ROOT, {
                     query: 'playerName=' + "1",
                     path: '/a'
@@ -90,8 +90,8 @@ describe('Socket service disconnect test', () => {
             });
         })
     });
-    afterEach(() => {
-        socketA.stop();
+    afterEach(async() => {
+        await socketA.stop();
         if (client1) {
             client1.disconnect();
         }
@@ -122,8 +122,8 @@ describe('Socket service disconnect test', () => {
 });
 
 describe('Socket chat test', () => {
-    afterEach(() => {
-        socketA.stop();
+    afterEach(async () => {
+        await socketA.stop();
         if (client1) {
             client1.disconnect();
         }
@@ -271,8 +271,8 @@ describe('Socket chat test', () => {
 describe("Event Handler Tests", () => {
     let boardEventHandler: BoardEventHandler;
 
-    afterEach(() => {
-        socketA.stop();
+    afterEach(async () => {
+        await socketA.stop();
         if (client1) {
             client1.disconnect();
         }
@@ -285,7 +285,7 @@ describe("Event Handler Tests", () => {
         if (client2) {
             client4.disconnect();
         }
-        http.close()
+        http.close();
     });
 
     beforeEach(async () => {
@@ -297,13 +297,14 @@ describe("Event Handler Tests", () => {
     });
     it('should emit submission to event handler', function (done) {
         boardEventHandler.gameState = State.submission;
-        boardEventHandler.subscribe(async (next: RxEventsInterface)=>{
+        const temp = boardEventHandler.subscribe(async (next: RxEventsInterface)=>{
             expect(next.event).toEqual(RxEvents.playedWhiteCard);
             expect(next.eventData.playerName).toEqual('1');
             expect((next.eventData as SubmissionEvent).card.body).toEqual('test');
             expect((next.eventData as SubmissionEvent).card.owner).toEqual('test');
             expect((next.eventData as SubmissionEvent).card.cardId).toEqual(0);
-            done()
+            temp.unsubscribe();
+            done();
         });
         client1 = io_client(HTTP_ROOT, {
             query: 'playerName' +
@@ -313,14 +314,15 @@ describe("Event Handler Tests", () => {
         client1.emit('submission', {body: "test", cardId: 0, owner: "test"} as DealtCard)
     });
     it('should emit judgment to event handler', function (done) {
-        boardEventHandler.gameState = State.judgement;
-        boardEventHandler.subscribe(async (next: RxEventsInterface)=>{
+        boardEventHandler.gameState = State.judgment;
+        const temp = boardEventHandler.subscribe(async (next: RxEventsInterface)=>{
             expect(next.event).toEqual(RxEvents.judgedSubmission);
             expect(next.eventData.playerName).toEqual('1');
             expect((next.eventData as JudgementEvent).card.body).toEqual('test');
             expect((next.eventData as JudgementEvent).card.owner).toEqual('test');
             expect((next.eventData as JudgementEvent).card.cardId).toEqual(0);
             expect((next.eventData as JudgementEvent).owner).toEqual('test');
+            temp.unsubscribe();
             done()
         });
         client1 = io_client(HTTP_ROOT, {

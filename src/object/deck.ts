@@ -81,7 +81,8 @@ export class Deck implements DeckInterface {
         const cardPack = this.pickRandomPack(cardPacks);
         const card = this.packs.get(cardPack).whiteCardStack.pop();
         this.packs.get(cardPack).whiteCardCount -= 1;
-        if (stringNotEmpty(card.body)) {
+        const returnCache = stringNotEmpty(card.body) && card.cardId >= 1;
+        if (returnCache) {
             return card;
         }
         return await this.firestoreService.getWhiteCard(cardPack, card.cardId)
@@ -92,7 +93,8 @@ export class Deck implements DeckInterface {
         const cardPack = this.pickRandomPack(cardPacks);
         const card = this.packs.get(cardPack).blackCardStack.pop();
         this.packs.get(cardPack).blackCardCount -= 1;
-        if (stringNotEmpty(card.body)) {
+        const returnCache = stringNotEmpty(card.body) && card.cardId >= 1;
+        if (returnCache) {
             return card;
         }
         return await this.firestoreService.getBlackCard(cardPack, card.cardId)

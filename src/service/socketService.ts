@@ -48,11 +48,9 @@ export class SocketService implements SocketInterface {
 
     public stop(): Promise<void> {
         return new Promise<void>(resolve => {
-            for (let key in this._connections) {
-                if (this._connections[key] && this._connections[key].disconnect) {
-                    this._connections[key].disconnect()
-                }
-            }
+            this.io.close(()=>{
+                resolve();
+            });
         })
     }
 
