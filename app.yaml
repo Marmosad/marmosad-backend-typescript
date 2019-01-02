@@ -1,18 +1,9 @@
-sudo: false
-language: node_js
-node_js:
-- '8'
-cache:
-  directories:
-  - node_modules
-before_install:
-- curl -o- -L https://yarnpkg.com/install.sh | bash
-- export PATH="$HOME/.yarn/bin:$PATH"
-- yarn upgrade
-install:
-- yarn
-jobs:
-  include:
-  - stage: test
-    script:
-    - yarn coveralls
+runtime: nodejs
+env: flex
+service: marmosad-backend
+manual_scaling:
+  instances: 1
+resources:
+  cpu: 1
+  memory_gb: 2
+  disk_size_gb: 10
