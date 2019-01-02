@@ -1,12 +1,9 @@
 runtime: nodejs
-env: standard
+env: flex
 service: marmosad-backend
 manual_scaling:
   instances: 1
 resources:
   cpu: 1
-  memory_gb: 1
-  disk_size_gb: 2
-network:
-  forwarded_ports:
-    - 8081
+  memory_gb: 2
+  disk_size_gb: 10
