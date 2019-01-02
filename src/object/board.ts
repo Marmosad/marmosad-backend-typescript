@@ -48,60 +48,29 @@ class Board {
         this.eventHandler.subscribe(async (next: RxEventsInterface) => {
             switch (next.event) {
                 case RxEvents.playedWhiteCard:
-                    console.log('123s');
-                    if (playWhiteCard) {
-                        playWhiteCard(next.eventData as SubmissionEvent)
-                    } else {
-                        this.playWhiteCard(next.eventData as SubmissionEvent);
-                    }
                     if (this.display.submissions.length >= (this.info.numberOfPlayers - 1)) {
                         this.eventHandler.gameState = State.judgment;
                     }
                     break;
                 case RxEvents.judgedSubmission:
-                    if (judgedSubmission) {
-                        await judgedSubmission(next.eventData as JudgementEvent);
-                    } else {
-                        await this.judgedSubmission(next.eventData as JudgementEvent);
-                    }
-                    if (dealNewCards) {
-                        dealNewCards();
-                    } else {
-                        await this.dealNewCards();
-                    }
+                    await this.judgedSubmission(next.eventData as JudgementEvent);
+                    await this.dealNewCards();
                     this.eventHandler.gameState = State.submission;
                     break;
                 case RxEvents.playerConnect:
-                    if (playerConnect) {
-                        playerConnect(next.eventData as SubmissionEvent)
-                    } else {
-                        await this.playerConnect(next.eventData as ConnectionEvent);
-                    }
+                    await this.playerConnect(next.eventData as ConnectionEvent);
                     break;
                 case RxEvents.playerDisconnect:
-                    if (playerDisconnect) {
-                        playerDisconnect(next.eventData as SubmissionEvent)
-                    } else {
-                        await this.playerDisconnect(next.eventData as ConnectionEvent);
-                    }
+                    await this.playerDisconnect(next.eventData as ConnectionEvent);
                     break;
                 case RxEvents.startGame:
-                    if (dealNewCards) {
-                        dealNewCards();
-                    } else {
-                        await this.dealNewCards();
-                    }
+                    await this.dealNewCards();
                     this.eventHandler.gameState = State.submission;
                     break;
                 default:
                     break;
             }
-            if (updateDisplay) {
-                updateDisplay(this.players);
-            }
-            else {
-                this.updateDisplay(this.players);
-            }
+            this.updateDisplay(this.players);
         });
         this.eventHandlerStarted = true;
     }
