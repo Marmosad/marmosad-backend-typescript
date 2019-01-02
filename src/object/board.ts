@@ -48,6 +48,7 @@ class Board {
         this.eventHandler.subscribe(async (next: RxEventsInterface) => {
             switch (next.event) {
                 case RxEvents.playedWhiteCard:
+                    this.playWhiteCard(next.eventData as SubmissionEvent);
                     if (this.display.submissions.length >= (this.info.numberOfPlayers - 1)) {
                         this.eventHandler.gameState = State.judgment;
                     }
