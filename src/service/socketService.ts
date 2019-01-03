@@ -35,8 +35,8 @@ export class SocketService implements SocketInterface {
         this._io = Socket(this.http.httpServer, {
             path: this._url, serveClient: false,
             // below are engine.IO options
-            pingInterval: 1000,
-            pingTimeout: 2000,
+            pingInterval: 5000,
+            pingTimeout: 30000,
             cookie: false
         });
         console.log('[EVENT] socket started at ' + this.io.path());
