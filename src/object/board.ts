@@ -32,22 +32,16 @@ class Board {
 
     constructor(private _eventHandler: BoardEventHandler) {
         this._display = {blackCard: null, currentJudge: '', submissions: []} as BoardDisplay;
-        this.startEventHandler(null, null, null, null, null, null);
+        this.startEventHandler();
     }
 
-    public startEventHandler(
-        playWhiteCard,
-        judgedSubmission,
-        playerConnect,
-        playerDisconnect,
-        dealNewCards,
-        updateDisplay
-    ) {
+    public startEventHandler() {
         if (this.eventHandlerStarted)
             return;
         this.eventHandler.subscribe(async (next: RxEventsInterface) => {
             switch (next.event) {
                 case RxEvents.playedWhiteCard:
+                    this.playWhiteCard(next.eventData as SubmissionEvent);
                     if (this.display.submissions.length >= (this.info.numberOfPlayers - 1)) {
                         this.eventHandler.gameState = State.judgment;
                     }
