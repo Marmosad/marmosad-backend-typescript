@@ -110,15 +110,6 @@ describe('Socket service disconnect test', () => {
             }, 2000);
         }
     );
-    it('should remove connection test', (done) => {
-            client1.close();
-            // this takes a long ass time :') socket.io's limitations not ours.
-            setTimeout(() => {
-                expect(socketA.getConnection(name)).toBeUndefined();
-                done()
-            }, 7000); // ping
-        }, 60000
-    );
 });
 
 describe('Socket chat test', () => {
