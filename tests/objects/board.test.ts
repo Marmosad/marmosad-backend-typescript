@@ -220,17 +220,23 @@ describe("Event handler test", () => {
         boardInstance = container.resolve(Board);
         boardInstance.info = JSON.parse(JSON.stringify(boardInfo)); // deep copy! :')
         boardInstance.startSocket();
+        boardInstance.playWhiteCard = playWhiteCard;
+        boardInstance.judgedSubmission = judgedSubmission;
+        boardInstance.playerDisconnect = playerDisconnect;
+        boardInstance.playerConnect = playerConnect;
+        boardInstance.dealNewCards = dealNewCards;
+        boardInstance.updateDisplay = updateDisplay;
     });
     it('should handle play white card event', function () {
         boardInstance.eventHandlerStarted = false;
-        boardInstance.startEventHandler(playWhiteCard, judgedSubmission, playerConnect, playerDisconnect, dealNewCards, updateDisplay);
+        boardInstance.startEventHandler();
         boardInstance.eventHandler.subject.next({event: RxEvents.playedWhiteCard, eventData: null} as RxEventsInterface);
         expect(playWhiteCard).toBeCalled();
         expect(updateDisplay).toBeCalled();
     });
     it('should handle judgment event', function () {
         boardInstance.eventHandlerStarted = false;
-        boardInstance.startEventHandler(playWhiteCard, judgedSubmission, playerConnect, playerDisconnect, dealNewCards, updateDisplay);
+        boardInstance.startEventHandler();
         boardInstance.eventHandler.subject.next({event: RxEvents.judgedSubmission, eventData: null} as RxEventsInterface);
         expect(judgedSubmission).toBeCalled();
         expect(updateDisplay).toBeCalled();
@@ -238,20 +244,20 @@ describe("Event handler test", () => {
     });
     it('should handle start game event', function () {
         boardInstance.eventHandlerStarted = false;
-        boardInstance.startEventHandler(playWhiteCard, judgedSubmission, playerConnect, playerDisconnect, dealNewCards, updateDisplay);
+        boardInstance.startEventHandler();
         boardInstance.eventHandler.subject.next({event: RxEvents.startGame, eventData: null} as RxEventsInterface);
         expect(dealNewCards).toBeCalled();
         expect(updateDisplay).toBeCalled();
     });
     it('should handle connect event', function () {
         boardInstance.eventHandlerStarted = false;
-        boardInstance.startEventHandler(playWhiteCard, judgedSubmission, playerConnect, playerDisconnect, dealNewCards, updateDisplay);
+        boardInstance.startEventHandler();
         boardInstance.eventHandler.subject.next({event: RxEvents.playerConnect, eventData: null} as RxEventsInterface);
         expect(playerConnect).toBeCalled();
     });
     it('should handle playerDisconnect event', function () {
         boardInstance.eventHandlerStarted = false;
-        boardInstance.startEventHandler(playWhiteCard, judgedSubmission, playerConnect, playerDisconnect, dealNewCards, updateDisplay);
+        boardInstance.startEventHandler();
         boardInstance.eventHandler.subject.next({event: RxEvents.playerDisconnect, eventData: null} as RxEventsInterface);
         expect(playerDisconnect).toBeCalled();
         expect(updateDisplay).toBeCalled();

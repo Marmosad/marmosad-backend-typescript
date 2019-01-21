@@ -31,54 +31,40 @@ class Board {
     @inject(Deck) private deck: Deck;
 
     constructor(private _eventHandler: BoardEventHandler) {
-        this.startEventHandler(
-            this.playWhiteCard,
-            this.judgedSubmission,
-            this.playerConnect,
-            this.playerDisconnect,
-            this.dealNewCards,
-            this.updateDisplay);
         this._display = {blackCard: null, currentJudge: '', submissions: []} as BoardDisplay;
+        this.startEventHandler();
     }
 
-    public startEventHandler(
-        playWhiteCard,
-        judgedSubmission,
-        playerConnect,
-        playerDisconnect,
-        dealNewCards,
-        updateDisplay
-    ) {
+    public startEventHandler() {
         if (this.eventHandlerStarted)
             return;
         this.eventHandler.subscribe(async (next: RxEventsInterface) => {
             switch (next.event) {
                 case RxEvents.playedWhiteCard:
-                    console.log('123s');
-                    playWhiteCard(next.eventData as SubmissionEvent);
+                    this.playWhiteCard(next.eventData as SubmissionEvent);
                     if (this.display.submissions.length >= (this.info.numberOfPlayers - 1)) {
                         this.eventHandler.gameState = State.judgment;
                     }
                     break;
                 case RxEvents.judgedSubmission:
-                    await judgedSubmission(next.eventData as JudgementEvent);
-                    await dealNewCards();
+                    await this.judgedSubmission(next.eventData as JudgementEvent);
+                    await this.dealNewCards();
                     this.eventHandler.gameState = State.submission;
                     break;
                 case RxEvents.playerConnect:
-                    await playerConnect(next.eventData as ConnectionEvent);
+                    await this.playerConnect(next.eventData as ConnectionEvent);
                     break;
                 case RxEvents.playerDisconnect:
-                    playerDisconnect(next.eventData as ConnectionEvent);
+                    await this.playerDisconnect(next.eventData as ConnectionEvent);
                     break;
                 case RxEvents.startGame:
-                    await dealNewCards();
+                    await this.dealNewCards();
                     this.eventHandler.gameState = State.submission;
                     break;
                 default:
                     break;
             }
-            updateDisplay(this.players);
+            this.updateDisplay(this.players);
         });
         this.eventHandlerStarted = true;
     }
