@@ -148,6 +148,8 @@ class Board {
             return;
         this.info.numberOfPlayers -= 1;
         this.players.delete(eventData.playerName);
+        if (this.info.numberOfPlayers <= 0)
+            this.endGame(eventData.playerName);
     }
 
     public updateDisplay(players) {
