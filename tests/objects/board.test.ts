@@ -205,6 +205,16 @@ describe("Board actions test, no deck", () => {
         expect(Board.dealCard({cardId: rand, body: bod}, own).cardId).toEqual(rand);
         expect(Board.dealCard({cardId: rand, body: bod}, own).body).toEqual(bod);
     });
+
+    it('should select next judge properly', function () {
+        expect(boardInstance.empty()).toBeTruthy();
+        boardInstance.players.set('a', new Player('a', ''));
+        boardInstance.players.set('b', new Player('b', ''));
+        boardInstance.players.set('c', new Player('c', ''));
+        boardInstance.players.set('d', new Player('d', ''));
+        boardInstance.players.set('e', new Player('e', ''));
+        expect(boardInstance.empty()).toBeFalsy();
+    });
 });
 
 describe("Event handler test", () => {

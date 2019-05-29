@@ -2,6 +2,8 @@ import {BoardService} from "../../src/service/boardService";
 import * as jest from "ts-jest"
 import {PLAYER_COUNT_LOWER_BOUND, PLAYER_COUNT_UPPER_BOUND} from "../../src/interface/boardInterface";
 import {BoardInfo} from "../../src/object/boardComponent";
+import {ConnectionEvent} from "../../src/interface/rxEventInterface";
+import {Player} from "../../src/object/player";
 
 console.log('Testing on jest ' + jest.version);
 
@@ -56,4 +58,18 @@ describe('Unit tests on success', () => {
         expect(boardService.getBoardInfo(boardService.getBoardInfoByName("123").socketUrl)).toBeTruthy();
         expect(boardService.getBoardsInfo().length).toEqual(4);
     });
+
+    it('Board recycler test', async (done) => {
+        const boardService = new BoardService(2000);
+        expect(boardService.newBoard("123", 5)).toEqual(true);
+        expect(boardService.newBoard("1234", 5)).toEqual(true);
+        boardService.getBoardByName("123").info.numberOfPlayers = 1;
+        expect(boardService.getBoardsInfo().length).toBe(5);
+        setTimeout(()=>{
+            console.log(boardService.getBoardsInfo());
+            expect(boardService.getBoardsInfo().length).toBe(1)
+            expect(boardService.getBoardInfoByName("123")).toBeTruthy();
+            done();
+        }, 3000)
+    }, 8000);
 });

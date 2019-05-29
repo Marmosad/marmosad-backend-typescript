@@ -115,7 +115,6 @@ class Board {
     }
 
     public async judgedSubmission(eventData: JudgementEvent) {
-        const playerName = eventData.playerName;
         const owner = eventData.owner;
         if (owner === this._display.currentJudge)
             return;
@@ -146,7 +145,7 @@ class Board {
     public playerDisconnect(eventData: ConnectionEvent) {
         if (!this.players.has(eventData.playerName))
             return;
-        this.info.numberOfPlayers -= 1;
+        this.info.numberOfPlayers --;
         this.players.delete(eventData.playerName);
         if (this.info.numberOfPlayers <= 0)
             this.endGame(eventData.playerName);
@@ -207,6 +206,12 @@ class Board {
         }
         return this.players.keys().next().value;
     }
+
+    public empty(): boolean {
+        // returns true iff no players
+        return (!this.info.numberOfPlayers);
+    }
+
 }
 
 export default Board;
