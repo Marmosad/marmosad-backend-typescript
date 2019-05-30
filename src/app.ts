@@ -37,7 +37,7 @@ export class App {
         self.express.get('/boards', function (req, res) {
             const options = {
                 method: 'GET',
-                uri: this.firebaseEndpoints.getBlackCard,
+                uri: self.firebaseEndpoints.getBlackCard,
                 headers: {
                     "card-pack-name": 'room-309',
                     "card-id": 1
