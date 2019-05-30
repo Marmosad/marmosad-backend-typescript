@@ -173,6 +173,7 @@ describe("Board actions test, no deck", () => {
         boardInstance.players.set('c', new Player('c', ''));
         boardInstance.players.set('d', new Player('d', ''));
         boardInstance.players.set('e', new Player('e', ''));
+        boardInstance.info.numberOfPlayers = 5;
         boardInstance.display.currentJudge = boardInstance.selectNextJudge();
         expect(boardInstance.display.currentJudge).toEqual('a');
         boardInstance.display.currentJudge = boardInstance.selectNextJudge();
@@ -206,13 +207,9 @@ describe("Board actions test, no deck", () => {
         expect(Board.dealCard({cardId: rand, body: bod}, own).body).toEqual(bod);
     });
 
-    it('should select next judge properly', function () {
+    it('should return true when empty', function () {
         expect(boardInstance.empty()).toBeTruthy();
-        boardInstance.players.set('a', new Player('a', ''));
-        boardInstance.players.set('b', new Player('b', ''));
-        boardInstance.players.set('c', new Player('c', ''));
-        boardInstance.players.set('d', new Player('d', ''));
-        boardInstance.players.set('e', new Player('e', ''));
+        boardInstance.info.numberOfPlayers = 1;
         expect(boardInstance.empty()).toBeFalsy();
     });
 });

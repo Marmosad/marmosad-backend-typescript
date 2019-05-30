@@ -40,7 +40,7 @@ describe('Unit tests on success', () => {
         expect(boardService.getBoardInfo(currentBoard[0].socketUrl)).toBeNull();
         expect(boardService.removeBoard(currentBoard[0].socketUrl)).toEqual(false);
     });
-    it('board add test', () => {
+    it('board add test', function () {
         const boardService = new BoardService();
         expect(boardService.getBoardsInfo().length).toEqual(3);
         expect(boardService.newBoard(boardService.getBoardsInfo()[0].boardName, 5)).toEqual(false);
