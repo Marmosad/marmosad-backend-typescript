@@ -19,10 +19,22 @@ export interface BoardInterface {
 export class BoardService implements BoardInterface {
     private boards: Array<Board> = new Array<Board>();
 
-    constructor() {
+    constructor(recycleTime: number = 300000) {
         this.newBoard('Board 1', 3);
         this.newBoard('Board 2', 3);
         this.newBoard('Board 3', 3);
+        setInterval(()=>{
+            const delete_queue = []
+            for (let i = 0; i < this.boards.length; i++) {
+                if (this.boards[i].empty()) {
+                    delete_queue.push(i - delete_queue.length);
+                }
+            }
+
+            for (const i of delete_queue) {
+                this.boards.splice(i, 1);
+            }
+        }, recycleTime)
     }
 
     getBoardInfo(socketUrl: string): BoardInfo {
@@ -42,6 +54,16 @@ export class BoardService implements BoardInterface {
         }
         return null
     }
+
+    getBoardByName(name: string): Board {
+        for (const board of this.boards) {
+            if (board.info.boardName === name) {
+                return board;
+            }
+        }
+        return null
+    }
+
 
     getBoardsInfo(): Array<BoardInfo> { //TODO Deep copy
         const boardInfoArray = [] as BoardInfo[];

@@ -10,7 +10,7 @@
     "dev": "export NODE_ENV=devel && ts-node ./index.ts",
     "start": "npm run build && npm run prod",
     "prod": "export NODE_ENV=production && node ./dist/index.js",
-    "coveralls": "jest --coverage --runInBand && cat ./coverage/lcov.info | coveralls"
+    "coveralls": "jest --coverage --runInBand --forceExit && cat ./coverage/lcov.info | coveralls"
   },
   "dependencies": {
     "@reactivex/rxjs": "^6.3.3",
