@@ -3,8 +3,10 @@ The project originated from [here](https://github.com/Marmosad/-deprecated-marmo
 
 This project was generated using [Typescript](https://github.com/Microsoft/TypeScript) along with [Node](https://github.com/nodejs).
 
-The app _is_ *may be* broken right now because we ran out of Google Cloud credits (We need to go not more MLH hackathons).
-It can be found [here](https://marmodb.firebaseapp.com);
+_The app *may be* broken right now because we ran out of Google Cloud credits (We need to go not more MLH hackathons).
+It can be found [here](https://marmodb.firebaseapp.com);_
+
+We've stopped paying for and maintaining the app in this form. We're currently working to go serverless on AWS Lambda. Cost savings and scalability! :D
 
 [![Coverage Status](https://coveralls.io/repos/github/Marmosad/marmosad-backend-typescript/badge.svg?branch=integration)](https://coveralls.io/github/Marmosad/marmosad-backend-typescript?branch=integration)
 [![Build Status](https://travis-ci.com/Marmosad/marmosad-backend-typescript.svg?branch=integration)](https://travis-ci.com/Marmosad/marmosad-backend-typescript)
