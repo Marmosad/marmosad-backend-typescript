@@ -21,7 +21,7 @@
     "cors": "latest",
     "coveralls": "^3.0.2",
     "dotenv": "^6.2.0",
-    "express": "^4.16.4",
+    "express": "^4.17.3",
     "inversify": "^5.0.1",
     "reflect-metadata": "^0.1.12",
     "request": "^2.88.0",
