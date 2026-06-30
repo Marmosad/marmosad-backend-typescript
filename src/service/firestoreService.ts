@@ -1,6 +1,6 @@
-import {interfaces, injectable, inject} from "inversify";
+import {injectable} from "inversify";
 import {Card, FirebaseEndpoints, Pack, Response} from "../interface/firestoreInterface";
-import * as rp from "request-promise-native"
+import rp = require("request-promise-native");
 import {FIREBASE_GET_BLACK_CARD, FIREBASE_GET_PACK, FIREBASE_GET_WHITE_CARD} from "../config/config";
 
 export interface FirestoreInterface {
@@ -45,7 +45,7 @@ export class FirestoreService implements FirestoreInterface {
             }
         };
 
-        return this.unpackCard(rp(options).promise(), 'getBlackCard')
+        return this.unpackCard(rp(options).promise() as Promise<string>, 'getBlackCard')
     }
 
     public getWhiteCard(pack: string, id: number): Promise<Card> {
@@ -58,7 +58,7 @@ export class FirestoreService implements FirestoreInterface {
             }
         };
 
-        return this.unpackCard(rp(options).promise(), 'getWhiteCard')
+        return this.unpackCard(rp(options).promise() as Promise<string>, 'getWhiteCard')
     }
 
     public getPack(pack: string): Promise<Pack> {
@@ -70,14 +70,14 @@ export class FirestoreService implements FirestoreInterface {
             }
         };
 
-        return this.unpackCardPack(rp(options).promise(), 'getPack')
+        return this.unpackCardPack(rp(options).promise() as Promise<string>, 'getPack')
     }
 
-    public unpackCardPack(response: Promise<any>, context: string = 'getPack') {
+    public unpackCardPack(response: Promise<string>, context = 'getPack') {
         return response.then(function (body) {
-            const response = JSON.parse(body) as Response;
-            return response.responseObj as Pack;
-        }).catch(function (err) {
+            const parsed = JSON.parse(body) as Response;
+            return parsed.responseObj as Pack;
+        }).catch(function (err: Error) {
                 // Preserve the original stack while adding context about which
                 // outbound call failed, rather than rethrowing a bare error.
                 err.message = 'Firebase ' + context + ' request failed: ' + err.message;
@@ -86,11 +86,11 @@ export class FirestoreService implements FirestoreInterface {
             });
     }
 
-    public unpackCard(response: Promise<any>, context: string = 'getCard') {
+    public unpackCard(response: Promise<string>, context = 'getCard') {
         return response.then(function (body) {
-            const response = JSON.parse(body) as Response;
-            return response.responseObj as Card;
-        }).catch(function (err) {
+            const parsed = JSON.parse(body) as Response;
+            return parsed.responseObj as Card;
+        }).catch(function (err: Error) {
                 // Preserve the original stack while adding context about which
                 // outbound call failed, rather than rethrowing a bare error.
                 err.message = 'Firebase ' + context + ' request failed: ' + err.message;

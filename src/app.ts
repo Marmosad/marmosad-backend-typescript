@@ -4,7 +4,7 @@ import {container} from "./config/inversify.config";
 import {Http} from "./service/httpSingletonService";
 import {FirebaseEndpoints, Pack, Response} from "./interface/firestoreInterface";
 import {FIREBASE_GET_BLACK_CARD, FIREBASE_GET_PACK, FIREBASE_GET_WHITE_CARD} from "./config/config";
-import * as rp from "request-promise-native"
+import rp = require("request-promise-native")
 
 export class App {
     private express = container.get<Http>(Http).express;
@@ -51,9 +51,9 @@ export class App {
                 // response, but an empty .catch() previously swallowed every
                 // rejection and surfaced it as an uncaught exception with no app
                 // stack frames. Log the failure so it can be traced.
-                rp(options).catch(function (err) {
+                rp(options).promise().catch(function (err: Error) {
                     console.error('GET /boards: Firebase getBlackCard call failed for ' +
-                        endpoint + ': ' + (err && err.message ? err.message : err));
+                        endpoint + ': ' + err.message);
                 });
             } else {
                 console.error('GET /boards: skipping Firebase getBlackCard call, ' +
