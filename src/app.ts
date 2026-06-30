@@ -35,16 +35,31 @@ export class App {
     private setupEndpoints() {
         const self = this;
         self.express.get('/boards', function (req, res) {
-            const options = {
-                method: 'GET',
-                uri: self.firebaseEndpoints.getBlackCard,
-                headers: {
-                    "card-pack-name": 'room-309',
-                    "card-id": 1
-                }
-            };
+            const endpoint = self.firebaseEndpoints.getBlackCard;
 
-            rp(options).then().catch();
+            if (endpoint) {
+                const options = {
+                    method: 'GET',
+                    uri: endpoint,
+                    headers: {
+                        "card-pack-name": 'room-309',
+                        "card-id": 1
+                    }
+                };
+
+                // Fire-and-forget warm-up call; its result is not used in the
+                // response, but an empty .catch() previously swallowed every
+                // rejection and surfaced it as an uncaught exception with no app
+                // stack frames. Log the failure so it can be traced.
+                rp(options).catch(function (err) {
+                    console.error('GET /boards: Firebase getBlackCard call failed for ' +
+                        endpoint + ': ' + (err && err.message ? err.message : err));
+                });
+            } else {
+                console.error('GET /boards: skipping Firebase getBlackCard call, ' +
+                    'endpoint is not configured (check FIREBASE_GET_BLACK_CARD).');
+            }
+
             res.send(self.boardService.getBoardsInfo());
         });
 
