@@ -4,7 +4,6 @@ import {container} from "./config/inversify.config";
 import {Http} from "./service/httpSingletonService";
 import {FirebaseEndpoints, Pack, Response} from "./interface/firestoreInterface";
 import {FIREBASE_GET_BLACK_CARD, FIREBASE_GET_PACK, FIREBASE_GET_WHITE_CARD} from "./config/config";
-import rp = require("request-promise-native")
 
 export class App {
     private express = container.get<Http>(Http).express;
@@ -35,31 +34,12 @@ export class App {
     private setupEndpoints() {
         const self = this;
         self.express.get('/boards', function (req, res) {
-            const endpoint = self.firebaseEndpoints.getBlackCard;
-
-            if (endpoint) {
-                const options = {
-                    method: 'GET',
-                    uri: endpoint,
-                    headers: {
-                        "card-pack-name": 'room-309',
-                        "card-id": 1
-                    }
-                };
-
-                // Fire-and-forget warm-up call; its result is not used in the
-                // response, but an empty .catch() previously swallowed every
-                // rejection and surfaced it as an uncaught exception with no app
-                // stack frames. Log the failure so it can be traced.
-                rp(options).promise().catch(function (err: Error) {
-                    console.error('GET /boards: Firebase getBlackCard call failed for ' +
-                        endpoint + ': ' + err.message);
-                });
-            } else {
-                console.error('GET /boards: skipping Firebase getBlackCard call, ' +
-                    'endpoint is not configured (check FIREBASE_GET_BLACK_CARD).');
-            }
-
+            // Previously this handler fired a fire-and-forget request-promise
+            // call to Firebase whose result was discarded and whose rejection
+            // was swallowed by an empty .catch(), surfacing as an untraceable
+            // uncaught exception. The response never depended on it, so the
+            // stray call is removed; outbound Firebase calls belong in
+            // FirestoreService, which handles their errors with context.
             res.send(self.boardService.getBoardsInfo());
         });
 
