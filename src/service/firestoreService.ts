@@ -65,8 +65,11 @@ export class FirestoreService implements FirestoreInterface {
         return response.then(function (body) {
             const response = JSON.parse(body) as Response;
             return response.responseObj as Pack;
-        }).catch(function (err) {
-                console.log(err);
+        }).catch(function (err: Error) {
+                // Add context about which outbound call failed while preserving
+                // the original stack, instead of logging a bare error.
+                err.message = 'Firebase card pack request failed: ' + err.message;
+                console.error(err);
                 throw err;
             });
     }
@@ -75,8 +78,11 @@ export class FirestoreService implements FirestoreInterface {
         return response.then(function (body) {
             const response = JSON.parse(body) as Response;
             return response.responseObj as Card;
-        }).catch(function (err) {
-                console.log(err);
+        }).catch(function (err: Error) {
+                // Add context about which outbound call failed while preserving
+                // the original stack, instead of logging a bare error.
+                err.message = 'Firebase card request failed: ' + err.message;
+                console.error(err);
                 throw err;
             });
     }

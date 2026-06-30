@@ -4,7 +4,6 @@ import {container} from "./config/inversify.config";
 import {Http} from "./service/httpSingletonService";
 import {FirebaseEndpoints, Pack, Response} from "./interface/firestoreInterface";
 import {FIREBASE_GET_BLACK_CARD, FIREBASE_GET_PACK, FIREBASE_GET_WHITE_CARD} from "./config/config";
-import * as rp from "request-promise-native"
 
 export class App {
     private express = container.get<Http>(Http).express;
@@ -35,16 +34,12 @@ export class App {
     private setupEndpoints() {
         const self = this;
         self.express.get('/boards', function (req, res) {
-            const options = {
-                method: 'GET',
-                uri: self.firebaseEndpoints.getBlackCard,
-                headers: {
-                    "card-pack-name": 'room-309',
-                    "card-id": 1
-                }
-            };
-
-            rp(options).then().catch();
+            // Previously this handler fired a fire-and-forget request-promise
+            // call to Firebase whose result was discarded and whose rejection
+            // was swallowed by an empty .catch(), surfacing as an untraceable
+            // uncaught exception. The response never depended on it, so the
+            // stray call is removed; outbound Firebase calls belong in
+            // FirestoreService, which handles their errors with context.
             res.send(self.boardService.getBoardsInfo());
         });
 
